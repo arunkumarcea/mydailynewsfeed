@@ -1,0 +1,32 @@
+{
+  "name": "Daily Digest",
+  "short_name": "Digest",
+  "description": "Your daily briefing — news, podcasts, weather, events in Munich",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f0e8",
+  "theme_color": "#1a1208",
+  "orientation": "portrait-primary",
+  "categories": ["news", "productivity"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Today's Briefing",
+      "url": "./index.html",
+      "description": "Open Daily Digest"
+    }
+  ]
+}
