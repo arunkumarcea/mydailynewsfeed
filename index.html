@@ -11,6 +11,8 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Daily Digest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Noto+Sans+Malayalam:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ── TOKENS ─────────────────────────────────────────────────── */
@@ -81,37 +83,39 @@ nav::-webkit-scrollbar{display:none}
 .hc:nth-child(21){animation-delay:1.05s}.hc:nth-child(22){animation-delay:1.1s}
 
 /* GRID PLACEMENT — 5 col newspaper layout */
-/* Row 1: Today (2col), Weather, Curiosity, Birthday/On This Day */
-.hc-event    {grid-column:1/3;grid-row:1}
-.hc-weather  {grid-column:3;grid-row:1}
-.hc-curiosity{grid-column:4;grid-row:1}
-.hc-otd      {grid-column:5;grid-row:1;border-right:none}
+/* Row 1: EVENT — full 5 cols, prominent like cinema */
+.hc-event    {grid-column:1/6;grid-row:1;border-right:none}
 
-/* Row 2: CINEMA — full 5 cols, prominent */
-.hc-cinema   {grid-column:1/6;grid-row:2;border-right:none}
+/* Row 2: Today stats — Weather, Curiosity, On This Day (3 cols; cinema stays row 3) */
+.hc-weather  {grid-column:1;grid-row:2}
+.hc-curiosity{grid-column:2/4;grid-row:2}
+.hc-otd      {grid-column:4/6;grid-row:2;border-right:none}
 
-/* Row 3: SZ, Hindu, Guardian, NYT, Astronomy */
-.hc-sz       {grid-column:1;grid-row:3}
-.hc-hindu    {grid-column:2;grid-row:3}
-.hc-guardian {grid-column:3;grid-row:3}
-.hc-nyt      {grid-column:4;grid-row:3}
-.hc-astro    {grid-column:5;grid-row:3;border-right:none}
+/* Row 3: CINEMA — full 5 cols */
+.hc-cinema   {grid-column:1/6;grid-row:3;border-right:none}
 
-/* Row 4: ML Wikipedia, EN Wikipedia, HN, Podcast, Sport */
-.hc-ml       {grid-column:1;grid-row:4}
-.hc-wiki     {grid-column:2;grid-row:4}
-.hc-hn       {grid-column:3;grid-row:4}
-.hc-podcast  {grid-column:4;grid-row:4}
-.hc-sport    {grid-column:5;grid-row:4;border-right:none}
+/* Row 4: SZ, Hindu, Guardian, NYT, Astronomy */
+.hc-sz       {grid-column:1;grid-row:4}
+.hc-hindu    {grid-column:2;grid-row:4}
+.hc-guardian {grid-column:3;grid-row:4}
+.hc-nyt      {grid-column:4;grid-row:4}
+.hc-astro    {grid-column:5;grid-row:4;border-right:none}
 
-/* Row 5: ML News, Book (2col), Semi/EE News, German (2col) */
-.hc-mlnews   {grid-column:1;grid-row:5}
-.hc-book     {grid-column:2/4;grid-row:5}
-.hc-semi     {grid-column:4;grid-row:5}
-.hc-cartoon  {grid-column:5;grid-row:5;border-right:none}
+/* Row 5: ML Wikipedia, EN Wikipedia, HN, Podcast, Sport */
+.hc-ml       {grid-column:1;grid-row:5}
+.hc-wiki     {grid-column:2;grid-row:5}
+.hc-hn       {grid-column:3;grid-row:5}
+.hc-podcast  {grid-column:4;grid-row:5}
+.hc-sport    {grid-column:5;grid-row:5;border-right:none}
 
-/* Row 6: German word — full width */
-.hc-german   {grid-column:1/6;grid-row:6;border-right:none;border-bottom:none}
+/* Row 6: ML News, Book (2col), Semi/EE News, Cartoon */
+.hc-mlnews   {grid-column:1;grid-row:6}
+.hc-book     {grid-column:2/4;grid-row:6}
+.hc-semi     {grid-column:4;grid-row:6}
+.hc-cartoon  {grid-column:5;grid-row:6;border-right:none}
+
+/* Row 7: German word — full width */
+.hc-german   {grid-column:1/6;grid-row:7;border-right:none;border-bottom:none}
 
 /* CARD INTERIOR PADDING WRAPPER */
 .hc-pad{padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.45rem;flex:1}
@@ -226,13 +230,182 @@ nav::-webkit-scrollbar{display:none}
 .wx-row:last-child{border-bottom:none}
 .wx-day{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--muted);width:48px}
 
-/* ── EVENT CARD ─────────────────────────────────────────────── */
-.ev-badge{display:inline-flex;align-items:center;gap:.38rem;background:var(--gold);color:var(--ink);font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;padding:.18rem .55rem;width:fit-content;margin-bottom:.25rem}
-.ev-route{margin:.4rem 0;display:flex;flex-direction:column;gap:.3rem}
-.ev-step{display:flex;gap:.5rem;font-size:.75rem;line-height:1.4;align-items:flex-start}
-.ev-ic{font-size:.88rem;flex-shrink:0;margin-top:.08rem}
-.ev-depart{background:rgba(200,146,42,.09);border:1px solid rgba(200,146,42,.28);padding:.38rem .65rem;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--gold);letter-spacing:.08em;margin-top:.25rem}
-.ev-tip{font-size:.74rem;color:var(--gold);margin-top:.2rem}
+/* ══════════════════════════════════════════════════════════════
+   🎪 EVENT CARD — light warm palette, newspaper aesthetic
+   Warm cream background · ink text · gold accents
+══════════════════════════════════════════════════════════════ */
+:root{
+  --ev:#fdf7ee;          /* warm cream background */
+  --ev-border:#e6d9c0;   /* slightly darker border/divider */
+  --ev-gold:#b5811e;     /* darker gold — readable on light bg */
+  --ev-accent:#1a3d1a;   /* deep forest green for kicker/accents */
+  --ev-ink:#1a1208;      /* same as body ink */
+  --ev-sub:#7a6a52;      /* muted warm brown for secondary text */
+}
+.hc-event{
+  background:var(--ev)!important;
+  color:var(--ev-ink)!important;
+  min-height:190px;
+  cursor:default;
+}
+.hc-event:hover{background:#fff8ed!important}
+.ev-inner-wrap{
+  display:grid;
+  grid-template-columns:240px 1fr 220px;
+  gap:0;width:100%;height:100%;
+  min-height:190px;flex:1
+}
+/* ── Photo column ── */
+.ev-photo{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:#e8dcc8;
+  border-right:1px solid var(--ev-border)
+}
+.ev-photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.9;display:block}
+.ev-photo-ph{font-size:3rem;opacity:.18;position:relative;z-index:1;color:var(--ev-ink)}
+/* subtle right-edge vignette only within the photo column */
+.ev-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,rgba(253,247,238,.6) 100%);pointer-events:none;z-index:2}
+.ev-cat-badge{
+  position:absolute;top:.65rem;left:.65rem;z-index:4;
+  background:var(--ev-accent);color:#fff;
+  font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.2em;text-transform:uppercase;
+  padding:.16rem .5rem;font-weight:700
+}
+/* ── Body column ── */
+.ev-body{
+  padding:1.5rem 2rem;
+  display:flex;flex-direction:column;gap:.5rem;
+  justify-content:center;
+  background:var(--ev);min-width:0
+}
+.ev-kicker{
+  font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--ev-accent);display:flex;align-items:center;gap:.5rem
+}
+.ev-kicker::before{content:'';display:inline-block;width:18px;height:1px;background:var(--ev-accent)}
+.ev-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.2rem,2vw,1.85rem);
+  font-weight:900;line-height:1.1;
+  color:var(--ev-ink)
+}
+.ev-venue{
+  font-family:'DM Mono',monospace;font-size:.57rem;
+  color:var(--ev-sub);letter-spacing:.09em
+}
+.ev-desc{font-size:.8rem;line-height:1.65;color:#4a4035;max-width:500px}
+.ev-source-line{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--ev-sub);margin-top:auto}
+/* ── Logistics column ── */
+.ev-logistics{
+  padding:1.3rem 1.6rem;
+  border-left:1px solid var(--ev-border);
+  display:flex;flex-direction:column;gap:.5rem;
+  justify-content:center;
+  background:#f5ede0
+}
+.ev-time-big{
+  font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;
+  color:var(--ev-accent);line-height:1
+}
+.ev-date-line{font-family:'DM Mono',monospace;font-size:.51rem;color:var(--ev-sub);letter-spacing:.08em;margin-top:.06rem}
+.ev-transit-step{display:flex;gap:.45rem;font-size:.69rem;color:var(--ev-sub);align-items:flex-start;line-height:1.4}
+.ev-transit-step strong{color:var(--ev-ink)}
+.ev-transit-ic{flex-shrink:0;margin-top:.04rem}
+.ev-depart-box{
+  background:var(--ev-accent);color:#fff;
+  font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;
+  padding:.28rem .72rem;width:fit-content;font-weight:700;margin-top:.1rem
+}
+.ev-detail-link{
+  font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ev-sub);text-decoration:none;
+  border-bottom:1px solid var(--ev-border);padding-bottom:1px;width:fit-content;transition:color .15s
+}
+.ev-detail-link:hover{color:var(--ev-accent);border-color:var(--ev-accent)}
+.ev-skeleton{
+  padding:1.5rem 2rem;color:var(--ev-sub);
+  display:flex;align-items:center;gap:1rem;
+  font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.15em;width:100%
+}
+
+/* More tab: map */
+#evmap{width:100%;height:440px;border:1px solid var(--border);margin-bottom:0;position:relative;z-index:0}
+/* More tab: event widgets — light newspaper palette matching home card */
+.evw-list{display:flex;flex-direction:column;gap:0;margin-top:0;border:1px solid var(--ev-border);border-top:none}
+.evw-section-head{
+  background:var(--ev-accent);color:#fff;
+  padding:.5rem 1.2rem;
+  font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid rgba(255,255,255,.12)
+}
+.evw-section-head a{color:rgba(255,255,255,.7);font-size:.46rem;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:1px}
+.evw-section-head a:hover{color:#fff}
+/* proximity badge — shown on closest events */
+.evw-close-badge{
+  background:var(--ev-gold);color:#fff;
+  font-family:'DM Mono',monospace;font-size:.42rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:.1rem .38rem;font-weight:700;margin-left:.5rem;vertical-align:middle
+}
+.evw-card{
+  display:grid;grid-template-columns:140px 1fr 170px;
+  min-height:110px;
+  border-bottom:1px solid var(--ev-border);
+  background:var(--ev);
+  color:var(--ev-ink);
+  text-decoration:none;transition:background .12s
+}
+.evw-card:hover{background:#fff8ed}
+.evw-card.evw-near{background:#fffaf2;border-left:3px solid var(--ev-accent)}
+.evw-card.evw-near:hover{background:#fff5e6}
+.evw-img{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  border-right:1px solid var(--ev-border);
+  background:#e8dcc8
+}
+.evw-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.9}
+.evw-img-ph{font-size:2rem;opacity:.18;position:relative;z-index:1;color:var(--ev-ink)}
+.evw-body{
+  padding:.9rem 1.2rem;
+  display:flex;flex-direction:column;gap:.3rem;justify-content:center
+}
+.evw-time{
+  font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.16em;
+  color:var(--ev-accent);text-transform:uppercase;font-weight:600
+}
+.evw-title{
+  font-family:'Playfair Display',serif;font-size:.92rem;font-weight:700;
+  line-height:1.2;color:var(--ev-ink)
+}
+.evw-venue{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--ev-sub);letter-spacing:.06em}
+.evw-dist{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--ev-accent);letter-spacing:.08em;margin-top:.1rem;font-weight:600}
+.evw-go{
+  padding:.8rem 1rem;
+  border-left:1px solid var(--ev-border);
+  display:flex;flex-direction:column;gap:.32rem;justify-content:center;
+  background:#f5ede0
+}
+.evw-go-label{font-family:'DM Mono',monospace;font-size:.42rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ev-sub);margin-bottom:.12rem}
+.evw-step{display:flex;gap:.38rem;font-size:.62rem;color:var(--ev-sub);line-height:1.35;align-items:flex-start}
+.evw-step strong{color:var(--ev-ink)}
+.evw-depart{
+  background:var(--ev-accent);color:#fff;
+  font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.1em;
+  padding:.2rem .55rem;width:fit-content;font-weight:700;margin-top:.18rem
+}
+/* Wikipedia compact in More tab */
+.wiki-compact{border:1px solid var(--border);margin-bottom:.8rem}
+.wiki-compact-head{
+  background:var(--cream);padding:.42rem 1rem;
+  font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:none;width:100%;text-align:left
+}
+.wiki-compact-head:hover{background:var(--border)}
+.wiki-compact-body{display:none;padding:.8rem 1rem;font-size:.8rem;line-height:1.6;color:#4a4035;border-top:1px solid var(--border)}
+.wiki-compact-body.open{display:block}
+.wiki-compact-title{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;margin-bottom:.35rem}
 
 /* ── HN CARD ────────────────────────────────────────────────── */
 .hn-score{display:inline-flex;align-items:center;gap:.28rem;background:var(--hn);color:#fff;padding:.15rem .5rem;font-family:'DM Mono',monospace;font-size:.6rem;font-weight:700;width:fit-content;margin-bottom:.4rem}
@@ -347,30 +520,50 @@ nav::-webkit-scrollbar{display:none}
 /* ── RESPONSIVE ─────────────────────────────────────────────── */
 @media(max-width:980px){
   .home-grid{grid-template-columns:repeat(3,1fr)}
-  .hc-event{grid-column:1/3;grid-row:1}.hc-weather{grid-column:3;grid-row:1;border-right:none}
-  .hc-curiosity{grid-column:1;grid-row:2}.hc-otd{grid-column:2;grid-row:2}.hc-cinema{grid-column:1/4;grid-row:3;border-right:none}
+  /* Row 1: event full width */
+  .hc-event{grid-column:1/4;grid-row:1;border-right:none}
+  /* Row 2: weather, curiosity, otd */
+  .hc-weather{grid-column:1;grid-row:2}.hc-curiosity{grid-column:2;grid-row:2}.hc-otd{grid-column:3;grid-row:2;border-right:none}
+  /* Row 3: cinema full width */
+  .hc-cinema{grid-column:1/4;grid-row:3;border-right:none}
+  .cinema-inner{grid-template-columns:200px 1fr}.cinema-route{display:none}
+  /* Row 4: news 3col */
   .hc-sz{grid-column:1;grid-row:4}.hc-hindu{grid-column:2;grid-row:4}.hc-guardian{grid-column:3;grid-row:4;border-right:none}
+  /* Row 5: */
   .hc-nyt{grid-column:1;grid-row:5}.hc-astro{grid-column:2;grid-row:5}.hc-ml{grid-column:3;grid-row:5;border-right:none}
+  /* Row 6: */
   .hc-wiki{grid-column:1;grid-row:6}.hc-hn{grid-column:2;grid-row:6}.hc-podcast{grid-column:3;grid-row:6;border-right:none}
+  /* Row 7: */
   .hc-sport{grid-column:1;grid-row:7}.hc-mlnews{grid-column:2;grid-row:7}.hc-book{grid-column:3;grid-row:7;border-right:none}
+  /* Row 8: */
   .hc-semi{grid-column:1;grid-row:8}.hc-cartoon{grid-column:2;grid-row:8}
+  /* Row 9: */
   .hc-german{grid-column:1/4;grid-row:9;border-right:none}
-  .cinema-inner{grid-template-columns:200px 1fr}
-  .cinema-route{display:none}
+  /* Event inner layout */
+  .ev-inner-wrap{grid-template-columns:190px 1fr}.ev-logistics{display:none}
   .np-grid{grid-template-columns:1fr}
   .np-col{border-right:none;border-bottom:1px solid var(--border)}.np-col:last-child{border-bottom:none}
   .de-inner{flex-direction:column;gap:1rem}
+  .evweek-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:620px){
   .home-grid{grid-template-columns:repeat(2,1fr)}
-  .hc-event{grid-column:1/3}.hc-weather{grid-column:1/3;border-right:none}
-  .hc-curiosity{grid-column:1}.hc-otd{grid-column:2;border-right:none}
-  .hc-cinema{grid-column:1/3}.cinema-inner{grid-template-columns:1fr}.cinema-poster{min-height:180px;max-height:180px}.cinema-route{display:none}
-  .hc-sz,.hc-hindu,.hc-guardian,.hc-nyt,.hc-astro,.hc-ml,.hc-wiki,.hc-hn,.hc-podcast,.hc-sport,.hc-mlnews{grid-column:span 1}
-  .hc-guardian,.hc-nyt,.hc-wiki,.hc-podcast,.hc-mlnews{border-right:none}
-  .hc-book{grid-column:1/3}.hc-semi{grid-column:1}.hc-cartoon{grid-column:2;border-right:none}
-  .hc-german{grid-column:1/3}
+  .hc-event{grid-column:1/3;grid-row:1}
+  .ev-inner-wrap{grid-template-columns:1fr}.ev-photo{min-height:160px;max-height:160px}.ev-logistics{display:none}
+  .ev-photo::after{background:linear-gradient(to bottom,transparent 60%,var(--ev))}
+  .hc-weather{grid-column:1;grid-row:2}.hc-curiosity{grid-column:2;grid-row:2;border-right:none}
+  .hc-otd{grid-column:1/3;grid-row:3;border-right:none}
+  .hc-cinema{grid-column:1/3;grid-row:4}.cinema-inner{grid-template-columns:1fr}.cinema-poster{min-height:160px;max-height:160px}.cinema-route{display:none}
+  .hc-sz{grid-column:1;grid-row:5}.hc-hindu{grid-column:2;grid-row:5;border-right:none}
+  .hc-guardian{grid-column:1;grid-row:6}.hc-nyt{grid-column:2;grid-row:6;border-right:none}
+  .hc-astro{grid-column:1;grid-row:7}.hc-ml{grid-column:2;grid-row:7;border-right:none}
+  .hc-wiki{grid-column:1;grid-row:8}.hc-hn{grid-column:2;grid-row:8;border-right:none}
+  .hc-podcast{grid-column:1;grid-row:9}.hc-sport{grid-column:2;grid-row:9;border-right:none}
+  .hc-mlnews{grid-column:1;grid-row:10}.hc-book{grid-column:2;grid-row:10;border-right:none}
+  .hc-semi{grid-column:1;grid-row:11}.hc-cartoon{grid-column:2;grid-row:11;border-right:none}
+  .hc-german{grid-column:1/3;grid-row:12}
   .page{padding:.9rem .8rem}
+  .evweek-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -404,10 +597,15 @@ nav::-webkit-scrollbar{display:none}
 
   <div class="home-grid">
 
-    <!-- 1 · MUNICH EVENT -->
+    <!-- 1 · MUNICH EVENT — full width, cinema-style -->
     <div class="hc hc-event" id="hc-event">
-      <div class="hc-pad" id="ev-inner">
-        <span class="sk sk-big"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      <div id="ev-inner" class="ev-skeleton">
+        <span>🎪</span>
+        <div>
+          <span class="sk-dk" style="height:.65rem;width:180px;display:block;margin-bottom:.45rem"></span>
+          <span class="sk-dk" style="height:1.35rem;width:320px;display:block;margin-bottom:.4rem"></span>
+          <span class="sk-dk" style="height:.65rem;width:240px;display:block"></span>
+        </div>
       </div>
     </div>
 
@@ -617,13 +815,37 @@ nav::-webkit-scrollbar{display:none}
 
 <!-- ════════════════════ MORE ════════════════════════ -->
 <div class="page" id="page-more">
-  <div class="page-header"><h2>More</h2><p>Full Wikipedia articles · Munich event guide all 7 days</p></div>
-  <div class="sdiv"><span class="slabel">Malayalam Wikipedia — Article of the Day</span></div>
-  <div id="more-ml" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
-  <div class="sdiv"><span class="slabel">Wikipedia — Featured Article</span></div>
-  <div id="more-wiki" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
-  <div class="sdiv"><span class="slabel">Munich Event Guide — This Week</span></div>
-  <div id="more-events" class="art-list"></div>
+  <div class="page-header">
+    <h2>Munich This Week</h2>
+    <p>Live events · map · tap to expand Wikipedia</p>
+  </div>
+
+  <!-- Wikipedia: compact collapsible panels -->
+  <div class="wiki-compact">
+    <button class="wiki-compact-head" onclick="var b=document.getElementById('wml-body');b.classList.toggle('open');this.querySelector('.wiki-chevron').textContent=b.classList.contains('open')?'▲':'▼'">
+      <span>🌿 Malayalam Wikipedia — ആഴ്ചയിലെ ലേഖനം</span>
+      <span class="wiki-chevron">▼</span>
+    </button>
+    <div class="wiki-compact-body" id="wml-body">
+      <div id="more-ml"><span class="sk sk-h"></span><span class="sk sk-t"></span></div>
+    </div>
+  </div>
+  <div class="wiki-compact">
+    <button class="wiki-compact-head" onclick="var b=document.getElementById('wen-body');b.classList.toggle('open');this.querySelector('.wiki-chevron').textContent=b.classList.contains('open')?'▲':'▼'">
+      <span>📖 Wikipedia — Featured Article of the Day</span>
+      <span class="wiki-chevron">▼</span>
+    </button>
+    <div class="wiki-compact-body" id="wen-body">
+      <div id="more-wiki"><span class="sk sk-h"></span><span class="sk sk-t"></span></div>
+    </div>
+  </div>
+
+  <!-- Live Munich events: map then event widgets -->
+  <div style="font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);padding:.6rem 0 .4rem;border-bottom:1px solid var(--border);margin-bottom:0">
+    🗺 Munich Events Map — from Marienstern Bus Stop
+  </div>
+  <div id="evmap"></div>
+  <div id="more-events" class="evw-list"></div>
 </div>
 
 <!-- AUDIO BAR -->
@@ -1056,20 +1278,36 @@ var SHOW_TIMES=['20:30','20:00','19:45','20:15','20:30','18:00','17:30'];
 // ═══════════════════════════════════════════════════════════
 // CARD: WEATHER
 // ═══════════════════════════════════════════════════════════
+// CARD: WEATHER
+// Cache key includes date+hour so stale data auto-expires hourly.
+// On first load, purge any old 'wx5' key that might have wrong data.
+// ═══════════════════════════════════════════════════════════
 var WX_EM={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'🌨️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
-var WX_DS={0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Rain showers',81:'Heavy showers',82:'Violent showers',95:'Thunderstorm',96:'Thunderstorm & hail'};
+var WX_DS={0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Rain showers',81:'Heavy showers',82:'Violent showers',95:'Thunderstorm',96:'Thunderstorm & hail'};
 (function(){
-  var ck='wx5';var cached=lsGet(ck);
+  // Purge legacy stale key from previous app versions
+  try{localStorage.removeItem('dd5_wx5');localStorage.removeItem('dd4_wx5');}catch(e){}
+  var now=new Date();
+  // Key includes year, month, day, hour — forces refresh every hour
+  var ck='wx6_'+now.getFullYear()+'_'+(now.getMonth()+1)+'_'+now.getDate()+'_'+now.getHours();
+  var cached=lsGet(ck);
   if(cached){document.getElementById('wx-inner').innerHTML=cached;return;}
-  tFetch('https://api.open-meteo.com/v1/forecast?latitude=48.1375&longitude=11.5755&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum&timezone=Europe%2FBerlin&forecast_days=4')
+  // Munich Marienplatz coordinates, Europe/Berlin timezone
+  var apiUrl='https://api.open-meteo.com/v1/forecast'
+    +'?latitude=48.1351&longitude=11.5820'
+    +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code'
+    +'&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum'
+    +'&timezone=Europe%2FBerlin&forecast_days=4';
+  tFetch(apiUrl,10000)
     .then(function(r){return r.json();})
     .then(function(d){
       var c=d.current,dl=d.daily;
       var em=WX_EM[c.weather_code]||'🌡️',desc=WX_DS[c.weather_code]||'';
+      var updT=new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
       var h='<div class="card-label"><span class="label-pip" style="background:var(--sky)"></span>Weather · Munich</div>';
       h+='<div class="wx-big">'+em+'</div>';
       h+='<div class="wx-temp">'+Math.round(c.temperature_2m)+'°C</div>';
-      h+='<div class="wx-desc">'+esc(desc)+' · feels '+Math.round(c.apparent_temperature)+'°</div>';
+      h+='<div class="wx-desc">'+esc(desc)+' · feels '+Math.round(c.apparent_temperature)+'° · <span style="color:var(--muted)">'+updT+' Uhr</span></div>';
       h+='<div class="wx-grid"><div class="wx-stat"><div class="wx-val">'+Math.round(c.wind_speed_10m)+'</div><div class="wx-lbl">km/h</div></div>';
       h+='<div class="wx-stat"><div class="wx-val">'+Math.round(c.relative_humidity_2m)+'%</div><div class="wx-lbl">humidity</div></div></div>';
       ['Today','Tmrw','Day 3','Day 4'].forEach(function(name,i){
@@ -1084,31 +1322,172 @@ var WX_DS={0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog
 })();
 
 // ═══════════════════════════════════════════════════════════
-// CARD: MUNICH EVENT (curated)
+// CARD: MUNICH TODAY — live scrape of in-muenchen.de
+// Fetches heute-in-muenchen page via allorigins, parses event
+// anchor tags: <a href="/events/..."> containing img, date, title, venue
+// Falls back to morgen-in-muenchen then /veranstaltungen if needed.
 // ═══════════════════════════════════════════════════════════
-var EVENTS=[
-  {title:'Deutsches Museum',desc:'One of the world\'s largest science and technology museums, spanning 73,000 m² on Museum Island in the Isar. From aerospace and shipbuilding to digital labs, there is something extraordinary around every corner.',time:'09:00',transit:30,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Isartor',d:'18 min'},{ic:'🚶',t:'Walk to Museumsinsel',d:'5 min'}],link:'https://www.deutsches-museum.de',tip:'Arrive before 10:00 to beat school groups.'},
-  {title:'English Garden & Eisbach',desc:'Munich\'s iconic urban park stretching north from the city centre. Watch surfers ride the Eisbach standing wave, or find a deckchair at the Chinese Tower beer garden.',time:'All day',transit:35,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Lehel',d:'22 min'},{ic:'🚶',t:'Walk north into the park',d:'7 min'}],link:'https://www.muenchen.de',tip:'Surfers most active 10:00–14:00.'},
-  {title:'Viktualienmarkt',desc:'Munich\'s beloved daily open-air food market — Bavarian produce, cheese, fresh bread, and a central beer garden under the maypole.',time:'08:00',transit:25,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Marienplatz',d:'14 min'},{ic:'🚶',t:'Walk south 3 min',d:'3 min'}],link:'https://www.viktualienmarkt.de',tip:'Best before 11:00 for freshest produce. Closed Sundays.'},
-  {title:'Pinakothek der Moderne',desc:'World-class contemporary art, design and architecture. Permanent collection includes Warhol, Beuys, Bauhaus, and Munich\'s extraordinary applied arts collection.',time:'10:00',transit:38,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Odeonsplatz, U3/U6 → Universität',d:'25 min'},{ic:'🚶',t:'Walk west along Veterinärstraße',d:'7 min'}],link:'https://www.pinakothek-der-moderne.de',tip:'Free on Sundays (€1). Open until 20:00 on Thursdays.'},
-  {title:'Nymphenburg Palace',desc:'Baroque summer palace of Bavaria\'s kings with stunning gardens, canal and Gallery of Beauties — 180 hectares of formal gardens stretching westward.',time:'09:00',transit:45,route:[{ic:'🚌',t:'Bus 55 → Ostbahnhof',d:'12 min'},{ic:'🚂',t:'S1 → Hbf, Tram 17 → Schloss Nymphenburg',d:'28 min'},{ic:'🚶',t:'Walk to palace entrance',d:'5 min'}],link:'https://www.schloss-nymphenburg.de',tip:'Palace park free. Interior ~€10. Gardens best at sunrise.'},
-  {title:'Marienplatz & Old Town',desc:'The heart of Munich. The elaborate Rathaus Glockenspiel carillon, the medieval Frauenkirche with its copper onion domes, cobblestone alleys and hidden courtyards.',time:'All day',transit:22,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Marienplatz',d:'16 min'}],link:'https://www.muenchen.de',tip:'Glockenspiel at 11:00, 12:00 and (summer) 17:00. Free.'},
-  {title:'BMW Museum & BMW Welt',desc:'A hundred years of Bavarian automotive engineering — concept cars, racing legends and future mobility in a striking bowl-shaped building beside the Olympic Park.',time:'10:00',transit:50,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Odeonsplatz, U3 → Olympiazentrum',d:'32 min'},{ic:'🚶',t:'Walk to BMW Welt',d:'5 min'}],link:'https://www.bmw-welt.com',tip:'BMW Welt is free. Museum ~€10.'}
+
+// Transit directions from Marienstern for any central Munich venue
+var TRANSIT_DEFAULT=[
+  {ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},
+  {ic:'🚇',t:'U5 → Marienplatz',d:'14 min'},
+  {ic:'🚶',t:'Walk to venue',d:'5–10 min'}
 ];
+
+function parseInMuenchenEvents(html){
+  // Parse <a href="/events/..."> blocks from the page HTML
+  // Each link contains: <img src="...">, date text "So, DD.MM.YYYY, HH:MM Uhr", title, venue
+  var events=[];
+  // Match event anchor blocks
+  var linkRe=/<a[^>]+href="(https?:\/\/www\.in-muenchen\.de\/events\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+  var m;
+  while((m=linkRe.exec(html))!==null&&events.length<20){
+    var href=m[1];var inner=m[2];
+    // Extract image
+    var imgM=inner.match(/<img[^>]+src="([^"]+)"/i);
+    var imgUrl=imgM?imgM[1]:'';
+    // Strip all tags to get text content
+    var text=inner.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+    // Date pattern: "So, 08.03.2026, 19:00 Uhr" or "Mo, 09.03.2026, 20:00 Uhr"
+    var dateM=text.match(/([A-Za-zÄäÖöÜü]{2}),\s*(\d{2}\.\d{2}\.\d{4}),\s*(\d{2}:\d{2})\s*Uhr/);
+    var dateStr='',timeStr='',dateObj=null;
+    if(dateM){
+      dateStr=dateM[1]+', '+dateM[2];timeStr=dateM[3];
+      var dp=dateM[2].split('.');
+      dateObj=new Date(parseInt(dp[2]),parseInt(dp[1])-1,parseInt(dp[0]));
+      // Remove date portion from text
+      text=text.replace(dateM[0],'').trim();
+    }
+    // The remaining text after removing date: first sentence-ish = title, rest = venue
+    // Pattern: title text comes first, venue name comes last (often truncated with ...)
+    var lines=text.split(/\n|\s{2,}/).map(function(l){return l.trim();}).filter(Boolean);
+    var title=lines[0]||'';
+    var venue=lines[lines.length-1]||'';
+    if(venue===title)venue='';
+    // Filter out nav/menu items: skip if title matches known nav text
+    if(!title||title.length<3||/^(alle|mehr|kino|veranstaltungen|stadtleben|shopping|hotels)/i.test(title))continue;
+    if(!href.includes('/events/'))continue;
+    events.push({title:title,venue:venue.replace(/\.\.\./,'').trim(),time:timeStr,date:dateStr,dateObj:dateObj,img:imgUrl,link:href});
+  }
+  return events;
+}
+
+function renderEventCard(ev,source){
+  // Compute depart time from Marienstern: ~28 min to Marienplatz
+  var departStr='';
+  if(ev.time&&ev.time.match(/^\d{2}:\d{2}$/)){
+    var p=ev.time.split(':'),tot=parseInt(p[0])*60+parseInt(p[1])-38;
+    if(tot<0)tot=0;
+    var dh=Math.floor(tot/60),dm=tot%60;
+    departStr=(dh<10?'0':'')+dh+':'+(dm<10?'0':'')+dm+' Uhr';
+  }
+  var route=[
+    {ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},
+    {ic:'🚇',t:'U5 → Marienplatz',d:'14 min'},
+    {ic:'🚶',t:'Walk to venue',d:'5–10 min'}
+  ];
+  var h='<div class="ev-inner-wrap">';
+  // Left: photo
+  h+='<div class="ev-photo">';
+  h+='<span class="ev-photo-ph">🎪</span>';
+  if(ev.img)h+='<img src="'+esc(ev.img)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">';
+  if(ev.category)h+='<div class="ev-cat-badge">'+esc(ev.category)+'</div>';
+  h+='</div>';
+  // Centre: body
+  h+='<div class="ev-body">';
+  h+='<div class="ev-kicker">★ Munich Today</div>';
+  h+='<div class="ev-title">'+esc(trunc(ev.title,80))+'</div>';
+  if(ev.venue)h+='<div class="ev-venue">📍 '+esc(ev.venue)+'</div>';
+  h+='<div class="ev-desc">'+esc('Live event in Munich today. Find tickets, full description and all details on in-muenchen.de.')+'</div>';
+  h+='<div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:.25rem">';
+  h+='<a class="ev-detail-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">Full details on in-muenchen.de →</a>';
+  h+='</div>';
+  h+='<div class="ev-source-line">'+esc(source||'in-muenchen.de')+'</div>';
+  h+='</div>';
+  // Right: logistics
+  h+='<div class="ev-logistics">';
+  if(ev.time){h+='<div class="ev-time-big">'+esc(ev.time)+'</div><div class="ev-date-line">Uhr · '+esc(ev.date||'heute')+'</div>';}
+  else{h+='<div class="ev-time-big" style="font-size:1.2rem">Heute</div><div class="ev-date-line">'+esc(ev.date||'München')+'</div>';}
+  h+='<div style="height:.3rem"></div>';
+  route.forEach(function(s){
+    h+='<div class="ev-transit-step"><span class="ev-transit-ic">'+s.ic+'</span><span><strong>'+esc(s.t)+'</strong> <span style="opacity:.5;font-size:.62rem"> · '+esc(s.d)+'</span></span></div>';
+  });
+  if(departStr)h+='<div class="ev-depart-box">Abfahrt bis '+esc(departStr)+'</div>';
+  h+='<a class="ev-detail-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">Details →</a>';
+  h+='</div>';
+  h+='</div>';
+  return h;
+}
+
+// Store fetched events for the More tab
+var _eventsToday=[];var _eventsWeek=[];
+
+function fetchInMuenchenPage(url){
+  var enc=encodeURIComponent(url);
+  var p1=tFetch('https://api.allorigins.win/get?url='+enc,9000)
+    .then(function(r){if(!r.ok)throw 0;return r.json();})
+    .then(function(d){if(!d||!d.contents||d.contents.length<500)throw 0;return d.contents;});
+  var p2=tFetch('https://corsproxy.io/?'+enc,9000)
+    .then(function(r){if(!r.ok)throw 0;return r.text();})
+    .then(function(t){if(!t||t.length<500)throw 0;return t;});
+  return anyOf([p1,p2]);
+}
+
 (function(){
-  var now=new Date();var ev=EVENTS[now.getDay()%EVENTS.length];
-  function depart(t,mins){if(t==='All day')return'Any time';var p=t.split(':'),tot=parseInt(p[0])*60+parseInt(p[1])-mins-10;if(tot<0)tot=0;var h=Math.floor(tot/60),m=Math.round((tot%60)/5)*5;return(h<10?'0':'')+h+':'+(m<10?'0':'')+m+' Uhr';}
-  var h='<div class="card-label"><span class="label-pip" style="background:var(--gold)"></span>★ Munich Today</div>';
-  h+='<div class="ev-badge">📅 '+new Date().toLocaleDateString('en-DE',{weekday:'long'})+'</div>';
-  h+='<div class="card-hl" style="font-size:1.1rem">'+esc(ev.title)+'</div>';
-  h+='<p class="card-text">'+esc(ev.desc)+'</p>';
-  if(ev.tip)h+='<div class="ev-tip">💡 '+esc(ev.tip)+'</div>';
-  h+='<div class="ev-route">';
-  ev.route.forEach(function(s){h+='<div class="ev-step"><span class="ev-ic">'+s.ic+'</span><span><strong>'+esc(s.t)+'</strong> <span style="font-family:\'DM Mono\',monospace;font-size:.55rem;color:var(--muted)"> · '+esc(s.d)+'</span></span></div>';});
-  h+='</div><div class="ev-depart">Depart by <strong>'+esc(depart(ev.time,ev.transit))+'</strong> <span style="font-size:.56rem;opacity:.6">(~'+ev.transit+'min)</span></div>';
-  h+='<a class="card-link" style="margin-top:.4rem" href="'+esc(ev.link)+'" target="_blank" rel="noopener">More info →</a>';
-  document.getElementById('ev-inner').innerHTML=h;
+  var ck=dateKey('ev_today6');
+  var cached=lsGet(ck);
+  if(cached){document.getElementById('ev-inner').innerHTML=cached;return;}
+
+  fetchInMuenchenPage('https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen')
+    .then(function(html){
+      var events=parseInMuenchenEvents(html);
+      _eventsToday=events;
+      if(!events.length)throw new Error('no events parsed');
+      // Pick a highlight event: prefer evening concerts/shows (time >= 18:00), else first
+      var pick=events.find(function(e){
+        var t=parseInt((e.time||'').split(':')[0]||0);
+        return t>=18&&t<=22;
+      })||events.find(function(e){
+        var t=parseInt((e.time||'').split(':')[0]||0);
+        return t>=11&&t<=17;
+      })||events[0];
+      var h=renderEventCard(pick,'in-muenchen.de · heute');
+      document.getElementById('ev-inner').innerHTML=h;
+      lsSet(ck,h);
+    })
+    .catch(function(){
+      // Fallback: fetch morgen or veranstaltungen page
+      fetchInMuenchenPage('https://www.in-muenchen.de/konzerte')
+        .then(function(html){
+          var events=parseInMuenchenEvents(html);
+          if(!events.length)throw 0;
+          var pick=events[0];
+          var h=renderEventCard(pick,'in-muenchen.de · Konzerte');
+          document.getElementById('ev-inner').innerHTML=h;
+          lsSet(ck,h);
+        })
+        .catch(function(){
+          // Final fallback: static placeholder pointing to the site
+          var h='<div class="card-label"><span class="label-pip" style="background:var(--gold)"></span>★ Munich Today</div>';
+          h+='<div class="ev-badge">📅 '+new Date().toLocaleDateString('de-DE',{weekday:'long'})+'</div>';
+          h+='<p class="card-text">Check in-muenchen.de for today\'s events — concerts, theatre, art, markets and more.</p>';
+          h+='<a class="card-link" href="https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen" target="_blank" rel="noopener">in-muenchen.de →</a>';
+          document.getElementById('ev-inner').innerHTML=h;
+        });
+    });
 })();
+
+// Also prefetch the week's events for the More tab (7 days)
+var WEEK_PAGES=[
+  {label:'Heute',url:'https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen'},
+  {label:'Morgen',url:'https://www.in-muenchen.de/veranstaltungen/morgen-in-muenchen'},
+  {label:'Konzerte',url:'https://www.in-muenchen.de/konzerte'},
+  {label:'Theater',url:'https://www.in-muenchen.de/theater'},
+  {label:'Ausstellungen',url:'https://www.in-muenchen.de/ausstellungen'},
+  {label:'Klassik',url:'https://www.in-muenchen.de/klassik'},
+  {label:'Nightlife',url:'https://www.in-muenchen.de/nightlife'}
+];
 
 // ═══════════════════════════════════════════════════════════
 // CARD: NEWS (4 papers with images)
@@ -1173,47 +1552,92 @@ loadNewsCard('nyt-body','nyt-thumb','h5_nyt',['https://rss.nytimes.com/services/
 
 // ═══════════════════════════════════════════════════════════
 // CARD: MALAYALAM WIKIPEDIA
+// Strategy: Wikipedia REST API blocks direct CORS fetches.
+// Route all calls through allorigins proxy. 
+// ml.wikipedia.org often has no "tfa" (featured article) — use
+// random/summary as primary with featured as bonus.
 // ═══════════════════════════════════════════════════════════
 (function(){
-  var now=new Date();var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
-  var ck=dateKey('ml_wiki5');var cached=lsGet(ck);
+  var ck=dateKey('ml_wiki6');var cached=lsGet(ck);
   if(cached){document.getElementById('ml-body').innerHTML=cached.h;if(cached.img)loadThumb('ml-thumb',cached.img);return;}
-  tFetch('https://ml.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd)
-    .then(function(r){return r.json();})
+
+  function renderMLPage(p,source){
+    // p = {title, extract, thumbnail:{source}, content_urls:{desktop:{page}}}
+    var title=p.title||p.displaytitle||'';
+    // strip any HTML tags from displaytitle
+    var div=document.createElement('div');div.innerHTML=title;title=div.textContent||div.innerText||title;
+    var extract=trunc(p.extract||p.description||'',360);
+    var imgUrl=(p.thumbnail&&p.thumbnail.source)?p.thumbnail.source:null;
+    var link=(p.content_urls&&p.content_urls.desktop&&p.content_urls.desktop.page)||'https://ml.wikipedia.org';
+    var h='<div class="card-hl ml-script" style="font-size:.95rem;line-height:1.35">'+esc(title)+'</div>';
+    if(extract)h+='<p class="card-text ml-script">'+esc(extract)+'</p>';
+    h+='<div class="card-meta">'+esc(source||'Malayalam Wikipedia')+'</div>';
+    h+='<a class="card-link" href="'+esc(link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
+    document.getElementById('ml-body').innerHTML=h;
+    if(imgUrl)loadThumb('ml-thumb',imgUrl);
+    lsSet(ck,{h:h,img:imgUrl||null});
+  }
+
+  // Helper: fetch a Wikipedia URL through allorigins proxy
+  function wikiProxyFetch(wikiUrl){
+    var enc=encodeURIComponent(wikiUrl);
+    // Try allorigins first, then corsproxy
+    var p1=tFetch('https://api.allorigins.win/get?url='+enc,8000)
+      .then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(d){if(!d||!d.contents||d.contents.length<10)throw 0;return JSON.parse(d.contents);});
+    var p2=tFetch('https://corsproxy.io/?'+enc,8000)
+      .then(function(r){if(!r.ok)throw 0;return r.json();});
+    return anyOf([p1,p2]);
+  }
+
+  var now=new Date();
+  var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
+
+  // Step 1: Try featured feed (has tfa)
+  wikiProxyFetch('https://ml.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd)
     .then(function(data){
-      var tfa=data.tfa||{};
-      var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'';
-      var extract=trunc(tfa.extract||'',360);
-      var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://ml.wikipedia.org';
-      var imgUrl=tfa.thumbnail&&tfa.thumbnail.source?tfa.thumbnail.source:null;
-      var h='<div class="card-hl ml-script" style="font-size:.95rem;line-height:1.35">'+esc(title)+'</div>';
-      if(extract)h+='<p class="card-text ml-script">'+esc(extract)+'</p>';
-      h+='<div class="card-meta">Malayalam Wikipedia · '+y+'/'+mo+'/'+dd+'</div>';
-      h+='<a class="card-link" href="'+esc(link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
-      document.getElementById('ml-body').innerHTML=h;if(imgUrl)loadThumb('ml-thumb',imgUrl);
-      lsSet(ck,{h:h,img:imgUrl||null});
-    }).catch(function(){
-      return tFetch('https://ml.wikipedia.org/api/rest_v1/page/random/summary').then(function(r){return r.json();}).then(function(p){
-        var imgUrl=p.thumbnail&&p.thumbnail.source?p.thumbnail.source:null;
-        var h='<div class="card-hl ml-script" style="font-size:.95rem;line-height:1.35">'+esc(p.title||'')+'</div>';
-        h+='<p class="card-text ml-script">'+esc(trunc(p.extract||'',360))+'</p>';
-        var link=p.content_urls&&p.content_urls.desktop?p.content_urls.desktop.page:'https://ml.wikipedia.org';
-        h+='<div class="card-meta">Malayalam Wikipedia</div>';
-        h+='<a class="card-link" href="'+esc(link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
-        document.getElementById('ml-body').innerHTML=h;if(imgUrl)loadThumb('ml-thumb',imgUrl);
-      });
-    }).catch(function(){document.getElementById('ml-body').innerHTML='<p style="color:var(--muted);font-size:.78rem">Malayalam Wikipedia unavailable</p>';});
+      var tfa=data.tfa;
+      if(!tfa||(!tfa.title&&!tfa.titles))throw new Error('no tfa');
+      renderMLPage(tfa,'Malayalam Wikipedia · ആഴ്ചയിലെ ലേഖനം');
+    })
+    .catch(function(){
+      // Step 2: Try random summary via proxy
+      return wikiProxyFetch('https://ml.wikipedia.org/api/rest_v1/page/random/summary')
+        .then(function(p){
+          if(!p||!p.title)throw new Error('no data');
+          renderMLPage(p,'Malayalam Wikipedia');
+        });
+    })
+    .catch(function(){
+      // Step 3: Try a known stable Malayalam article via summary endpoint
+      var STABLE_ARTICLES=['കേരളം','ഇന്ത്യ','ഭൂമി','സൗരയൂഥം','മഹാത്മാ_ഗാന്ധി'];
+      var doy=Math.floor((Date.now()-new Date(now.getFullYear(),0,1))/864e5);
+      var title=STABLE_ARTICLES[doy%STABLE_ARTICLES.length];
+      return wikiProxyFetch('https://ml.wikipedia.org/api/rest_v1/page/summary/'+title)
+        .then(function(p){
+          if(!p||!p.title)throw new Error('no data');
+          renderMLPage(p,'Malayalam Wikipedia');
+        });
+    })
+    .catch(function(){
+      document.getElementById('ml-body').innerHTML=
+        '<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>🌿 Malayalam Wikipedia</div>'+
+        '<p class="card-text ml-script" style="margin-top:.5rem">ഇന്നത്തെ ലേഖനം ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.</p>'+
+        '<a class="card-link" href="https://ml.wikipedia.org" target="_blank" rel="noopener">ml.wikipedia.org →</a>';
+    });
 })();
 
 // ═══════════════════════════════════════════════════════════
-// CARD: ENGLISH WIKIPEDIA
+// CARD: ENGLISH WIKIPEDIA — route through proxy same as ML
 // ═══════════════════════════════════════════════════════════
 (function(){
   var now=new Date();var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
-  var ck=dateKey('en_wiki5');var cached=lsGet(ck);
+  var ck=dateKey('en_wiki6');var cached=lsGet(ck);
   if(cached){document.getElementById('wiki-body').innerHTML=cached.h;if(cached.img)loadThumb('wiki-thumb',cached.img);return;}
-  tFetch('https://en.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd)
-    .then(function(r){return r.json();})
+  var enc=encodeURIComponent('https://en.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd);
+  var p1=tFetch('https://api.allorigins.win/get?url='+enc,9000).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){return JSON.parse(d.contents);});
+  var p2=tFetch('https://corsproxy.io/?'+enc,9000).then(function(r){if(!r.ok)throw 0;return r.json();});
+  anyOf([p1,p2,tFetch('https://en.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd).then(function(r){return r.json();})])
     .then(function(data){
       var tfa=data.tfa||{};
       var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'Article of the Day';
@@ -1432,36 +1856,87 @@ window.__podPlay=function(show,title,url){doPlay(show,title,url,null);};
 })();
 
 // ═══════════════════════════════════════════════════════════
-// CARD: CARTOON — xkcd (JSON API, no CORS issues)
+// CARD: COMIC STRIP OF THE DAY
+// Primary: XKCD current comic via allorigins proxy (JSON API, no CORS issues)
+// Fallback 1: Garfield via GoComics image URL (date-based, always works)
+// Fallback 2: CommitStrip RSS
 // ═══════════════════════════════════════════════════════════
 (function(){
-  var ck='xkcd5';var cached=lsGet(ck);
+  var ck=dateKey('comic7');
+  var cached=lsGet(ck);
   if(cached){
     document.getElementById('cartoon-img').innerHTML=cached.img;
     document.getElementById('cartoon-body').innerHTML=cached.body;
     return;
   }
-  // xkcd has a JSON endpoint with no CORS issues
-  tFetch('https://xkcd.com/info.0.json')
-    .then(function(r){return r.json();})
-    .then(function(d){
-      // Pick a strip based on day-of-year for variety (not always the latest)
-      var doy=Math.floor((Date.now()-new Date(d.num>1?new Date().getFullYear():2000,0,1))/(864e5));
-      var num=Math.max(1,d.num-(doy%90)); // within last 90 strips, rotated by day
-      return tFetch('https://xkcd.com/'+num+'/info.0.json').then(function(r){return r.json();});
-    })
-    .then(function(strip){
-      var imgH='<img src="'+esc(strip.img)+'" alt="'+esc(strip.alt)+'" style="max-width:100%;max-height:130px;object-fit:contain;padding:.4rem" loading="lazy">';
-      var bodyH='<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>🖊 xkcd · #'+strip.num+'</div>';
-      bodyH+='<div style="font-family:\'DM Mono\',monospace;font-size:.56rem;font-weight:500;color:var(--ink);line-height:1.3">'+esc(strip.title)+'</div>';
-      bodyH+='<p style="font-size:.72rem;color:var(--muted);line-height:1.5;font-style:italic">'+esc(strip.alt)+'</p>';
-      bodyH+='<a class="card-link" href="https://xkcd.com/'+strip.num+'/" target="_blank" rel="noopener">Open on xkcd.com →</a>';
-      document.getElementById('cartoon-img').innerHTML=imgH;
-      document.getElementById('cartoon-body').innerHTML=bodyH;
-      lsSet(ck,{img:imgH,body:bodyH});
+
+  function setComic(imgH,bodyH){
+    document.getElementById('cartoon-img').innerHTML=imgH;
+    document.getElementById('cartoon-body').innerHTML=bodyH;
+    lsSet(ck,{img:imgH,body:bodyH});
+  }
+
+  // ── XKCD via allorigins (avoids CORS) ──
+  var xkcdEnc=encodeURIComponent('https://xkcd.com/info.0.json');
+  anyOf([
+    tFetch('https://api.allorigins.win/get?url='+xkcdEnc,9000)
+      .then(function(r){return r.json();})
+      .then(function(d){return JSON.parse(d.contents);}),
+    tFetch('https://corsproxy.io/?'+xkcdEnc,9000).then(function(r){return r.json();})
+  ]).then(function(d){
+    if(!d||!d.img)throw 0;
+    var imgH='<a href="https://xkcd.com/'+d.num+'/" target="_blank" rel="noopener">'
+      +'<img src="'+esc(d.img)+'" alt="'+esc(d.alt||'')+'" title="'+esc(d.alt||'')+'"'
+      +' style="max-width:100%;max-height:155px;object-fit:contain;width:100%;display:block;padding:.3rem" loading="lazy">'
+      +'</a>';
+    var bodyH='<div class="card-label"><span class="label-pip" style="background:var(--sky)"></span>📐 XKCD #'+d.num+'</div>';
+    bodyH+='<div style="font-size:.78rem;font-weight:500;line-height:1.3;color:var(--ink)">'+esc(d.title||'xkcd')+'</div>';
+    if(d.alt)bodyH+='<p style="font-size:.68rem;color:#5a4a38;line-height:1.5;margin-top:.2rem;font-style:italic">'+esc(trunc(d.alt,180))+'</p>';
+    bodyH+='<a class="card-link" style="margin-top:auto" href="https://xkcd.com/'+d.num+'/" target="_blank" rel="noopener">xkcd.com →</a>';
+    setComic(imgH,bodyH);
+  }).catch(function(){
+    // ── Fallback: Garfield via GoComics date-based URL ──
+    var now=new Date();
+    var yr=now.getFullYear();
+    var mo=('0'+(now.getMonth()+1)).slice(-2);
+    var dy=('0'+now.getDate()).slice(-2);
+    // GoComics serves Garfield strips at a predictable image URL pattern via their CDN
+    // Using the published feed image directly
+    var garfieldFeed='https://www.gocomics.com/garfield/'+yr+'/'+mo+'/dy';
+    var garfieldImg='https://assets.amuniversal.com/';
+    // Actually use GoComics RSS feed which contains the strip image
+    return fetchRSS('https://www.gocomics.com/garfield/feed').then(function(items){
+      var it=items&&items[0];if(!it)throw 0;
+      var imgM=(it.description||'').match(/<img[^>]+src=["']([^"']+)/i);
+      var imgUrl=imgM?imgM[1]:'';
+      if(!imgUrl)throw 0;
+      var imgH='<a href="'+esc(it.link||'https://www.gocomics.com/garfield')+'" target="_blank" rel="noopener">'
+        +'<img src="'+esc(imgUrl)+'" alt="Garfield" style="max-width:100%;max-height:155px;object-fit:contain;width:100%;display:block;padding:.3rem" loading="lazy">'
+        +'</a>';
+      var bodyH='<div class="card-label"><span class="label-pip" style="background:var(--rust)"></span>🐱 Garfield · GoComics</div>';
+      bodyH+='<div style="font-size:.75rem;font-weight:500;color:var(--ink);line-height:1.3">'+esc(trunc(it.title||'Garfield',80))+'</div>';
+      bodyH+='<div style="font-family:\'DM Mono\',monospace;font-size:.48rem;color:var(--muted);margin-top:.2rem">'+esc(fmtD(it.pubDate))+'</div>';
+      bodyH+='<a class="card-link" href="'+esc(it.link||'https://www.gocomics.com/garfield')+'" target="_blank" rel="noopener">GoComics →</a>';
+      setComic(imgH,bodyH);
     }).catch(function(){
-      document.getElementById('cartoon-body').innerHTML='<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>🖊 xkcd</div><p style="color:var(--muted);font-size:.75rem;margin-top:.5rem">xkcd unavailable today</p>';
+      // ── Fallback 2: CommitStrip ──
+      return fetchRSS('https://www.commitstrip.com/en/feed/').then(function(items){
+        var it=items&&items[0];if(!it)throw 0;
+        var imgM=(it.description||'').match(/<img[^>]+src=["']([^"']+)/i);
+        var imgUrl=imgM?imgM[1]:'';
+        var imgH=imgUrl
+          ?'<a href="'+esc(it.link||'#')+'" target="_blank" rel="noopener"><img src="'+esc(imgUrl)+'" alt="" style="max-width:100%;max-height:155px;object-fit:contain;width:100%;display:block;padding:.25rem" loading="lazy"></a>'
+          :'<div style="font-size:2rem;padding:1.5rem;text-align:center;opacity:.2">🖊️</div>';
+        var bodyH='<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>🖊 CommitStrip</div>';
+        bodyH+='<div style="font-size:.73rem;font-weight:500;color:var(--ink);line-height:1.3">'+esc(trunc(it.title||'',80))+'</div>';
+        bodyH+='<div style="font-family:\'DM Mono\',monospace;font-size:.48rem;color:var(--muted);margin-top:.2rem">'+esc(fmtD(it.pubDate))+'</div>';
+        bodyH+='<a class="card-link" href="'+esc(it.link||'https://www.commitstrip.com')+'" target="_blank" rel="noopener">commitstrip.com →</a>';
+        setComic(imgH,bodyH);
+      }).catch(function(){
+        document.getElementById('cartoon-body').innerHTML='<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>📐 Comic Strip</div><p style="color:var(--muted);font-size:.75rem;margin-top:.5rem">Unavailable today</p>';
+      });
     });
+  });
 })();
 
 // ═══════════════════════════════════════════════════════════
@@ -1558,35 +2033,292 @@ function loadHNPage(){
 }
 
 // ═══════════════════════════════════════════════════════════
-// SUBPAGE: MORE
+// SUBPAGE: MORE — Wikipedia (compact) + Leaflet map + event widgets
 // ═══════════════════════════════════════════════════════════
+var _mapInitialised=false;
+var _evMap=null;
+
 function loadMorePage(){
   var now=new Date();var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
-  tFetch('https://ml.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd).then(function(r){return r.json();}).then(function(data){
-    var tfa=data.tfa||{};var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'';var extract=tfa.extract||'';var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://ml.wikipedia.org';
-    var thumb=tfa.thumbnail&&tfa.thumbnail.source?'<img src="'+esc(tfa.thumbnail.source)+'" alt="" style="width:100%;max-height:220px;object-fit:cover;display:block;margin-bottom:.8rem">':'';
-    document.getElementById('more-ml').innerHTML='<div class="art-item">'+thumb+'<div class="art-hl ml-script">'+esc(title)+'</div><p class="art-text ml-script">'+esc(trunc(extract,700))+'</p><a class="card-link" style="margin-top:.4rem" href="'+esc(link)+'" target="_blank">വായിക്കുക →</a></div>';
-  }).catch(function(){document.getElementById('more-ml').innerHTML='<div class="art-item"><p style="color:var(--muted);font-size:.8rem">Malayalam Wikipedia unavailable</p></div>';});
-  tFetch('https://en.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd).then(function(r){return r.json();}).then(function(data){
-    var tfa=data.tfa||{};var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'Article of the Day';var extract=tfa.extract||'';var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://en.wikipedia.org';
-    var thumb=tfa.thumbnail&&tfa.thumbnail.source?'<img src="'+esc(tfa.thumbnail.source)+'" alt="" style="width:100%;max-height:220px;object-fit:cover;display:block;margin-bottom:.8rem">':'';
-    document.getElementById('more-wiki').innerHTML='<div class="art-item">'+thumb+'<div class="art-hl">'+esc(title)+'</div><p class="art-text">'+esc(trunc(extract,700))+'</p><a class="card-link" style="margin-top:.4rem" href="'+esc(link)+'" target="_blank">Read full article →</a></div>';
-  }).catch(function(){document.getElementById('more-wiki').innerHTML='<div class="art-item"><p style="color:var(--muted);font-size:.8rem">Wikipedia unavailable</p></div>';});
-  // All Munich events
-  var h='';EVENTS.forEach(function(ev,i){
-    var isToday=(i===now.getDay()%EVENTS.length);
-    function depart(t,mins){if(t==='All day')return'Any time';var p=t.split(':'),tot=parseInt(p[0])*60+parseInt(p[1])-mins-10;if(tot<0)tot=0;var h2=Math.floor(tot/60),m=Math.round((tot%60)/5)*5;return(h2<10?'0':'')+h2+':'+(m<10?'0':'')+m+' Uhr';}
-    h+='<div class="art-item" style="'+(isToday?'border-left:3px solid var(--gold);background:#fffef8':'')+'">';
-    if(isToday)h+='<span style="background:var(--gold);color:var(--ink);font-family:\'DM Mono\',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;padding:.13rem .4rem;display:inline-block;margin-bottom:.3rem">TODAY</span>';
-    h+='<div class="art-hl">'+esc(ev.title)+'</div>';
-    h+='<p class="art-text">'+esc(ev.desc)+'</p>';
-    h+='<div style="margin:.4rem 0;font-size:.76rem">';
-    ev.route.forEach(function(s){h+='<div style="display:flex;gap:.45rem;margin-bottom:.2rem"><span>'+s.ic+'</span><span>'+esc(s.t)+' <span style="font-family:\'DM Mono\',monospace;font-size:.56rem;color:var(--muted)">'+esc(s.d)+'</span></span></div>';});
-    h+='</div><div style="font-family:\'DM Mono\',monospace;font-size:.6rem;color:var(--gold);margin-bottom:.25rem">Depart by '+esc(depart(ev.time,ev.transit))+'</div>';
-    if(ev.tip)h+='<div style="font-size:.74rem;color:var(--gold)">💡 '+esc(ev.tip)+'</div>';
-    h+='<a class="card-link" style="margin-top:.4rem" href="'+esc(ev.link)+'" target="_blank">More info →</a></div>';
+
+  // ── ML Wikipedia ─────────────────────────────────────────
+  var mlEnc=encodeURIComponent('https://ml.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd);
+  anyOf([
+    tFetch('https://api.allorigins.win/get?url='+mlEnc,9000).then(function(r){return r.json();}).then(function(d){return JSON.parse(d.contents);}),
+    tFetch('https://corsproxy.io/?'+mlEnc,9000).then(function(r){return r.json();})
+  ]).then(function(data){
+    var tfa=data.tfa||{};
+    var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'';
+    var extract=trunc(tfa.extract||'',600);
+    var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://ml.wikipedia.org';
+    var h='<div class="wiki-compact-title ml-script">'+esc(title)+'</div>';
+    if(extract)h+='<p class="ml-script" style="font-size:.82rem;line-height:1.68;color:#4a4035;margin:.4rem 0 .6rem">'+esc(extract)+'</p>';
+    h+='<a class="card-link" href="'+esc(link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
+    document.getElementById('more-ml').innerHTML=h;
+  }).catch(function(){document.getElementById('more-ml').innerHTML='<p style="color:var(--muted);font-size:.8rem">Malayalam Wikipedia unavailable</p>';});
+
+  // ── EN Wikipedia ─────────────────────────────────────────
+  var enEnc=encodeURIComponent('https://en.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd);
+  anyOf([
+    tFetch('https://en.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd).then(function(r){return r.json();}),
+    tFetch('https://api.allorigins.win/get?url='+enEnc,9000).then(function(r){return r.json();}).then(function(d){return JSON.parse(d.contents);}),
+    tFetch('https://corsproxy.io/?'+enEnc,9000).then(function(r){return r.json();})
+  ]).then(function(data){
+    var tfa=data.tfa||{};
+    var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'Article of the Day';
+    var extract=trunc(tfa.extract||'',600);
+    var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://en.wikipedia.org';
+    var imgUrl=tfa.thumbnail&&tfa.thumbnail.source?tfa.thumbnail.source:'';
+    var h='';
+    if(imgUrl)h+='<img src="'+esc(imgUrl)+'" alt="" style="float:right;width:120px;height:80px;object-fit:cover;margin:0 0 .5rem .9rem">';
+    h+='<div class="wiki-compact-title">'+esc(title)+'</div>';
+    if(extract)h+='<p style="font-size:.82rem;line-height:1.68;color:#4a4035;margin:.4rem 0 .6rem">'+esc(extract)+'</p>';
+    h+='<div style="clear:both"></div><a class="card-link" href="'+esc(link)+'" target="_blank" rel="noopener">Read full article →</a>';
+    document.getElementById('more-wiki').innerHTML=h;
+  }).catch(function(){document.getElementById('more-wiki').innerHTML='<p style="color:var(--muted);font-size:.8rem">Wikipedia unavailable</p>';});
+
+  // ── Events: fetch, build map + widgets ───────────────────
+  var evEl=document.getElementById('more-events');
+  var ck=dateKey('evweek7');
+  var cached=lsGet(ck);
+  if(cached){
+    evEl.innerHTML=cached;
+    // Re-init map from stored events
+    if(window._cachedEventsForMap)initMap(window._cachedEventsForMap);
+    return;
+  }
+
+  evEl.innerHTML='<div style="background:var(--ev);border:1px solid var(--ev-border);padding:1.5rem 2rem;color:var(--ev-sub);font-family:\'DM Mono\',monospace;font-size:.58rem;letter-spacing:.18em;text-align:center">⏳ LOADING EVENTS FROM IN-MUENCHEN.DE…</div>';
+
+  var FETCH_PAGES=[
+    {label:'🗓 Heute',   url:'https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen', max:6},
+    {label:'📅 Morgen',  url:'https://www.in-muenchen.de/veranstaltungen/morgen-in-muenchen',max:5},
+    {label:'🎵 Konzerte',url:'https://www.in-muenchen.de/konzerte',                          max:5},
+    {label:'🎭 Theater', url:'https://www.in-muenchen.de/theater',                           max:4},
+    {label:'🖼 Ausstellungen',url:'https://www.in-muenchen.de/ausstellungen',                max:4},
+    {label:'🎻 Klassik', url:'https://www.in-muenchen.de/klassik',                           max:4},
+    {label:'🌙 Nightlife',url:'https://www.in-muenchen.de/nightlife',                        max:4}
+  ];
+
+  // Known Munich venue geocoords for map pins (best effort)
+  var VENUE_COORDS={
+    'Gasteig HP8':[48.1340,11.5912],'Isarphilharmonie':[48.1340,11.5912],
+    'Deutsches Museum':[48.1300,11.5833],'Pinakothek':[48.1508,11.5706],
+    'Olympiazentrum':[48.1750,11.5500],'Olympiapark':[48.1750,11.5500],
+    'BMW Welt':[48.1776,11.5564],'Marienplatz':[48.1374,11.5755],
+    'Maximilianeum':[48.1363,11.5869],'Hofbräuhaus':[48.1376,11.5799],
+    'Nationatheater':[48.1398,11.5797],'Nationaltheater':[48.1398,11.5797],
+    'Staatsoper':[48.1398,11.5797],'Bayerische Staatsoper':[48.1398,11.5797],
+    'Residenz':[48.1410,11.5788],'Residenztheater':[48.1405,11.5791],
+    'Kammerspiele':[48.1394,11.5795],'Münchner Kammerspiele':[48.1394,11.5795],
+    'Ampere':[48.1328,11.5572],'Backstage':[48.1420,11.5228],
+    'Backstage Halle':[48.1420,11.5228],'Backstage Werk':[48.1420,11.5228],
+    'Muffatwerk':[48.1327,11.5874],'Muffathalle':[48.1327,11.5874],
+    'Strom':[48.1350,11.5592],'Freiheitshalle':[48.1140,11.5475],
+    'Olympiahalle':[48.1733,11.5460],'Circus Krone':[48.1444,11.5503],
+    'Fraunhofer Theater':[48.1343,11.5726],'Glockenbachwerkstatt':[48.1277,11.5621],
+    'Import Export':[48.1427,11.5548],'Harry Klein':[48.1401,11.5620],
+    'Asamtheater Freising':[48.3988,11.7483],'Deutsches Theater':[48.1417,11.5628],
+    'Volkstheater':[48.1414,11.5674],'Schauburg':[48.1479,11.5581],
+    'Neue Heimat':[48.1445,11.5512],'Lustspielhaus':[48.1356,11.5816],
+    'Bergson':[48.1364,11.5535],'Bergson Barbastelle':[48.1364,11.5535],
+    'Evangelische Stadtakademie':[48.1405,11.5746]
+  };
+
+  // Haversine distance in km between two [lat,lng] pairs
+  function haversine(a,b){
+    var R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLon=(b[1]-a[1])*Math.PI/180;
+    var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a[0]*Math.PI/180)*Math.cos(b[0]*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+    return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+  }
+  var MARIENSTERN=[48.1097,11.6017];
+
+  function guessCoords(venue){
+    if(!venue)return null;
+    var v=venue.trim();
+    if(VENUE_COORDS[v])return VENUE_COORDS[v];
+    for(var key in VENUE_COORDS){if(v.indexOf(key)!==-1||key.indexOf(v)!==-1)return VENUE_COORDS[key];}
+    return[48.1374+(Math.random()-.5)*.012,11.5755+(Math.random()-.5)*.018];
+  }
+
+  function departureTime(timeStr){
+    if(!timeStr||!timeStr.match(/^\d{2}:\d{2}$/))return null;
+    var p=timeStr.split(':'),tot=parseInt(p[0])*60+parseInt(p[1])-38;
+    if(tot<0)tot=0;
+    var h=Math.floor(tot/60),m=tot%60;
+    return(h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+  }
+
+  function initMap(allEvents){
+    if(!window.L)return;
+    var mapEl=document.getElementById('evmap');
+    if(!mapEl)return;
+    if(_evMap){try{_evMap.remove();}catch(e){}}_evMap=null;
+    mapEl.style.height='440px';
+    _evMap=L.map('evmap',{zoomControl:true,attributionControl:true});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+      attribution:'© <a href="https://osm.org">OpenStreetMap</a>, © <a href="https://carto.com">CARTO</a>',
+      maxZoom:18
+    }).addTo(_evMap);
+
+    // ── Marienstern start pin — large gold star ──
+    var startHtml='<div style="'
+      +'background:#1a3d1a;color:#fff;'
+      +'font-family:\'DM Mono\',monospace;font-size:.52rem;letter-spacing:.08em;'
+      +'padding:.22rem .55rem;white-space:nowrap;'
+      +'box-shadow:0 2px 6px rgba(0,0,0,.25);'
+      +'border-left:3px solid #b5811e'
+      +'">📍 Marienstern</div>';
+    var startIcon=L.divIcon({html:startHtml,iconSize:null,iconAnchor:[10,18],className:''});
+    L.marker(MARIENSTERN,{icon:startIcon,zIndexOffset:1000})
+      .addTo(_evMap)
+      .bindPopup('<div style="font-family:\'DM Mono\',monospace;font-size:.72rem;line-height:1.6">'
+        +'<strong style="font-family:\'Playfair Display\',serif;font-size:.88rem">📍 Marienstern Bus Stop</strong><br>'
+        +'Your starting point<br>'
+        +'<span style="color:#1a3d1a">🚌 Bus 55 → Neuperlach Süd (6 min)</span><br>'
+        +'<span style="color:#1a3d1a">🚇 U5 → Marienplatz (14 min)</span>'
+        +'</div>');
+
+    // ── Attach distance to each event and deduplicate coords slightly ──
+    var eventsSorted=allEvents.slice().map(function(ev){
+      var coords=guessCoords(ev.venue);
+      var dist=coords?haversine(MARIENSTERN,coords):99;
+      return{ev:ev,coords:coords,dist:dist};
+    }).filter(function(e){return e.coords;});
+    // Sort by distance for prominent display
+    eventsSorted.sort(function(a,b){return a.dist-b.dist;});
+
+    var bounds=[MARIENSTERN];
+    // Threshold: events within 8km are "near"
+    var nearThreshold=8;
+
+    eventsSorted.forEach(function(item,i){
+      var ev=item.ev,coords=item.coords,dist=item.dist;
+      bounds.push(coords);
+      var isNear=dist<=nearThreshold;
+      var dep=departureTime(ev.time);
+
+      // Pin size and colour scales by proximity:
+      // nearest 3 → larger green pin; rest → smaller grey-green
+      var rank=i;
+      var pinSize=rank<3?13:rank<8?10:8;
+      var pinBg=isNear?'#1a3d1a':'#5a7a5a';
+      var pinBorder=rank<3?'#b5811e':'#a0c0a0';
+      var pinHtml='<div style="'
+        +'background:'+pinBg+';'
+        +'border:2px solid '+pinBorder+';'
+        +'border-radius:50%;'
+        +'width:'+pinSize+'px;height:'+pinSize+'px;'
+        +'box-shadow:0 1px 4px rgba(0,0,0,'+(isNear?.35:.2)+');'
+        +(rank<3?'outline:2px solid rgba(181,129,30,.4);outline-offset:2px;':'')
+        +'"></div>';
+      var pinIcon=L.divIcon({html:pinHtml,iconSize:[pinSize,pinSize],iconAnchor:[pinSize/2,pinSize/2],className:''});
+
+      var distStr=dist<1?(Math.round(dist*1000)+'m'):(dist.toFixed(1)+'km');
+      var popup='<div style="font-family:\'DM Mono\',monospace;font-size:.7rem;max-width:210px;line-height:1.55">';
+      if(rank<3)popup+='<div style="background:#1a3d1a;color:#fff;font-size:.5rem;letter-spacing:.14em;padding:.1rem .35rem;display:inline-block;margin-bottom:.3rem">★ CLOSEST</div><br>';
+      popup+='<strong style="font-family:\'Playfair Display\',serif;font-size:.88rem;display:block;margin-bottom:.2rem">'+esc(trunc(ev.title,55))+'</strong>';
+      if(ev.time)popup+='<span style="color:#1a3d1a;font-weight:700">⏰ '+esc(ev.time)+' Uhr</span><br>';
+      if(ev.venue)popup+='📍 '+esc(ev.venue)+'<br>';
+      popup+='<span style="color:#7a6a52">🚶 '+esc(distStr)+' from Marienstern</span><br>';
+      if(dep)popup+='<span style="color:#7a6a52">🚌 Depart '+esc(dep)+' Uhr</span><br>';
+      popup+='<a href="'+esc(ev.link)+'" target="_blank" style="color:#1a3d1a;font-weight:700;border-bottom:1px solid #b5811e;text-decoration:none">Details →</a>';
+      popup+='</div>';
+      L.marker(coords,{icon:pinIcon,zIndexOffset:1000-i}).addTo(_evMap).bindPopup(popup);
+    });
+
+    if(bounds.length>1){
+      try{_evMap.fitBounds(bounds,{padding:[36,36],maxZoom:14});}
+      catch(e){_evMap.setView([48.137,11.575],12);}
+    } else {
+      _evMap.setView([48.137,11.575],12);
+    }
+  }
+
+  Promise.allSettled(FETCH_PAGES.map(function(page){
+    return fetchInMuenchenPage(page.url).then(function(rawHtml){
+      return {label:page.label,url:page.url,events:parseInMuenchenEvents(rawHtml).slice(0,page.max)};
+    });
+  })).then(function(results){
+    var allEvents=[];
+    var sections=[];
+
+    var TRANSIT=[
+      {ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},
+      {ic:'🚇',t:'U5 → Marienplatz',d:'14 min'},
+      {ic:'🚶',t:'Walk to venue',d:'5–10 min'}
+    ];
+
+    results.forEach(function(res){
+      if(res.status!=='fulfilled'||!res.value||!res.value.events.length)return;
+      var sec=res.value;
+      // Attach distance to each event
+      sec.events.forEach(function(ev){
+        var coords=guessCoords(ev.venue);
+        ev._dist=coords?haversine(MARIENSTERN,coords):99;
+        allEvents.push(ev);
+      });
+      // Sort events within section: closest first
+      sec.events.sort(function(a,b){return a._dist-b._dist;});
+      sections.push(sec);
+    });
+
+    var html='';
+    var hasAny=sections.length>0;
+
+    sections.forEach(function(sec){
+      html+='<div class="evw-section-head">';
+      html+='<span>'+esc(sec.label)+'</span>';
+      html+='<a href="'+esc(sec.url)+'" target="_blank" rel="noopener">Alle anzeigen →</a>';
+      html+='</div>';
+
+      sec.events.forEach(function(ev,idx){
+        var dep=departureTime(ev.time);
+        var isNear=ev._dist<=8&&idx<3;
+        var distStr=ev._dist<99?(ev._dist<1?Math.round(ev._dist*1000)+'m vom Start':ev._dist.toFixed(1)+'km vom Start'):'';
+        html+='<a class="evw-card'+(isNear?' evw-near':'')+'" href="'+esc(ev.link)+'" target="_blank" rel="noopener">';
+        // Photo
+        html+='<div class="evw-img">';
+        if(ev.img)html+='<img src="'+esc(ev.img)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">';
+        html+='<div class="evw-img-ph">🎪</div>';
+        html+='</div>';
+        // Body
+        html+='<div class="evw-body">';
+        if(ev.date||ev.time){
+          html+='<div class="evw-time">';
+          if(ev.date)html+=esc(ev.date);
+          if(ev.time)html+=(ev.date?' · ':'')+esc(ev.time)+' Uhr';
+          if(isNear)html+=' <span class="evw-close-badge">★ Nächste</span>';
+          html+='</div>';
+        }
+        html+='<div class="evw-title">'+esc(trunc(ev.title,70))+'</div>';
+        if(ev.venue)html+='<div class="evw-venue">📍 '+esc(ev.venue)+'</div>';
+        if(distStr)html+='<div class="evw-dist">🚶 '+esc(distStr)+'</div>';
+        html+='</div>';
+        // Logistics
+        html+='<div class="evw-go">';
+        html+='<div class="evw-go-label">From Marienstern</div>';
+        TRANSIT.forEach(function(s){
+          html+='<div class="evw-step"><span>'+s.ic+'</span><span><strong>'+esc(s.t)+'</strong><span style="opacity:.5;font-size:.58rem"> '+esc(s.d)+'</span></span></div>';
+        });
+        if(dep)html+='<div class="evw-depart">Abfahrt '+esc(dep)+' Uhr</div>';
+        html+='</div>';
+        html+='</a>';
+      });
+    });
+
+    if(!hasAny){
+      html='<div style="background:var(--ev);padding:1.5rem 2rem;text-align:center;border:1px solid var(--ev-border)">'
+        +'<p style="color:var(--ev-sub);font-size:.85rem;margin-bottom:.6rem">Events could not be loaded.</p>'
+        +'<a href="https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen" target="_blank" class="card-link">in-muenchen.de →</a>'
+        +'</div>';
+    }
+
+    evEl.innerHTML=html;
+    lsSet(ck,html);
+    window._cachedEventsForMap=allEvents;
+    initMap(allEvents);
   });
-  document.getElementById('more-events').innerHTML=h;
 }
 
 // ═══════════════════════════════════════════════════════════
