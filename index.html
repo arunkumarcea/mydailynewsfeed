@@ -13,471 +13,594 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Noto+Sans+Malayalam:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* ── TOKENS ───────────────────────────────────────────────── */
+/* ── TOKENS ─────────────────────────────────────────────────── */
 :root{
-  --ink:#1a1208; --paper:#f5f0e8; --cream:#ede8da;
-  --gold:#c8922a; --rust:#b34a2a; --sage:#3d6b45;
-  --slate:#3d4f5c; --plum:#6b3f7a; --sky:#2a6b9c;
-  --muted:#8a7f6e; --border:#d4c9b0; --card:#faf7f2;
-  --green:#2a7a45;
+  --ink:#1a1208;--paper:#f5f0e8;--cream:#ede8da;
+  --gold:#c8922a;--rust:#b34a2a;--sage:#3d6b45;
+  --slate:#3d4f5c;--plum:#6b3f7a;--sky:#2a6b9c;
+  --muted:#8a7f6e;--border:#d4c9b0;--card:#faf7f2;
+  --hn:#ff6600;--film:#1a0a2e;--film2:#4a1080;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding-bottom:4rem}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding-bottom:5rem}
+img{display:block;max-width:100%}
+a{color:inherit}
 
-/* ── NAV ──────────────────────────────────────────────────── */
-nav{
-  position:sticky;top:0;z-index:100;
-  background:var(--ink);
-  display:flex;align-items:stretch;
-  border-bottom:2px solid var(--gold);
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-}
+/* ── NAV ────────────────────────────────────────────────────── */
+nav{position:sticky;top:0;z-index:200;background:var(--ink);display:flex;align-items:stretch;border-bottom:2px solid var(--gold);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
-.nav-brand{
-  font-family:'Playfair Display',serif;
-  font-size:1.1rem;font-weight:900;
-  color:#fff;padding:0 1.2rem;
-  display:flex;align-items:center;
-  border-right:1px solid rgba(255,255,255,.12);
-  white-space:nowrap;flex-shrink:0;
-  text-decoration:none;
-}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900;color:#fff;padding:0 1.2rem;display:flex;align-items:center;border-right:1px solid rgba(255,255,255,.12);white-space:nowrap;flex-shrink:0;text-decoration:none}
 .nav-brand span{color:var(--gold)}
 .nav-links{display:flex;align-items:stretch;flex:1}
-.nav-link{
-  color:rgba(255,255,255,.65);
-  font-family:'DM Mono',monospace;
-  font-size:0.6rem;letter-spacing:.14em;text-transform:uppercase;
-  padding:0 1rem;
-  display:flex;align-items:center;gap:.35rem;
-  text-decoration:none;border:none;background:none;cursor:pointer;
-  white-space:nowrap;flex-shrink:0;
-  transition:color .15s,background .15s;
-  border-right:1px solid rgba(255,255,255,.06);
-}
+.nav-link{color:rgba(255,255,255,.58);font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;padding:0 .9rem;display:flex;align-items:center;gap:.32rem;text-decoration:none;border:none;background:none;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:color .15s,background .15s;border-right:1px solid rgba(255,255,255,.06)}
 .nav-link:hover{color:#fff;background:rgba(255,255,255,.06)}
 .nav-link.active{color:var(--gold);border-bottom:2px solid var(--gold)}
-.nav-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--gold);animation:blink .8s infinite;flex-shrink:0
-}
-.nav-dot.ok{background:#4ade80;animation:none}
-.nav-dot.err{background:var(--rust);animation:none}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* ── PAGES ────────────────────────────────────────────────── */
-.page{display:none;max-width:1100px;margin:0 auto;padding:1.6rem 1.4rem}
+/* ── PAGES ──────────────────────────────────────────────────── */
+.page{display:none;max-width:1160px;margin:0 auto;padding:1.6rem 1.4rem}
 .page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── MASTHEAD (home only) ─────────────────────────────────── */
-.masthead{
-  text-align:center;padding:1.8rem 0 1.4rem;
-  border-bottom:3px double var(--border);margin-bottom:2rem
-}
-.masthead h1{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2.4rem,6vw,4.5rem);
-  font-weight:900;letter-spacing:-.02em;line-height:.95
-}
-.masthead-sub{
-  font-family:'DM Mono',monospace;font-size:.62rem;
-  letter-spacing:.28em;color:var(--muted);text-transform:uppercase;
-  margin-top:.6rem;display:flex;align-items:center;justify-content:center;gap:.8rem
-}
-.masthead-sub::before,.masthead-sub::after{content:'';display:inline-block;width:36px;height:1px;background:var(--border)}
-#dateDisplay{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted)}
+/* ══════════════════════════════════════════════════════════════
+   MASTHEAD — daily quote instead of static headline
+══════════════════════════════════════════════════════════════ */
+.masthead{text-align:center;padding:1.8rem 0 1.4rem;border-bottom:3px double var(--border);margin-bottom:1.8rem;position:relative}
+.masthead-kicker{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem;display:flex;align-items:center;justify-content:center;gap:.8rem}
+.masthead-kicker::before,.masthead-kicker::after{content:'';display:inline-block;width:32px;height:1px;background:var(--border)}
+.masthead-quote{font-family:'Playfair Display',serif;font-size:clamp(1.15rem,3vw,1.9rem);font-style:italic;font-weight:400;line-height:1.4;color:var(--ink);max-width:720px;margin:0 auto;padding:0 1rem}
+.masthead-author{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:.7rem}
+#dateDisplay{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.5rem}
 
-/* ── HOME GRID ────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   HOME GRID — asymmetric newspaper layout
+══════════════════════════════════════════════════════════════ */
 .home-grid{
   display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  grid-template-rows:auto;
+  /* 5 columns — cinema gets double-width in col 4-5 */
+  grid-template-columns:1fr 1fr 1fr 1fr 1fr;
   gap:0;
-  border:1px solid var(--border);
+  border:1px solid var(--border)
 }
 
-/* card base */
-.hc{
-  background:var(--card);
-  border-right:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  padding:1.3rem 1.4rem;
-  display:flex;flex-direction:column;gap:.5rem;
-  opacity:0;animation:fadeUp .35s ease forwards;
-  position:relative;
-}
+/* CARD BASE */
+.hc{background:var(--card);border-right:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;flex-direction:column;opacity:0;animation:fadeUp .4s ease forwards;position:relative;overflow:hidden;transition:background .15s}
 .hc:hover{background:#fff}
-/* grid placements */
-.hc-event {grid-column:1/3;grid-row:1}
-.hc-weather{grid-column:3;grid-row:1;border-right:none}
-.hc-sz     {grid-column:1;grid-row:2}
-.hc-hindu  {grid-column:2;grid-row:2}
-.hc-guardian{grid-column:3;grid-row:2;border-right:none}
-.hc-nyt    {grid-column:1;grid-row:3}
-.hc-ml     {grid-column:2;grid-row:3}
-.hc-wiki   {grid-column:3;grid-row:3;border-right:none}
-.hc-german {grid-column:1/4;grid-row:4;border-right:none;border-bottom:none}
 
 /* stagger */
-.hc:nth-child(1){animation-delay:.04s}.hc:nth-child(2){animation-delay:.08s}
-.hc:nth-child(3){animation-delay:.12s}.hc:nth-child(4){animation-delay:.16s}
-.hc:nth-child(5){animation-delay:.20s}.hc:nth-child(6){animation-delay:.24s}
-.hc:nth-child(7){animation-delay:.28s}.hc:nth-child(8){animation-delay:.32s}
-.hc:nth-child(9){animation-delay:.36s}
+.hc:nth-child(1){animation-delay:.05s}.hc:nth-child(2){animation-delay:.1s}
+.hc:nth-child(3){animation-delay:.15s}.hc:nth-child(4){animation-delay:.2s}
+.hc:nth-child(5){animation-delay:.25s}.hc:nth-child(6){animation-delay:.3s}
+.hc:nth-child(7){animation-delay:.35s}.hc:nth-child(8){animation-delay:.4s}
+.hc:nth-child(9){animation-delay:.45s}.hc:nth-child(10){animation-delay:.5s}
+.hc:nth-child(11){animation-delay:.55s}.hc:nth-child(12){animation-delay:.6s}
+.hc:nth-child(13){animation-delay:.65s}.hc:nth-child(14){animation-delay:.7s}
+.hc:nth-child(15){animation-delay:.75s}.hc:nth-child(16){animation-delay:.8s}
+.hc:nth-child(17){animation-delay:.85s}.hc:nth-child(18){animation-delay:.9s}
+.hc:nth-child(19){animation-delay:.95s}.hc:nth-child(20){animation-delay:1s}
+.hc:nth-child(21){animation-delay:1.05s}.hc:nth-child(22){animation-delay:1.1s}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+/* GRID PLACEMENT — 5 col newspaper layout */
+/* Row 1: Today (2col), Weather, Curiosity, Birthday/On This Day */
+.hc-event    {grid-column:1/3;grid-row:1}
+.hc-weather  {grid-column:3;grid-row:1}
+.hc-curiosity{grid-column:4;grid-row:1}
+.hc-otd      {grid-column:5;grid-row:1;border-right:none}
 
-/* card chrome */
-.hc-tag{
-  font-family:'DM Mono',monospace;font-size:.54rem;
-  letter-spacing:.2em;text-transform:uppercase;
-  display:flex;align-items:center;gap:.4rem;margin-bottom:.1rem
+/* Row 2: CINEMA — full 5 cols, prominent */
+.hc-cinema   {grid-column:1/6;grid-row:2;border-right:none}
+
+/* Row 3: SZ, Hindu, Guardian, NYT, Astronomy */
+.hc-sz       {grid-column:1;grid-row:3}
+.hc-hindu    {grid-column:2;grid-row:3}
+.hc-guardian {grid-column:3;grid-row:3}
+.hc-nyt      {grid-column:4;grid-row:3}
+.hc-astro    {grid-column:5;grid-row:3;border-right:none}
+
+/* Row 4: ML Wikipedia, EN Wikipedia, HN, Podcast, Sport */
+.hc-ml       {grid-column:1;grid-row:4}
+.hc-wiki     {grid-column:2;grid-row:4}
+.hc-hn       {grid-column:3;grid-row:4}
+.hc-podcast  {grid-column:4;grid-row:4}
+.hc-sport    {grid-column:5;grid-row:4;border-right:none}
+
+/* Row 5: ML News, Book (2col), Semi/EE News, German (2col) */
+.hc-mlnews   {grid-column:1;grid-row:5}
+.hc-book     {grid-column:2/4;grid-row:5}
+.hc-semi     {grid-column:4;grid-row:5}
+.hc-cartoon  {grid-column:5;grid-row:5;border-right:none}
+
+/* Row 6: German word — full width */
+.hc-german   {grid-column:1/6;grid-row:6;border-right:none;border-bottom:none}
+
+/* CARD INTERIOR PADDING WRAPPER */
+.hc-pad{padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.45rem;flex:1}
+
+/* ── CARD THUMBNAIL ─────────────────────────────────────────── */
+.card-thumb{width:100%;height:148px;overflow:hidden;flex-shrink:0;background:var(--cream);position:relative;display:flex;align-items:center;justify-content:center}
+.card-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.card-thumb .ph{font-size:2.8rem;opacity:.22;user-select:none;position:relative;z-index:1}
+.card-strip{height:3px;flex-shrink:0}
+.src-badge{position:absolute;bottom:0;left:0;display:inline-flex;align-items:center;gap:.32rem;font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.16em;text-transform:uppercase;padding:.2rem .55rem;color:#fff;background:rgba(26,18,8,.75);backdrop-filter:blur(4px);z-index:2}
+.src-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;display:inline-block}
+.card-body{padding:1rem 1.2rem;flex:1;display:flex;flex-direction:column;gap:.38rem}
+
+/* CARD TEXT */
+.card-label{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;display:flex;align-items:center;gap:.38rem;color:var(--muted)}
+.label-pip{width:14px;height:2px;display:inline-block;flex-shrink:0}
+.card-hl{font-family:'Playfair Display',serif;font-weight:700;line-height:1.22;color:var(--ink);font-size:.98rem}
+.card-text{font-size:.8rem;line-height:1.62;color:#4a4035;flex:1}
+.card-meta{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.06em;margin-top:auto;padding-top:.25rem}
+.card-link{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1px;width:fit-content;transition:color .15s,border-color .15s}
+.card-link:hover{color:var(--gold);border-color:var(--gold)}
+
+/* ── ACCENT COLOURS ─────────────────────────────────────────── */
+.hc-event   .card-label{color:var(--gold)}.hc-event   .label-pip{background:var(--gold)}
+.hc-weather .card-label{color:var(--sky)} .hc-weather .label-pip{background:var(--sky)}
+.hc-hn      .card-label{color:var(--hn)}  .hc-hn      .label-pip{background:var(--hn)}
+.hc-podcast .card-label{color:var(--rust)}.hc-podcast .label-pip{background:var(--rust)}
+.hc-german  .card-label{color:var(--plum)}.hc-german  .label-pip{background:var(--plum)}
+.hc-astro   .card-label{color:var(--slate)}.hc-astro   .label-pip{background:var(--slate)}
+.hc-sport   .card-label{color:var(--sage)}.hc-sport   .label-pip{background:var(--sage)}
+.hc-book    .card-label{color:var(--rust)}.hc-book    .label-pip{background:var(--rust)}
+.hc-semi    .card-label{color:var(--sky)} .hc-semi    .label-pip{background:var(--sky)}
+.hc-curiosity .card-label{color:var(--plum)}.hc-curiosity .label-pip{background:var(--plum)}
+.hc-otd     .card-label{color:var(--gold)}.hc-otd     .label-pip{background:var(--gold)}
+.hc-cartoon .card-label{color:var(--sage)}.hc-cartoon .label-pip{background:var(--sage)}
+
+/* ══════════════════════════════════════════════════════════════
+   🎬 CINEMA CARD — full-width, luxurious
+══════════════════════════════════════════════════════════════ */
+.hc-cinema{
+  background:var(--film)!important;
+  color:var(--paper);
+  cursor:default;
+  min-height:200px
 }
-.hc-accent{width:18px;height:2px;display:inline-block;flex-shrink:0}
-.hc-hl{
-  font-family:'Playfair Display',serif;
-  font-weight:700;line-height:1.22;color:var(--ink);
-  font-size:1.05rem
+.hc-cinema:hover{background:#221238!important}
+.cinema-inner{
+  display:grid;
+  grid-template-columns:280px 1fr auto;
+  gap:0;
+  height:100%;
+  min-height:200px
 }
-.hc-event .hc-hl{font-size:1.3rem}
-.hc-text{font-size:.82rem;line-height:1.6;color:#4a4035;flex:1}
-.hc-meta{font-family:'DM Mono',monospace;font-size:.54rem;color:var(--muted);letter-spacing:.06em;margin-top:auto}
-.hc-link{
-  font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--muted);text-decoration:none;
-  border-bottom:1px solid var(--border);padding-bottom:1px;
-  width:fit-content;margin-top:.4rem;transition:color .15s,border-color .15s
+.cinema-poster{
+  position:relative;background:rgba(255,255,255,.06);overflow:hidden;
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border-right:1px solid rgba(255,255,255,.1)
 }
-.hc-link:hover{color:var(--gold);border-color:var(--gold)}
-
-/* colour accents per card */
-.hc-event  .hc-tag{color:var(--gold)}  .hc-event  .hc-accent{background:var(--gold)}
-.hc-weather.hc-tag{color:var(--sky)}   .hc-weather .hc-accent{background:var(--sky)}
-.hc-sz     .hc-tag{color:#c00}         .hc-sz      .hc-accent{background:#c00}
-.hc-hindu  .hc-tag{color:var(--rust)}  .hc-hindu   .hc-accent{background:var(--rust)}
-.hc-guardian.hc-tag{color:#005689}     .hc-guardian.hc-accent{background:#005689}
-.hc-nyt    .hc-tag{color:#333}         .hc-nyt     .hc-accent{background:#333}
-.hc-ml     .hc-tag{color:var(--sage)}  .hc-ml      .hc-accent{background:var(--sage)}
-.hc-wiki   .hc-tag{color:var(--slate)} .hc-wiki    .hc-accent{background:var(--slate)}
-.hc-german .hc-tag{color:var(--plum)}  .hc-german  .hc-accent{background:var(--plum)}
-
-/* weather mini grid */
-.w-row{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin:.3rem 0}
-.w-stat{background:rgba(42,107,156,.07);padding:.4rem .5rem;text-align:center}
-.w-val{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--sky);line-height:1}
-.w-lbl{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.15rem}
-.w-forecast{display:flex;justify-content:space-between;font-size:.76rem;padding:.25rem 0;border-bottom:1px solid var(--border)}
-.w-forecast:last-child{border-bottom:none}
-
-/* event card extras */
-.ev-badge{
-  display:inline-flex;align-items:center;gap:.4rem;
+.cinema-poster img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.9}
+.cinema-poster-ph{font-size:4rem;opacity:.18;position:relative;z-index:1}
+.cinema-poster::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,transparent 70%,var(--film));pointer-events:none}
+.cinema-body{padding:1.6rem 2rem;display:flex;flex-direction:column;gap:.6rem;justify-content:center}
+.cinema-tag{
+  font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--gold);display:flex;align-items:center;gap:.5rem
+}
+.cinema-tag::before{content:'';display:inline-block;width:20px;height:1px;background:var(--gold)}
+.cinema-title{
+  font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.5vw,2.2rem);
+  font-weight:900;line-height:1.08;color:#fff
+}
+.cinema-director{font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(245,240,232,.55);letter-spacing:.1em}
+.cinema-blurb{font-size:.83rem;line-height:1.65;color:rgba(245,240,232,.8);max-width:540px}
+.cinema-endorsement{font-family:'DM Mono',monospace;font-size:.56rem;color:var(--gold);font-style:italic;max-width:540px}
+.cinema-route{
+  padding:1.4rem 1.6rem;
+  border-left:1px solid rgba(255,255,255,.1);
+  display:flex;flex-direction:column;gap:.55rem;
+  justify-content:center;
+  min-width:230px
+}
+.cinema-time-big{
+  font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;
+  color:var(--gold);line-height:1
+}
+.cinema-where{font-family:'DM Mono',monospace;font-size:.56rem;color:rgba(245,240,232,.65);letter-spacing:.1em;margin-top:.1rem}
+.cinema-step{display:flex;gap:.5rem;font-size:.72rem;color:rgba(245,240,232,.7);align-items:flex-start;line-height:1.4}
+.cinema-step-ic{flex-shrink:0;margin-top:.05rem}
+.cinema-depart{
   background:var(--gold);color:var(--ink);
-  font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;
-  padding:.22rem .6rem;width:fit-content;margin-bottom:.3rem
+  font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;
+  padding:.32rem .8rem;width:fit-content;font-weight:500;margin-top:.2rem
 }
-.ev-route{margin:.5rem 0;display:flex;flex-direction:column;gap:.35rem}
-.ev-step{display:flex;gap:.6rem;font-size:.78rem;line-height:1.4;align-items:flex-start}
-.ev-step-ic{font-size:.95rem;flex-shrink:0;margin-top:.05rem}
-.ev-depart{
-  background:rgba(200,146,42,.1);border:1px solid rgba(200,146,42,.35);
-  padding:.45rem .7rem;font-family:'DM Mono',monospace;font-size:.65rem;
-  color:var(--gold);letter-spacing:.08em;margin-top:.3rem
+.cinema-link{
+  font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(245,240,232,.4);text-decoration:none;border-bottom:1px solid rgba(245,240,232,.2);
+  padding-bottom:1px;width:fit-content;margin-top:.15rem;transition:color .15s
 }
+.cinema-link:hover{color:var(--gold);border-color:var(--gold)}
+.cinema-skeleton{padding:1.6rem 2rem;color:rgba(245,240,232,.35);display:flex;align-items:center;gap:1rem;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em}
 
-/* german card */
-.de-word{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:900;font-style:italic;line-height:1}
-.de-phon{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--plum);margin:.3rem 0}
-.de-badge{display:inline-block;background:#f0e8f5;color:var(--plum);padding:.12rem .45rem;font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase}
-.de-meaning{font-size:.88rem;line-height:1.6;color:#4a4035;margin:.5rem 0}
-.de-example{font-size:.8rem;color:var(--plum);font-style:italic}
-.de-trans{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.25rem}
+/* ── WEATHER ────────────────────────────────────────────────── */
+.wx-big{font-size:2.6rem;line-height:1;margin:.1rem 0}
+.wx-temp{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:var(--sky);line-height:1}
+.wx-desc{font-size:.78rem;color:var(--muted);margin:.12rem 0 .5rem}
+.wx-grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;margin:.3rem 0}
+.wx-stat{background:rgba(42,107,156,.07);padding:.35rem .45rem;text-align:center}
+.wx-val{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--sky);line-height:1}
+.wx-lbl{font-family:'DM Mono',monospace;font-size:.44rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.12rem}
+.wx-row{display:flex;justify-content:space-between;align-items:center;font-size:.73rem;padding:.2rem 0;border-bottom:1px solid var(--border)}
+.wx-row:last-child{border-bottom:none}
+.wx-day{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--muted);width:48px}
+
+/* ── EVENT CARD ─────────────────────────────────────────────── */
+.ev-badge{display:inline-flex;align-items:center;gap:.38rem;background:var(--gold);color:var(--ink);font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;padding:.18rem .55rem;width:fit-content;margin-bottom:.25rem}
+.ev-route{margin:.4rem 0;display:flex;flex-direction:column;gap:.3rem}
+.ev-step{display:flex;gap:.5rem;font-size:.75rem;line-height:1.4;align-items:flex-start}
+.ev-ic{font-size:.88rem;flex-shrink:0;margin-top:.08rem}
+.ev-depart{background:rgba(200,146,42,.09);border:1px solid rgba(200,146,42,.28);padding:.38rem .65rem;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--gold);letter-spacing:.08em;margin-top:.25rem}
+.ev-tip{font-size:.74rem;color:var(--gold);margin-top:.2rem}
+
+/* ── HN CARD ────────────────────────────────────────────────── */
+.hn-score{display:inline-flex;align-items:center;gap:.28rem;background:var(--hn);color:#fff;padding:.15rem .5rem;font-family:'DM Mono',monospace;font-size:.6rem;font-weight:700;width:fit-content;margin-bottom:.4rem}
+.hn-domain{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--muted)}
+.hn-links{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:.3rem}
+
+/* ── PODCAST ────────────────────────────────────────────────── */
+.pod-show{font-family:'DM Mono',monospace;font-size:.55rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.15rem}
+.pod-wave{display:flex;align-items:flex-end;gap:2px;height:22px;margin:.3rem 0}
+.pod-bar{width:3px;border-radius:2px;background:var(--rust);opacity:.75;animation:podwave var(--d,.6s) ease-in-out infinite alternate;transform-origin:bottom}
+@keyframes podwave{from{transform:scaleY(.22)}to{transform:scaleY(1)}}
+.pod-new{display:inline-flex;align-items:center;gap:.28rem;background:var(--rust);color:#fff;font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;padding:.13rem .42rem;width:fit-content;margin-bottom:.25rem}
+.pod-play{display:inline-flex;align-items:center;gap:.42rem;background:var(--rust);color:#fff;border:none;cursor:pointer;padding:.32rem .85rem;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;transition:background .15s;width:fit-content;margin-top:.3rem}
+.pod-play:hover{background:#8b2a10}
+
+/* ── SPORT CARD ─────────────────────────────────────────────── */
+.sport-src{font-family:'DM Mono',monospace;font-size:.48rem;color:rgba(255,255,255,.6);letter-spacing:.14em;text-transform:uppercase}
+.sport-score{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--gold);line-height:1;margin:.3rem 0}
+
+/* ── BOOK CARD ──────────────────────────────────────────────── */
+.book-tag{display:inline-flex;align-items:center;gap:.3rem;background:var(--rust);color:#fff;font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.14em;text-transform:uppercase;padding:.14rem .42rem;width:fit-content;margin-bottom:.25rem}
+.book-author{font-family:'DM Mono',monospace;font-size:.54rem;color:var(--muted);letter-spacing:.08em;margin-bottom:.15rem}
+
+/* ── CURIOSITY / OTD ────────────────────────────────────────── */
+.curiosity-num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:900;color:var(--plum);opacity:.18;line-height:1;float:left;margin-right:.4rem;margin-top:.1rem}
+.otd-year{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:.2rem}
+
+/* ── ASTRO CARD ─────────────────────────────────────────────── */
+.astro-icon{font-size:1.8rem;line-height:1;margin-bottom:.2rem}
+
+/* ── SEMI CARD ──────────────────────────────────────────────── */
+
+/* ── CARTOON CARD ───────────────────────────────────────────── */
+.cartoon-img-wrap{width:100%;height:140px;overflow:hidden;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cartoon-img-wrap img{width:100%;height:100%;object-fit:contain;padding:.3rem}
+.cartoon-img-wrap .ph{font-size:2.5rem;opacity:.25}
+
+/* ── MALAYALAM NEWS ─────────────────────────────────────────── */
+.ml-script{font-family:'Noto Sans Malayalam',sans-serif}
+
+/* ── GERMAN CARD ────────────────────────────────────────────── */
 .de-inner{display:flex;gap:2rem;align-items:flex-start}
+.de-word{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,2.8vw,2.5rem);font-weight:900;font-style:italic;line-height:1}
+.de-phon{font-family:'DM Mono',monospace;font-size:.64rem;color:var(--plum);margin:.28rem 0}
+.de-pos{display:inline-block;background:#f0e8f5;color:var(--plum);padding:.1rem .42rem;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase}
+.de-def{font-size:.84rem;line-height:1.65;color:#4a4035;margin:.5rem 0}
+.de-ex{font-size:.78rem;color:var(--plum);font-style:italic}
+.de-tr{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:.2rem}
 
-/* skeleton */
-.sk{
-  display:block;border-radius:2px;
-  background:linear-gradient(90deg,var(--cream) 25%,#e4dfd4 50%,var(--cream) 75%);
-  background-size:200% 100%;animation:shimmer 1.4s infinite
-}
+/* ── SKELETON ───────────────────────────────────────────────── */
+.sk{display:block;border-radius:2px;background:linear-gradient(90deg,var(--cream) 25%,#e4dfd4 50%,var(--cream) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+.sk-dk{background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:2px;display:block}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.sk-h{height:1.3rem;width:80%;margin-bottom:.4rem}
-.sk-t{height:.75rem;width:100%;margin-bottom:.3rem}
-.sk-s{height:.75rem;width:55%}
-.sk-big{height:2rem;width:60%;margin-bottom:.6rem}
+.sk-img{height:148px;width:100%}
+.sk-h{height:1.1rem;width:80%;margin-bottom:.35rem}
+.sk-t{height:.68rem;width:100%;margin-bottom:.25rem}
+.sk-t2{height:.68rem;width:85%;margin-bottom:.25rem}
+.sk-s{height:.68rem;width:50%}
+.sk-big{height:1.8rem;width:55%;margin-bottom:.5rem}
 
-/* ── SUBPAGE SHARED ───────────────────────────────────────── */
-.page-header{
-  padding:1.5rem 0 1.2rem;margin-bottom:1.5rem;
-  border-bottom:2px solid var(--border)
-}
-.page-header h2{
-  font-family:'Playfair Display',serif;font-size:2rem;font-weight:900
-}
-.page-header p{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:.3rem}
-
-/* article list */
-.art-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--border)}
-.art-item{
-  background:var(--card);border-bottom:1px solid var(--border);
-  padding:1.1rem 1.4rem;display:flex;flex-direction:column;gap:.35rem;
-  text-decoration:none;color:var(--ink);transition:background .15s;cursor:pointer
-}
+/* ── SUBPAGES ───────────────────────────────────────────────── */
+.page-header{padding:1.4rem 0 1.1rem;margin-bottom:1.4rem;border-bottom:2px solid var(--border)}
+.page-header h2{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900}
+.page-header p{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:.3rem}
+.art-list{display:flex;flex-direction:column;border:1px solid var(--border)}
+.art-item{background:var(--card);border-bottom:1px solid var(--border);padding:1rem 1.3rem;display:flex;flex-direction:column;gap:.3rem;text-decoration:none;color:var(--ink);transition:background .15s}
 .art-item:last-child{border-bottom:none}
 .art-item:hover{background:#fff}
-.art-flag{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;display:flex;align-items:center;gap:.35rem}
-.art-hl{font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;line-height:1.25;color:var(--ink)}
-.art-text{font-size:.82rem;line-height:1.6;color:#4a4035}
-.art-meta{font-family:'DM Mono',monospace;font-size:.54rem;color:var(--muted);letter-spacing:.06em}
-
-/* newspapers subpage grid */
-.np-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);margin-bottom:1.5rem}
-.np-col{border-right:1px solid var(--border);padding:0}
-.np-col:last-child{border-right:none}
-.np-head{
-  padding:.7rem 1.2rem;background:var(--ink);color:var(--paper);
-  font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
-  border-bottom:2px solid var(--gold);display:flex;align-items:center;gap:.5rem
-}
-.np-head .np-color{width:8px;height:8px;border-radius:50%}
-
-/* podcast shelf */
-.shelf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));border:1px solid var(--border)}
-.shelf-card{
-  background:var(--card);border-right:1px solid var(--border);border-bottom:1px solid var(--border);
-  padding:.9rem 1rem;display:flex;flex-direction:column;gap:.3rem;
-  position:relative;min-height:100px
-}
-.shelf-card:hover{background:#fff}
-.shelf-icon{font-size:1.3rem;line-height:1}
-.shelf-title{font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:500;line-height:1.3}
-.shelf-ep{font-size:.7rem;color:#4a4035;line-height:1.3}
-.shelf-meta{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--muted);text-transform:uppercase;margin-top:auto}
-.shelf-date{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--muted)}
-.play-btn{
-  position:absolute;bottom:.65rem;right:.65rem;
-  width:26px;height:26px;border-radius:50%;
-  background:var(--ink);color:var(--paper);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;font-size:.6rem;
-  transition:background .15s,transform .1s;z-index:2
-}
-.play-btn:hover{background:var(--gold);color:var(--ink);transform:scale(1.1)}
-.play-btn.playing{background:var(--rust)}
-
-/* category tabs */
-.cat-tabs{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--border);margin-bottom:0;border-bottom:none}
-.cat-tab{
-  padding:.36rem .85rem;font-family:'DM Mono',monospace;font-size:.56rem;
-  letter-spacing:.12em;text-transform:uppercase;background:var(--card);color:var(--muted);
-  cursor:pointer;border:none;border-right:1px solid var(--border);
-  transition:background .15s,color .15s
-}
+.art-hl{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;line-height:1.25;color:var(--ink)}
+.art-text{font-size:.8rem;line-height:1.58;color:#4a4035}
+.art-meta{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.06em}
+.art-score{display:inline-flex;align-items:center;gap:.22rem;background:var(--hn);color:#fff;padding:.13rem .45rem;font-family:'DM Mono',monospace;font-size:.6rem;font-weight:600;margin-bottom:.45rem;width:fit-content}
+.np-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);margin-bottom:1.4rem}
+.np-col{border-right:1px solid var(--border)}.np-col:last-child{border-right:none}
+.np-head{padding:.6rem 1.1rem;background:var(--ink);color:var(--paper);font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;border-bottom:2px solid var(--gold);display:flex;align-items:center;gap:.4rem}
+.np-dot{width:7px;height:7px;border-radius:50%}
+.sdiv{display:flex;align-items:center;gap:.8rem;margin:1.4rem 0 .9rem}
+.sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--border)}
+.slabel{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.cat-tabs{display:flex;flex-wrap:wrap;border:1px solid var(--border);border-bottom:none}
+.cat-tab{padding:.33rem .8rem;font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;background:var(--card);color:var(--muted);cursor:pointer;border:none;border-right:1px solid var(--border);transition:background .15s,color .15s}
 .cat-tab:hover:not(.active){background:var(--cream);color:var(--ink)}
 .cat-tab.active{background:var(--ink);color:var(--paper)}
+.shelf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));border:1px solid var(--border)}
+.shelf-card{background:var(--card);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:.85rem .95rem;display:flex;flex-direction:column;gap:.25rem;position:relative;min-height:96px}
+.shelf-card:hover{background:#fff}
+.shelf-icon{font-size:1.2rem;line-height:1}
+.shelf-title{font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:500;line-height:1.3}
+.shelf-ep{font-size:.66rem;color:#4a4035;line-height:1.3}
+.shelf-meta{font-family:'DM Mono',monospace;font-size:.48rem;color:var(--muted);text-transform:uppercase;margin-top:auto}
+.shelf-date{font-family:'DM Mono',monospace;font-size:.48rem;color:var(--muted)}
+.play-btn{position:absolute;bottom:.55rem;right:.55rem;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--paper);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.58rem;transition:background .15s,transform .1s;z-index:2}
+.play-btn:hover{background:var(--gold);color:var(--ink);transform:scale(1.08)}
+.play-btn.playing{background:var(--rust)}
 
-/* section divider */
-.sdiv{
-  display:flex;align-items:center;gap:.8rem;margin:1.5rem 0 1rem
-}
-.sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--border)}
-.slabel{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
-
-/* hacker news */
-.hn-score{display:inline-flex;align-items:center;gap:.25rem;background:var(--gold);color:var(--ink);padding:.15rem .5rem;font-family:'DM Mono',monospace;font-size:.65rem;font-weight:500;margin-bottom:.6rem}
-
-/* audio bar */
-.audio-bar{
-  position:fixed;bottom:0;left:0;right:0;
-  background:var(--ink);color:var(--paper);
-  padding:.65rem 1.2rem;display:flex;align-items:center;gap:.8rem;
-  z-index:999;border-top:2px solid var(--gold);
-  transform:translateY(100%);transition:transform .25s ease
-}
+/* ── AUDIO BAR ──────────────────────────────────────────────── */
+.audio-bar{position:fixed;bottom:0;left:0;right:0;z-index:999;background:var(--ink);color:var(--paper);padding:.58rem 1.2rem;display:flex;align-items:center;gap:.75rem;border-top:2px solid var(--gold);transform:translateY(100%);transition:transform .25s ease}
 .audio-bar.on{transform:translateY(0)}
-.audio-title{font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.audio-ep{font-family:'DM Mono',monospace;font-size:.56rem;color:var(--gold);letter-spacing:.06em}
-.audio-prog{flex:1;max-width:220px;height:3px;background:rgba(255,255,255,.2);cursor:pointer;position:relative;border-radius:2px}
-.audio-fill{height:100%;background:var(--gold);border-radius:2px;pointer-events:none}
-.audio-time{font-family:'DM Mono',monospace;font-size:.6rem;color:rgba(245,240,232,.55);min-width:75px;text-align:right}
-.abtn{background:none;border:none;color:var(--paper);cursor:pointer;font-size:1.1rem;padding:.15rem .3rem;transition:color .15s}
+.audio-info{flex:1;min-width:0}
+.audio-show{font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.audio-ep-title{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--gold);letter-spacing:.05em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-top:.08rem}
+.abtn{background:none;border:none;color:var(--paper);cursor:pointer;font-size:1.05rem;padding:.12rem .28rem;transition:color .15s;flex-shrink:0}
 .abtn:hover{color:var(--gold)}
-.aclose{background:none;border:none;color:rgba(245,240,232,.4);cursor:pointer;font-size:.9rem;padding:.15rem}
+.audio-prog{flex:1;max-width:200px;height:3px;background:rgba(255,255,255,.2);cursor:pointer;border-radius:2px;flex-shrink:0}
+.audio-fill{height:100%;background:var(--gold);border-radius:2px;pointer-events:none}
+.audio-time{font-family:'DM Mono',monospace;font-size:.56rem;color:rgba(245,240,232,.48);min-width:68px;text-align:right;flex-shrink:0}
+.aclose{background:none;border:none;color:rgba(245,240,232,.32);cursor:pointer;font-size:.88rem;flex-shrink:0}
 .aclose:hover{color:var(--paper)}
-
-/* offline bar */
-.offline{display:none;position:fixed;top:0;left:0;right:0;background:var(--rust);color:#fff;text-align:center;padding:.4rem;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;z-index:9999}
+.offline{display:none;position:fixed;top:0;left:0;right:0;background:var(--rust);color:#fff;text-align:center;padding:.36rem;font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.1em;z-index:9999}
 .offline.on{display:block}
 
-/* responsive */
-@media(max-width:700px){
-  .home-grid{grid-template-columns:1fr 1fr}
-  .hc-event{grid-column:1/3}
-  .hc-weather{grid-column:1/3;border-right:none}
-  .hc-sz,.hc-hindu,.hc-guardian,.hc-nyt,.hc-ml,.hc-wiki{grid-column:span 1}
-  .hc-german{grid-column:1/3}
-  .de-inner{flex-direction:column;gap:1rem}
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+@media(max-width:980px){
+  .home-grid{grid-template-columns:repeat(3,1fr)}
+  .hc-event{grid-column:1/3;grid-row:1}.hc-weather{grid-column:3;grid-row:1;border-right:none}
+  .hc-curiosity{grid-column:1;grid-row:2}.hc-otd{grid-column:2;grid-row:2}.hc-cinema{grid-column:1/4;grid-row:3;border-right:none}
+  .hc-sz{grid-column:1;grid-row:4}.hc-hindu{grid-column:2;grid-row:4}.hc-guardian{grid-column:3;grid-row:4;border-right:none}
+  .hc-nyt{grid-column:1;grid-row:5}.hc-astro{grid-column:2;grid-row:5}.hc-ml{grid-column:3;grid-row:5;border-right:none}
+  .hc-wiki{grid-column:1;grid-row:6}.hc-hn{grid-column:2;grid-row:6}.hc-podcast{grid-column:3;grid-row:6;border-right:none}
+  .hc-sport{grid-column:1;grid-row:7}.hc-mlnews{grid-column:2;grid-row:7}.hc-book{grid-column:3;grid-row:7;border-right:none}
+  .hc-semi{grid-column:1;grid-row:8}.hc-cartoon{grid-column:2;grid-row:8}
+  .hc-german{grid-column:1/4;grid-row:9;border-right:none}
+  .cinema-inner{grid-template-columns:200px 1fr}
+  .cinema-route{display:none}
   .np-grid{grid-template-columns:1fr}
-  .np-col{border-right:none;border-bottom:1px solid var(--border)}
+  .np-col{border-right:none;border-bottom:1px solid var(--border)}.np-col:last-child{border-bottom:none}
+  .de-inner{flex-direction:column;gap:1rem}
 }
-@media(max-width:480px){
-  .home-grid{grid-template-columns:1fr}
-  .hc-event,.hc-weather,.hc-sz,.hc-hindu,.hc-guardian,.hc-nyt,.hc-ml,.hc-wiki,.hc-german{grid-column:1;border-right:none}
-  .page{padding:1rem .9rem}
+@media(max-width:620px){
+  .home-grid{grid-template-columns:repeat(2,1fr)}
+  .hc-event{grid-column:1/3}.hc-weather{grid-column:1/3;border-right:none}
+  .hc-curiosity{grid-column:1}.hc-otd{grid-column:2;border-right:none}
+  .hc-cinema{grid-column:1/3}.cinema-inner{grid-template-columns:1fr}.cinema-poster{min-height:180px;max-height:180px}.cinema-route{display:none}
+  .hc-sz,.hc-hindu,.hc-guardian,.hc-nyt,.hc-astro,.hc-ml,.hc-wiki,.hc-hn,.hc-podcast,.hc-sport,.hc-mlnews{grid-column:span 1}
+  .hc-guardian,.hc-nyt,.hc-wiki,.hc-podcast,.hc-mlnews{border-right:none}
+  .hc-book{grid-column:1/3}.hc-semi{grid-column:1}.hc-cartoon{grid-column:2;border-right:none}
+  .hc-german{grid-column:1/3}
+  .page{padding:.9rem .8rem}
 }
 </style>
 </head>
 <body>
 
-<!-- OFFLINE TOAST -->
 <div class="offline" id="offlineBar">⚠ Offline — showing cached content</div>
 
-<!-- NAV -->
 <nav>
-  <a class="nav-brand" href="#home" data-page="home">Daily <span>D</span></a>
+  <a class="nav-brand" href="#" data-page="home">Daily <span>D</span></a>
   <div class="nav-links">
     <button class="nav-link active" data-page="home">🏠 Home</button>
     <button class="nav-link" data-page="news">📰 News</button>
-    <button class="nav-link" data-page="hacker">⬆ Hacker News</button>
+    <button class="nav-link" data-page="hacker">⬆ HN</button>
     <button class="nav-link" data-page="podcasts">🎙 Podcasts</button>
     <button class="nav-link" data-page="more">＋ More</button>
   </div>
 </nav>
 
-<!-- ══════════════════════════════════════════════════════════
-     HOME PAGE
-═══════════════════════════════════════════════════════════ -->
+<!-- ════════════════════ HOME ════════════════════════ -->
 <div class="page active" id="page-home">
+
+  <!-- MASTHEAD — daily quote -->
   <div class="masthead">
-    <h1>Daily Digest</h1>
-    <div class="masthead-sub">Munich · World · Malayalam</div>
+    <div class="masthead-kicker">Munich · World · Malayalam</div>
+    <div class="masthead-quote" id="mastQuote">
+      <span class="sk" style="height:1.6rem;width:68%;display:inline-block;margin-bottom:.4rem"></span>
+    </div>
+    <div class="masthead-author" id="mastAuthor"></div>
     <div id="dateDisplay"></div>
   </div>
 
   <div class="home-grid">
 
-    <!-- 1. EVENT -->
+    <!-- 1 · MUNICH EVENT -->
     <div class="hc hc-event" id="hc-event">
-      <div class="hc-tag"><span class="hc-accent"></span>★ Munich Today</div>
-      <div id="ev-inner">
-        <span class="sk sk-big"></span>
-        <span class="sk sk-t"></span><span class="sk sk-t"></span><span class="sk sk-s"></span>
+      <div class="hc-pad" id="ev-inner">
+        <span class="sk sk-big"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
       </div>
     </div>
 
-    <!-- 2. WEATHER -->
+    <!-- 2 · WEATHER -->
     <div class="hc hc-weather" id="hc-weather">
-      <div class="hc-tag"><span class="hc-accent"></span>Weather · Munich</div>
-      <div id="wx-inner">
-        <span class="sk sk-h"></span>
+      <div class="hc-pad" id="wx-inner">
+        <span class="sk sk-big"></span><span class="sk sk-t"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 3 · CURIOSITY OF THE DAY -->
+    <div class="hc hc-curiosity" id="hc-curiosity">
+      <div class="hc-pad" id="curiosity-inner">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 4 · ON THIS DAY / BIRTHDAY -->
+    <div class="hc hc-otd" id="hc-otd">
+      <div class="hc-pad" id="otd-inner">
+        <span class="sk sk-big"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 5 · CINEMA RECOMMENDATION — full width, luxurious -->
+    <div class="hc hc-cinema" id="hc-cinema">
+      <div id="cinema-inner" class="cinema-skeleton">
+        <span>🎬</span>
+        <div>
+          <span class="sk-dk" style="height:.7rem;width:200px;display:block;margin-bottom:.5rem"></span>
+          <span class="sk-dk" style="height:1.4rem;width:340px;display:block;margin-bottom:.4rem"></span>
+          <span class="sk-dk" style="height:.7rem;width:260px;display:block"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 · SÜDDEUTSCHE ZEITUNG -->
+    <div class="hc hc-sz" id="hc-sz">
+      <div class="card-strip" style="background:#c00"></div>
+      <div class="card-thumb" id="sz-thumb">
+        <span class="ph">🗞️</span>
+        <div class="src-badge"><span class="src-dot" style="background:#c00"></span>Süddeutsche Zeitung</div>
+      </div>
+      <div class="card-body" id="sz-body"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span></div>
+    </div>
+
+    <!-- 7 · THE HINDU KOCHI -->
+    <div class="hc hc-hindu" id="hc-hindu">
+      <div class="card-strip" style="background:var(--rust)"></div>
+      <div class="card-thumb" id="hindu-thumb">
+        <span class="ph">📰</span>
+        <div class="src-badge"><span class="src-dot" style="background:var(--rust)"></span>The Hindu · Kochi</div>
+      </div>
+      <div class="card-body" id="hindu-body"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span></div>
+    </div>
+
+    <!-- 8 · THE GUARDIAN -->
+    <div class="hc hc-guardian" id="hc-guardian">
+      <div class="card-strip" style="background:#005689"></div>
+      <div class="card-thumb" id="grd-thumb">
+        <span class="ph">🔵</span>
+        <div class="src-badge"><span class="src-dot" style="background:#005689"></span>The Guardian</div>
+      </div>
+      <div class="card-body" id="grd-body"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span></div>
+    </div>
+
+    <!-- 9 · NEW YORK TIMES -->
+    <div class="hc hc-nyt" id="hc-nyt">
+      <div class="card-strip" style="background:#222"></div>
+      <div class="card-thumb" id="nyt-thumb">
+        <span class="ph">📄</span>
+        <div class="src-badge"><span class="src-dot" style="background:#222"></span>New York Times</div>
+      </div>
+      <div class="card-body" id="nyt-body"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span></div>
+    </div>
+
+    <!-- 10 · ASTRONOMY -->
+    <div class="hc hc-astro" id="hc-astro">
+      <div class="hc-pad" id="astro-inner">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 11 · MALAYALAM WIKIPEDIA -->
+    <div class="hc hc-ml" id="hc-ml">
+      <div class="card-strip" style="background:var(--sage)"></div>
+      <div class="card-thumb" id="ml-thumb">
+        <span class="ph">🌿</span>
+        <div class="src-badge"><span class="src-dot" style="background:var(--sage)"></span>Malayalam Wikipedia</div>
+      </div>
+      <div class="card-body" id="ml-body"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span></div>
+    </div>
+
+    <!-- 12 · ENGLISH WIKIPEDIA -->
+    <div class="hc hc-wiki" id="hc-wiki">
+      <div class="card-strip" style="background:var(--slate)"></div>
+      <div class="card-thumb" id="wiki-thumb">
+        <span class="ph">📖</span>
+        <div class="src-badge"><span class="src-dot" style="background:var(--slate)"></span>Wikipedia · Today</div>
+      </div>
+      <div class="card-body" id="wiki-body"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span></div>
+    </div>
+
+    <!-- 13 · HACKER NEWS -->
+    <div class="hc hc-hn" id="hc-hn">
+      <div class="hc-pad" id="hn-home">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 14 · PODCAST OF THE DAY -->
+    <div class="hc hc-podcast" id="hc-podcast">
+      <div class="hc-pad" id="pod-home">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 15 · SPORT -->
+    <div class="hc hc-sport" id="hc-sport">
+      <div class="hc-pad" id="sport-inner">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 16 · MALAYALAM NEWS -->
+    <div class="hc hc-mlnews" id="hc-mlnews">
+      <div class="card-strip" style="background:#1a6b40"></div>
+      <div class="card-thumb" id="mln-thumb">
+        <span class="ph">🌴</span>
+        <div class="src-badge" id="mln-badge"><span class="src-dot" style="background:#1a6b40"></span>Malayalam News</div>
+      </div>
+      <div class="card-body" id="mln-body"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span></div>
+    </div>
+
+    <!-- 17 · BOOK (spans 2 cols) -->
+    <div class="hc hc-book" id="hc-book">
+      <div class="hc-pad" id="book-inner">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 18 · SEMI/EE NEWS -->
+    <div class="hc hc-semi" id="hc-semi">
+      <div class="hc-pad" id="semi-inner">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 19 · CARTOON -->
+    <div class="hc hc-cartoon" id="hc-cartoon">
+      <div class="cartoon-img-wrap" id="cartoon-img"><span class="ph">🎨</span></div>
+      <div class="card-body" id="cartoon-body">
         <span class="sk sk-t"></span><span class="sk sk-s"></span>
       </div>
     </div>
 
-    <!-- 3. SZ -->
-    <div class="hc hc-sz" id="hc-sz">
-      <div class="hc-tag"><span class="hc-accent"></span>Süddeutsche Zeitung</div>
-      <div id="sz-inner"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-s"></span></div>
-    </div>
-
-    <!-- 4. HINDU KOCHI -->
-    <div class="hc hc-hindu" id="hc-hindu">
-      <div class="hc-tag"><span class="hc-accent"></span>The Hindu · Kochi</div>
-      <div id="hindu-inner"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-s"></span></div>
-    </div>
-
-    <!-- 5. GUARDIAN -->
-    <div class="hc hc-guardian" id="hc-guardian">
-      <div class="hc-tag"><span class="hc-accent"></span>The Guardian</div>
-      <div id="grd-inner"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-s"></span></div>
-    </div>
-
-    <!-- 6. NYT -->
-    <div class="hc hc-nyt" id="hc-nyt">
-      <div class="hc-tag"><span class="hc-accent"></span>New York Times</div>
-      <div id="nyt-inner"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-s"></span></div>
-    </div>
-
-    <!-- 7. MALAYALAM WIKIPEDIA -->
-    <div class="hc hc-ml" id="hc-ml">
-      <div class="hc-tag"><span class="hc-accent"></span>Malayalam Wikipedia</div>
-      <div id="ml-inner"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-s"></span></div>
-    </div>
-
-    <!-- 8. ENGLISH WIKIPEDIA -->
-    <div class="hc hc-wiki" id="hc-wiki">
-      <div class="hc-tag"><span class="hc-accent"></span>Wikipedia · Today</div>
-      <div id="wiki-inner"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-s"></span></div>
-    </div>
-
-    <!-- 9. GERMAN WORD -->
+    <!-- 20 · GERMAN WORD (full width) -->
     <div class="hc hc-german" id="hc-german">
-      <div class="hc-tag"><span class="hc-accent"></span>🇩🇪 Wort des Tages</div>
-      <div id="de-inner"><span class="sk sk-big" style="width:40%"></span><span class="sk sk-t" style="width:70%"></span><span class="sk sk-s"></span></div>
+      <div class="hc-pad">
+        <div class="card-label"><span class="label-pip" style="background:var(--plum)"></span>🇩🇪 Wort des Tages</div>
+        <div id="de-inner"><span class="sk sk-big" style="width:35%"></span><span class="sk sk-t" style="width:65%"></span><span class="sk sk-s"></span></div>
+      </div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /home-grid -->
+</div><!-- /page-home -->
 
-<!-- ══════════════════════════════════════════════════════════
-     NEWS SUBPAGE — all 5 newspapers, more articles each
-═══════════════════════════════════════════════════════════ -->
+<!-- ════════════════════ NEWS ════════════════════════ -->
 <div class="page" id="page-news">
-  <div class="page-header">
-    <h2>Today's Press</h2>
-    <p>5 newspapers · latest headlines · updated every 30 min</p>
-  </div>
-
+  <div class="page-header"><h2>Today's Press</h2><p>Five papers · latest headlines · refreshed every 30 min</p></div>
   <div class="np-grid">
-    <div class="np-col">
-      <div class="np-head"><span class="np-color" style="background:#c00"></span>Süddeutsche Zeitung</div>
-      <div id="np-sz" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
-    </div>
-    <div class="np-col">
-      <div class="np-head"><span class="np-color" style="background:#005689"></span>The Guardian</div>
-      <div id="np-guardian" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
-    </div>
+    <div class="np-col"><div class="np-head"><span class="np-dot" style="background:#c00"></span>Süddeutsche Zeitung</div><div id="np-sz" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div></div>
+    <div class="np-col"><div class="np-head"><span class="np-dot" style="background:#005689"></span>The Guardian</div><div id="np-guardian" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div></div>
   </div>
-
   <div class="np-grid">
-    <div class="np-col">
-      <div class="np-head"><span class="np-color" style="background:#333"></span>New York Times</div>
-      <div id="np-nyt" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
-    </div>
-    <div class="np-col">
-      <div class="np-head"><span class="np-color" style="background:var(--rust)"></span>The Hindu · Kochi / Kerala</div>
-      <div id="np-hindu" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
-    </div>
+    <div class="np-col"><div class="np-head"><span class="np-dot" style="background:#222"></span>New York Times</div><div id="np-nyt" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div></div>
+    <div class="np-col"><div class="np-head"><span class="np-dot" style="background:var(--rust)"></span>The Hindu · Kerala</div><div id="np-hindu" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div></div>
   </div>
-
   <div class="sdiv"><span class="slabel">Münchner Merkur</span></div>
-  <div id="np-merkur" class="art-list">
-    <div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div>
-  </div>
+  <div id="np-merkur" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
+  <div class="sdiv"><span class="slabel">Malayalam News</span></div>
+  <div id="np-mlnews" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     HACKER NEWS SUBPAGE
-═══════════════════════════════════════════════════════════ -->
+<!-- ════════════════════ HACKER NEWS ════════════════ -->
 <div class="page" id="page-hacker">
-  <div class="page-header">
-    <h2>Hacker News</h2>
-    <p>Top stories from news.ycombinator.com</p>
-  </div>
-  <div id="hn-list" class="art-list">
-    <div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div>
-  </div>
+  <div class="page-header"><h2>Hacker News</h2><p>Top stories · news.ycombinator.com · direct API</p></div>
+  <div id="hn-list" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     PODCASTS SUBPAGE
-═══════════════════════════════════════════════════════════ -->
+<!-- ════════════════════ PODCASTS ════════════════════ -->
 <div class="page" id="page-podcasts">
-  <div class="page-header">
-    <h2>My Podcasts</h2>
-    <p>Your subscriptions · tap ▶ to play latest episode</p>
-  </div>
+  <div class="page-header"><h2>My Podcasts</h2><p>156 subscriptions · tap ▶ to play latest episode</p></div>
   <div class="cat-tabs" id="catTabs">
     <button class="cat-tab active" data-cat="all">All</button>
     <button class="cat-tab" data-cat="Malayalam">🌿 Malayalam</button>
@@ -492,36 +615,24 @@ nav::-webkit-scrollbar{display:none}
   <div id="shelfGrid" class="shelf-grid"></div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     MORE SUBPAGE — Malayalam Wikipedia full, Munich events
-═══════════════════════════════════════════════════════════ -->
+<!-- ════════════════════ MORE ════════════════════════ -->
 <div class="page" id="page-more">
-  <div class="page-header">
-    <h2>More</h2>
-    <p>Malayalam Wikipedia · English Wikipedia · Full Munich event guide</p>
-  </div>
-
-  <div class="sdiv"><span class="slabel">Malayalam Wikipedia — Today's Article</span></div>
-  <div id="more-ml" class="art-list">
-    <div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t"></span></div>
-  </div>
-
-  <div class="sdiv"><span class="slabel">Wikipedia — Article of the Day</span></div>
-  <div id="more-wiki" class="art-list">
-    <div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t"></span></div>
-  </div>
-
+  <div class="page-header"><h2>More</h2><p>Full Wikipedia articles · Munich event guide all 7 days</p></div>
+  <div class="sdiv"><span class="slabel">Malayalam Wikipedia — Article of the Day</span></div>
+  <div id="more-ml" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
+  <div class="sdiv"><span class="slabel">Wikipedia — Featured Article</span></div>
+  <div id="more-wiki" class="art-list"><div class="art-item"><span class="sk sk-h"></span><span class="sk sk-t"></span></div></div>
   <div class="sdiv"><span class="slabel">Munich Event Guide — This Week</span></div>
   <div id="more-events" class="art-list"></div>
 </div>
 
-<!-- AUDIO PLAYER BAR -->
+<!-- AUDIO BAR -->
 <div class="audio-bar" id="audioBar">
-  <div style="flex:1;min-width:0">
-    <div class="audio-title" id="audioTitle">—</div>
-    <div class="audio-ep" id="audioEp">—</div>
+  <div class="audio-info">
+    <div class="audio-show" id="audioTitle">—</div>
+    <div class="audio-ep-title" id="audioEp">—</div>
   </div>
-  <button class="abtn" id="audioPP" title="Play/Pause">▶</button>
+  <button class="abtn" id="audioPP">▶</button>
   <div class="audio-prog" id="audioProg"><div class="audio-fill" id="audioFill" style="width:0"></div></div>
   <div class="audio-time" id="audioTime">0:00</div>
   <button class="aclose" id="audioClose">✕</button>
@@ -531,28 +642,20 @@ nav::-webkit-scrollbar{display:none}
 <script>
 (function(){'use strict';
 
-// ── CACHE ────────────────────────────────────────────────────
-var TTL = 28 * 60 * 1000; // 28 min
-function lsGet(k){
-  try{var r=localStorage.getItem('dd3_'+k);if(!r)return null;var o=JSON.parse(r);return(Date.now()-o.t>TTL)?null:o.d;}catch(e){return null;}
-}
-function lsSet(k,d){try{localStorage.setItem('dd3_'+k,JSON.stringify({t:Date.now(),d:d}));}catch(e){}}
-// For things keyed by date (Wikipedia, events) — use date in key so they expire naturally
-function todayKey(k){var n=new Date();return k+'_'+n.getFullYear()+(n.getMonth()+1)+n.getDate();}
+// ── CACHE ───────────────────────────────────────────────────
+var TTL=28*60*1000;
+function lsGet(k){try{var r=localStorage.getItem('dd5_'+k);if(!r)return null;var o=JSON.parse(r);return(Date.now()-o.t>TTL)?null:o.d;}catch(e){return null;}}
+function lsSet(k,d){try{localStorage.setItem('dd5_'+k,JSON.stringify({t:Date.now(),d:d}));}catch(e){}}
+function dateKey(k){var n=new Date();return k+'_'+n.getFullYear()+(n.getMonth()+1)+n.getDate();}
 
-// ── ROUTER ───────────────────────────────────────────────────
-var pages = ['home','news','hacker','podcasts','more'];
-var pageLoaded = {};
-
+// ── ROUTER ──────────────────────────────────────────────────
+var PAGES=['home','news','hacker','podcasts','more'];
+var loaded={home:true};
 function showPage(id){
-  pages.forEach(function(p){
-    document.getElementById('page-'+p).classList.toggle('active',p===id);
-  });
-  document.querySelectorAll('.nav-link').forEach(function(b){
-    b.classList.toggle('active',b.dataset.page===id);
-  });
-  if(!pageLoaded[id]){
-    pageLoaded[id]=true;
+  if(!PAGES.includes(id))return;
+  PAGES.forEach(function(p){document.getElementById('page-'+p).classList.toggle('active',p===id);});
+  document.querySelectorAll('.nav-link').forEach(function(b){b.classList.toggle('active',b.dataset.page===id);});
+  if(!loaded[id]){loaded[id]=true;
     if(id==='news')loadNewsPage();
     if(id==='hacker')loadHNPage();
     if(id==='podcasts')loadPodcastPage();
@@ -560,497 +663,950 @@ function showPage(id){
   }
   window.scrollTo(0,0);
 }
-
-document.querySelectorAll('.nav-link,[data-page]').forEach(function(el){
-  el.addEventListener('click',function(e){
-    var p=el.dataset.page;
-    if(p){e.preventDefault();showPage(p);}
-  });
+document.querySelectorAll('[data-page]').forEach(function(el){
+  el.addEventListener('click',function(e){var p=el.dataset.page;if(p){e.preventDefault();showPage(p);}});
 });
 
-// ── UTILS ────────────────────────────────────────────────────
-function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-function strip(s){var d=document.createElement('div');d.innerHTML=s;return(d.textContent||d.innerText||'').trim();}
-function trunc(s,n){s=strip(s);return s.length>n?s.slice(0,n).trimEnd()+'\u2026':s;}
-function fmtDate(ds){if(!ds)return'';try{return new Date(ds).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});}catch(e){return ds.slice(0,10);}}
-function fmtTime(s){if(!isFinite(s))return'0:00';var m=Math.floor(s/60),ss=Math.floor(s%60);return m+':'+(ss<10?'0':'')+ss;}
+// ── UTILS ───────────────────────────────────────────────────
+function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+function strip(s){var d=document.createElement('div');d.innerHTML=s||'';return(d.textContent||d.innerText||'').replace(/\s+/g,' ').trim();}
+function trunc(s,n){s=strip(s);return s.length>n?s.slice(0,n).trimEnd()+'…':s;}
+function fmtD(ds){if(!ds)return'';try{return new Date(ds).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});}catch(e){return String(ds).slice(0,10);}}
+function fmtT(s){if(!isFinite(s))return'0:00';var m=Math.floor(s/60),ss=Math.floor(s%60);return m+':'+(ss<10?'0':'')+ss;}
+function tFetch(url,ms){ms=ms||9000;var ctrl=new AbortController(),timer=setTimeout(function(){ctrl.abort();},ms);return fetch(url,{signal:ctrl.signal}).then(function(r){clearTimeout(timer);return r;}).catch(function(e){clearTimeout(timer);throw e;});}
 
-function tFetch(url, ms){
-  ms=ms||8000;
-  var ctrl=new AbortController();
-  var timer=setTimeout(function(){ctrl.abort();},ms);
-  return fetch(url,{signal:ctrl.signal}).then(function(r){clearTimeout(timer);return r;}).catch(function(e){clearTimeout(timer);throw e;});
-}
-
-// ── RSS ENGINE — race 4 proxies simultaneously ────────────────
+// ── RSS ENGINE ──────────────────────────────────────────────
 function fetchRSS(url){
   var enc=encodeURIComponent(url);
-
-  function parseItems(items){// rss2json shape
-    return items.map(function(it){return{
-      title:strip(it.title||''),
-      description:strip(it.description||it.content||''),
-      link:it.link||'',pubDate:it.pubDate||'',
-      enclosure:(it.enclosure&&it.enclosure.link)?it.enclosure.link:''
-    };});
-  }
-
   function parseXML(xml){
-    var parser=new DOMParser();
-    var doc=parser.parseFromString(xml,'text/xml');
-    var items=doc.querySelectorAll('item');
-    var arr=[];
-    items.forEach(function(item){
-      var g=function(s){var el=item.querySelector(s);return el?(el.textContent||'').trim():'';};
-      var enc=item.querySelector('enclosure');
-      arr.push({title:g('title'),description:g('description'),link:g('link'),pubDate:g('pubDate'),
-        enclosure:enc?enc.getAttribute('url')||'':''});
-    });
-    return arr;
+    try{var doc=new DOMParser().parseFromString(xml,'text/xml'),arr=[];
+      doc.querySelectorAll('item').forEach(function(item){
+        var g=function(s){var el=item.querySelector(s);return el?(el.textContent||'').trim():'';};
+        var enc2=item.querySelector('enclosure');
+        var media=item.querySelector('content')||item.querySelector('[url]');
+        var imgUrl='';
+        if(media){var mu=media.getAttribute('url')||'',mt=media.getAttribute('type')||'';if(mu&&/image|jpg|png|webp/i.test(mu+mt))imgUrl=mu;}
+        arr.push({title:g('title'),description:g('description'),link:g('link'),pubDate:g('pubDate'),enclosure:enc2?enc2.getAttribute('url')||'':'',thumbnail:imgUrl||g('thumbnail')||''});
+      });return arr;}catch(e){return[];}
   }
+  function parseR2J(items){return items.map(function(it){return{title:strip(it.title||''),description:strip(it.description||it.content||''),link:it.link||'',pubDate:it.pubDate||'',enclosure:(it.enclosure&&it.enclosure.link)?it.enclosure.link:'',thumbnail:it.thumbnail||''};});}
+  var pA=tFetch('https://api.allorigins.win/get?url='+enc).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){var t=d&&d.contents;if(!t||t.length<60)throw 0;return parseXML(t);});
+  var pB=tFetch('https://corsproxy.io/?'+enc).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){if(!t||t.length<60)throw 0;return parseXML(t);});
+  var pC=tFetch('https://api.rss2json.com/v1/api.json?rss_url='+enc+'&count=10').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){if(!d||d.status!=='ok'||!d.items)throw 0;return parseR2J(d.items);});
+  var pD=tFetch('https://api.codetabs.com/v1/proxy?quest='+enc).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){if(!t||t.length<60||t.startsWith('{'))throw 0;return parseXML(t);});
+  return anyOf([pA,pB,pC,pD]);
+}
+function anyOf(arr){if(typeof Promise.any==='function')return Promise.any(arr);return new Promise(function(res,rej){var n=0;arr.forEach(function(p){p.then(res).catch(function(){if(++n===arr.length)rej(new Error('all failed'));});});});}
 
-  var pA=tFetch('https://api.allorigins.win/get?url='+enc)
-    .then(function(r){if(!r.ok)throw 0;return r.json();})
-    .then(function(d){var t=d&&d.contents;if(!t||t.length<80)throw 0;return parseXML(t);});
-
-  var pB=tFetch('https://corsproxy.io/?'+enc)
-    .then(function(r){if(!r.ok)throw 0;return r.text();})
-    .then(function(t){if(!t||t.length<80)throw 0;return parseXML(t);});
-
-  var pC=tFetch('https://api.rss2json.com/v1/api.json?rss_url='+enc+'&count=8')
-    .then(function(r){if(!r.ok)throw 0;return r.json();})
-    .then(function(d){if(!d||d.status!=='ok'||!d.items)throw 0;return parseItems(d.items);});
-
-  var pD=tFetch('https://api.codetabs.com/v1/proxy?quest='+enc)
-    .then(function(r){if(!r.ok)throw 0;return r.text();})
-    .then(function(t){if(!t||t.length<80||t.includes('"error"'))throw 0;return parseXML(t);});
-
-  // Promise.any: first RESOLVE wins
-  if(Promise.any) return Promise.any([pA,pB,pC,pD]);
-  return new Promise(function(res,rej){
-    var errs=0;
-    [pA,pB,pC,pD].forEach(function(p){p.then(res).catch(function(){if(++errs===4)rej(new Error('all failed'));});});
-  });
+// ── IMAGE EXTRACTION ────────────────────────────────────────
+function extractImg(item){
+  if(item.thumbnail&&item.thumbnail.length>10&&!/pixel|clear|blank|1x1/i.test(item.thumbnail))return item.thumbnail;
+  if(item.enclosure&&/\.(jpg|jpeg|png|webp|gif)/i.test(item.enclosure))return item.enclosure;
+  var m=(item.description||'').match(/<img[^>]+src=["']([^"']+)/i);
+  if(m&&m[1]&&/^https?:/i.test(m[1]))return m[1];
+  return null;
+}
+function loadThumb(thumbId,imgUrl){
+  if(!imgUrl)return;
+  var wrap=document.getElementById(thumbId);if(!wrap)return;
+  var img=document.createElement('img');
+  img.alt='';img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0';
+  img.onerror=function(){this.style.display='none';};
+  img.src=imgUrl;
+  var badge=wrap.querySelector('.src-badge');
+  if(badge)wrap.insertBefore(img,badge);else wrap.prepend(img);
+  var ph=wrap.querySelector('.ph');if(ph)ph.style.display='none';
 }
 
-// ── CLOCK ────────────────────────────────────────────────────
-function updateClock(){
-  var el=document.getElementById('dateDisplay');
-  if(el)el.textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-}
+// ── CLOCK / OFFLINE ─────────────────────────────────────────
+function updateClock(){var el=document.getElementById('dateDisplay');if(el)el.textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});}
 updateClock();setInterval(updateClock,60000);
+function chkOnline(){document.getElementById('offlineBar').classList.toggle('on',!navigator.onLine);}
+window.addEventListener('online',chkOnline);window.addEventListener('offline',chkOnline);chkOnline();
 
-// ── OFFLINE DETECTION ─────────────────────────────────────────
-function checkOnline(){document.getElementById('offlineBar').classList.toggle('on',!navigator.onLine);}
-window.addEventListener('online',checkOnline);window.addEventListener('offline',checkOnline);checkOnline();
-
-// ══════════════════════════════════════════════════════════════
-// HOME PAGE LOADERS — each is independent, renders as it lands
-// ══════════════════════════════════════════════════════════════
-
-// ── GERMAN WORD (instant — no network) ───────────────────────
-var WORDS=[
-  {w:'Weltanschauung',ph:'/ˈwɛltˌanˌʃaʊʊŋ/',ty:'Noun · fem.',
-   def:'A comprehensive worldview — the lens through which one interprets all of existence.',
-   ex:'Jeder entwickelt seine eigene Weltanschauung.',tr:'Everyone develops their own worldview.'},
-  {w:'Fingerspitzengefühl',ph:'/ˈfɪŋɐˌʃpɪtsənˌfyːl/',ty:'Noun · neut.',
-   def:'Delicate tact and intuition. Literally "fingertip feeling" — knowing exactly how to handle a situation with grace.',
-   ex:'Diese Arbeit erfordert Fingerspitzengefühl.',tr:'This work requires great sensitivity.'},
-  {w:'Fernweh',ph:'/ˈfɛrnˌveː/',ty:'Noun · neut.',
-   def:'An aching longing for distant places; wanderlust — a pull toward the unknown horizon.',
-   ex:'Fernweh trieb sie um die Welt.',tr:'Wanderlust drove her around the world.'},
-  {w:'Schadenfreude',ph:'/ˈʃaːdənˌfʁɔʏdə/',ty:'Noun · fem.',
-   def:'Pleasure felt at another\'s misfortune. One of the most widely borrowed German words.',
-   ex:'Schadenfreude ist eine sehr menschliche Emotion.',tr:'Schadenfreude is a very human emotion.'},
-  {w:'Waldeinsamkeit',ph:'/ˈvaltˌaɪnˌzaːmkaɪt/',ty:'Noun · fem.',
-   def:'The serene solitude felt alone in a forest — a meditative oneness with nature.',
-   ex:'Er genoß die Waldeinsamkeit beim Wandern.',tr:'He savored the forest solitude while hiking.'},
-  {w:'Lebensfreude',ph:'/ˈleːbənsˌfʁɔʏdə/',ty:'Noun · fem.',
-   def:'The exuberant joy of being alive; a celebration of existence and everyday pleasures.',
-   ex:'Ihre Lebensfreude war ansteckend.',tr:'Her zest for life was infectious.'},
-  {w:'Verschlimmbessern',ph:'/fɛrˈʃlɪmbɛsɐn/',ty:'Verb',
-   def:'To make something worse while trying to improve it. For well-meaning fixes that backfire.',
-   ex:'Er hat das Bild verschlimmbessert.',tr:'He made the picture worse trying to fix it.'},
-  {w:'Torschlusspanik',ph:'/ˈtoːɐʃlʊsˌpanik/',ty:'Noun · fem.',
-   def:'Literally "gate-closing panic" — the fear that time is running out and opportunities are closing.',
-   ex:'Mit 35 überkam sie die Torschlusspanik.',tr:'At 35, the fear of closing doors overcame her.'},
-  {w:'Gemütlichkeit',ph:'/ɡəˈmyːtlɪçkaɪt/',ty:'Noun · fem.',
-   def:'A warm, cozy, convivial atmosphere — the feeling of belonging, comfort and unhurried friendliness.',
-   ex:'Die Hütte strahlte echte Gemütlichkeit aus.',tr:'The hut radiated true cosiness.'},
-  {w:'Sehnsucht',ph:'/ˈzeːnzʊxt/',ty:'Noun · fem.',
-   def:'A deep bittersweet longing for something undefined — nostalgia for places you may never have been.',
-   ex:'Sehnsucht erfüllte sein Herz.',tr:'Longing filled his heart.'},
-  {w:'Zweisamkeit',ph:'/ˈtsvaɪzaːmkaɪt/',ty:'Noun · fem.',
-   def:'The cozy intimate togetherness of two people — comfortable closeness shared between partners.',
-   ex:'Sie liebten die stille Zweisamkeit.',tr:'They cherished the quiet togetherness.'},
-  {w:'Drachenfutter',ph:'/ˈdʁaxənˌfʊtɐ/',ty:'Noun · neut.',
-   def:'Literally "dragon fodder" — a gift bought to appease a spouse or partner after a mistake.',
-   ex:'Er brachte Blumen als Drachenfutter mit.',tr:'He brought flowers as a peace offering.'}
+// ═══════════════════════════════════════════════════════════
+// CARD: DAILY QUOTE (masthead)
+// ═══════════════════════════════════════════════════════════
+var QUOTES=[
+  {q:'The world is a book, and those who do not travel read only one page.',by:'Saint Augustine'},
+  {q:'Imagination is more important than knowledge.',by:'Albert Einstein'},
+  {q:'Life is what happens when you\'re busy making other plans.',by:'John Lennon'},
+  {q:'The only way to do great work is to love what you do.',by:'Steve Jobs'},
+  {q:'In the middle of every difficulty lies opportunity.',by:'Albert Einstein'},
+  {q:'It is during our darkest moments that we must focus to see the light.',by:'Aristotle'},
+  {q:'The mind is not a vessel to be filled, but a fire to be kindled.',by:'Plutarch'},
+  {q:'To read without reflecting is like eating without digesting.',by:'Edmund Burke'},
+  {q:'The more that you read, the more things you will know.',by:'Dr. Seuss'},
+  {q:'Not all those who wander are lost.',by:'J.R.R. Tolkien'},
+  {q:'The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.',by:'Marcel Proust'},
+  {q:'Two roads diverged in a wood, and I—I took the one less traveled by.',by:'Robert Frost'},
+  {q:'Tell me and I forget, teach me and I may remember, involve me and I learn.',by:'Benjamin Franklin'},
+  {q:'The only true wisdom is in knowing you know nothing.',by:'Socrates'},
+  {q:'The greatest glory in living lies not in never falling, but in rising every time we fall.',by:'Nelson Mandela'},
+  {q:'It always seems impossible until it\'s done.',by:'Nelson Mandela'},
+  {q:'Spread love everywhere you go. Let no one ever come to you without leaving happier.',by:'Mother Teresa'},
+  {q:'When you reach the end of your rope, tie a knot in it and hang on.',by:'Franklin D. Roosevelt'},
+  {q:'Always remember that you are absolutely unique. Just like everyone else.',by:'Margaret Mead'},
+  {q:'Do not go where the path may lead; go instead where there is no path and leave a trail.',by:'Ralph Waldo Emerson'},
+  {q:'You will face many defeats in life, but never let yourself be defeated.',by:'Maya Angelou'},
+  {q:'In the end, it\'s not the years in your life that count. It\'s the life in your years.',by:'Abraham Lincoln'},
+  {q:'Never let the fear of striking out keep you from playing the game.',by:'Babe Ruth'},
+  {q:'Life is either a daring adventure or nothing at all.',by:'Helen Keller'},
+  {q:'Many of life\'s failures are people who did not realize how close they were to success when they gave up.',by:'Thomas A. Edison'},
+  {q:'You have brains in your head. You have feet in your shoes. You can steer yourself any direction you choose.',by:'Dr. Seuss'},
+  {q:'If life were predictable it would cease to be life, and be without flavor.',by:'Eleanor Roosevelt'},
+  {q:'If you look at what you have in life, you\'ll always have more.',by:'Oprah Winfrey'},
+  {q:'If you want to live a happy life, tie it to a goal, not to people or things.',by:'Albert Einstein'},
+  {q:'Never let the fear of striking out keep you from playing the game.',by:'Babe Ruth'},
+  {q:'Money and success don\'t change people; they merely amplify what is already there.',by:'Will Smith'},
+  {q:'Your time is limited, so don\'t waste it living someone else\'s life.',by:'Steve Jobs'},
+  {q:'Not how long, but how well you have lived is the main thing.',by:'Seneca'},
+  {q:'If life were predictable it would cease to be life, and be without flavor.',by:'Eleanor Roosevelt'},
+  {q:'The purpose of our lives is to be happy.',by:'Dalai Lama'}
 ];
 (function(){
-  var doy=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/86400000);
-  var w=WORDS[doy%WORDS.length];
-  var h='<div class="de-inner">';
-  h+='<div style="flex-shrink:0"><div class="de-word">'+esc(w.w)+'</div>';
-  h+='<div class="de-phon">'+esc(w.ph)+'</div>';
-  h+='<span class="de-badge">'+esc(w.ty)+'</span></div>';
-  h+='<div style="flex:1"><p class="de-meaning">'+esc(w.def)+'</p>';
-  h+='<p class="de-example">\u201c'+esc(w.ex)+'\u201d</p>';
-  h+='<p class="de-trans">'+esc(w.tr)+'</p>';
-  h+='<div class="hc-meta" style="margin-top:.7rem">Daily rotation · Wort des Tages</div>';
-  h+='<a class="hc-link" href="https://de.wiktionary.org/wiki/'+encodeURIComponent(w.w)+'" target="_blank" rel="noopener">Wiktionary →</a>';
-  h+='</div></div>';
-  document.getElementById('de-inner').innerHTML=h;
+  var doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,1))/(864e5));
+  var q=QUOTES[doy%QUOTES.length];
+  document.getElementById('mastQuote').textContent='\u201c'+q.q+'\u201d';
+  document.getElementById('mastAuthor').textContent='— '+q.by;
 })();
 
-// ── WEATHER ───────────────────────────────────────────────────
-var WX_EMOJI={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'🌨️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
-var WX_DESC={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Showers',81:'Heavy showers',82:'Violent showers',95:'Thunderstorm',96:'Hail storm',99:'Heavy hail'};
+// ═══════════════════════════════════════════════════════════
+// CARD: CURIOSITY OF THE DAY
+// ═══════════════════════════════════════════════════════════
+var CURIOSITIES=[
+  {n:'1',f:'A day on Venus is longer than its year. Venus takes 243 Earth days to rotate once, but only 225 Earth days to orbit the Sun.'},
+  {n:'2',f:'Octopuses have three hearts, blue blood, and can edit their own RNA. They are so neurologically unusual that some scientists suggest they may have evolved intelligence independently from vertebrates.'},
+  {n:'3',f:'The Great Wall of China is not visible from space with the naked eye. This is one of the most persistent myths in geography — the wall is wide enough but too narrow relative to its length.'},
+  {n:'4',f:'Honey never spoils. Archaeologists have found 3,000-year-old honey in Egyptian tombs that was still perfectly edible. Its low moisture content and acidic pH prevent bacterial growth.'},
+  {n:'5',f:'There are more possible iterations of a game of chess than there are atoms in the observable universe. The Shannon number estimates 10¹²⁰ possible games.'},
+  {n:'6',f:'The human body contains enough iron to make a nail about 8 cm long. Most of it is in hemoglobin, the molecule that carries oxygen in red blood cells.'},
+  {n:'7',f:'Cleopatra lived closer in time to the Moon landing than to the construction of the Great Pyramid at Giza. The pyramids are about 2,500 years older than Cleopatra.'},
+  {n:'8',f:'Water can boil and freeze at the same time. This phenomenon, called the triple point, occurs at a very specific combination of temperature (0.01°C) and pressure.'},
+  {n:'9',f:'The shortest war in history lasted 38–45 minutes. The Anglo-Zanzibar War of 1896 ended so quickly because British naval firepower overwhelmed the Sultan\'s palace before a ceasefire.'},
+  {n:'10',f:'A group of flamingos is called a flamboyance. And a group of cats is a clowder. A group of ravens is an unkindness.'},
+  {n:'11',f:'The average person walks the equivalent of three times around the Earth in a lifetime. That\'s roughly 100,000 miles over 80 years.'},
+  {n:'12',f:'Oxford University is older than the Aztec Empire. Teaching began at Oxford in 1096–1167. The Aztec capital Tenochtitlán was founded in 1325.'},
+  {n:'13',f:'It rains diamonds on Neptune and Uranus. The intense pressure deep in these ice giants converts carbon into crystalline diamonds that may sink toward a solid diamond core.'},
+  {n:'14',f:'The human nose can detect about 1 trillion distinct scents — far more than the 10,000 scientists previously estimated, according to research published in Science.'},
+  {n:'15',f:'Light takes 1.3 seconds to travel from the Moon to Earth, and about 8 minutes from the Sun. When you look at the Andromeda Galaxy, you see it as it was 2.537 million years ago.'},
+  {n:'16',f:'Sharks are older than trees. Sharks appeared around 450 million years ago; trees evolved only about 360 million years ago.'},
+  {n:'17',f:'The Eiffel Tower can be 15 cm taller in summer. Thermal expansion causes the iron to expand noticeably as the metal heats up on warm days.'},
+  {n:'18',f:'A single cloud can weigh more than a million pounds. A typical cumulus cloud contains about 500 million grams of water droplets suspended in air.'},
+  {n:'19',f:'The word "robot" comes from the Czech word "robota" meaning forced labour or drudgery. It was coined in Karel Čapek\'s 1921 play R.U.R.'},
+  {n:'20',f:'There is a species of jellyfish, Turritopsis dohrnii, that is biologically immortal. When it ages or faces stress, it can revert back to its juvenile polyp stage indefinitely.'},
+  {n:'21',f:'The fingerprints of a koala are so similar to human fingerprints that they have confused crime scene investigators. They evolved independently — a remarkable example of convergent evolution.'},
+  {n:'22',f:'Hot water can freeze faster than cold water under certain conditions. This is called the Mpemba effect, and despite being observed since Aristotle\'s time, its mechanism is still debated.'},
+  {n:'23',f:'There are more trees on Earth than stars in the Milky Way. Estimates put the number of trees at about 3 trillion; the Milky Way has around 100–400 billion stars.'},
+  {n:'24',f:'A teaspoon of a neutron star would weigh about 10 million tons. Neutron stars pack more mass than our Sun into a sphere roughly 20 km across.'},
+  {n:'25',f:'Wombats produce cube-shaped droppings — they are the only known animals to do so. The cube shape may help mark territory without the droppings rolling away.'},
+  {n:'26',f:'The first computer bug was an actual bug. In 1947, Grace Hopper\'s team found a moth trapped in Harvard\'s Mark II computer relay, and taped it into their logbook.'},
+  {n:'27',f:'Bananas are slightly radioactive. They contain potassium-40, a naturally occurring radioactive isotope. The "banana equivalent dose" is used as an informal unit in radiation safety.'},
+  {n:'28',f:'Glass is technically not a solid — it is an amorphous solid or a supercooled liquid. At room temperature it behaves like a solid but lacks the ordered crystalline structure of true solids.'},
+  {n:'29',f:'The total weight of all ants on Earth likely rivals or exceeds the total weight of all humans. There are estimated to be 20 quadrillion ants alive at any one time.'},
+  {n:'30',f:'A day on Mars is 24 hours and 37 minutes long — almost exactly the same as Earth\'s. This made it easy for NASA engineers to plan rover operations on Martian "sols".'},
+  {n:'31',f:'Cats can\'t taste sweetness. They lack a key taste receptor (Tas1r2) required to detect sugars, which may explain their indifference to fruit and candy.'},
+];
 (function(){
-  var cached=lsGet('weather');
+  var doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,1))/(864e5));
+  var c=CURIOSITIES[doy%CURIOSITIES.length];
+  var h='<div class="card-label"><span class="label-pip" style="background:var(--plum)"></span>💡 Did You Know?</div>';
+  h+='<div class="curiosity-num">?</div>';
+  h+='<p class="card-text" style="font-size:.8rem;line-height:1.65">'+esc(c.f)+'</p>';
+  document.getElementById('curiosity-inner').innerHTML=h;
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: ON THIS DAY / BIRTHDAY
+// ═══════════════════════════════════════════════════════════
+var OTD_DATA={
+  // keyed by "M-D" (month 1-indexed, day)
+  '1-1':{y:'1863',e:'Emancipation Proclamation takes effect in the United States.'},
+  '1-2':{y:'1959',e:'Luna 1 becomes the first spacecraft to escape Earth\'s gravity.'},
+  '1-4':{y:'1643',e:'Birthday: Isaac Newton, mathematician and physicist.'},
+  '1-6':{y:'1412',e:'Birthday: Joan of Arc, French military leader and saint.'},
+  '1-8':{y:'1942',e:'Birthday: Stephen Hawking, theoretical physicist and cosmologist.'},
+  '1-12':{y:'1628',e:'Birthday: Charles Perrault, author of fairy tales including Cinderella.'},
+  '1-15':{y:'1929',e:'Birthday: Martin Luther King Jr., civil rights leader.'},
+  '1-17':{y:'1706',e:'Birthday: Benjamin Franklin, Founding Father and polymath.'},
+  '1-19':{y:'1809',e:'Birthday: Edgar Allan Poe, poet and writer of the macabre.'},
+  '1-22':{y:'1561',e:'Birthday: Francis Bacon, philosopher and pioneer of the scientific method.'},
+  '1-25':{y:'1882',e:'Birthday: Virginia Woolf, modernist novelist and essayist.'},
+  '1-27':{y:'1756',e:'Birthday: Wolfgang Amadeus Mozart, composer of enduring genius.'},
+  '1-29':{y:'1860',e:'Birthday: Anton Chekhov, master of the short story and drama.'},
+  '2-1':{y:'1884',e:'First edition of the Oxford English Dictionary is published.'},
+  '2-4':{y:'2004',e:'Facebook is launched by Mark Zuckerberg at Harvard University.'},
+  '2-8':{y:'1828',e:'Birthday: Jules Verne, father of science fiction literature.'},
+  '2-12':{y:'1809',e:'Birthday: Charles Darwin, naturalist and author of On the Origin of Species.'},
+  '2-14':{y:'1984',e:'Apple Computer\'s Macintosh goes on sale — the first mass-market PC with a GUI.'},
+  '2-15':{y:'1564',e:'Birthday: Galileo Galilei, astronomer who championed heliocentrism.'},
+  '2-19':{y:'1473',e:'Birthday: Nicolaus Copernicus, astronomer who proposed a heliocentric solar system.'},
+  '2-21':{y:'1965',e:'Malcolm X, civil rights activist, is assassinated in New York.'},
+  '2-22':{y:'1732',e:'Birthday: George Washington, first President of the United States.'},
+  '2-25':{y:'1937',e:'Birthday: Ravi Shankar, legendary sitar maestro.'},
+  '2-26':{y:'1564',e:'Birthday: Christopher Marlowe, playwright and poet, contemporary of Shakespeare.'},
+  '3-1':{y:'1984',e:'The Apple Macintosh Office software suite is announced.'},
+  '3-3':{y:'1847',e:'Birthday: Alexander Graham Bell, inventor of the telephone.'},
+  '3-6':{y:'1475',e:'Birthday: Michelangelo, Renaissance sculptor, painter and architect.'},
+  '3-8':{y:'1917',e:'The February Revolution begins in Russia, eventually toppling the Tsar.'},
+  '3-9':{y:'1934',e:'Birthday: Yuri Gagarin, first human to travel into outer space.'},
+  '3-14':{y:'1879',e:'Birthday: Albert Einstein, theoretical physicist and Nobel laureate.'},
+  '3-15':{y:'44',e:'Julius Caesar is assassinated on the Ides of March, 44 BC.'},
+  '3-16':{y:'1789',e:'The first U.S. presidential election begins (George Washington wins).'},
+  '3-20':{y:'1727',e:'Isaac Newton dies in London aged 84.'},
+  '3-22':{y:'1599',e:'Birthday: Anthony van Dyck, Flemish Baroque painter.'},
+  '3-25':{y:'1867',e:'Birthday: Arturo Toscanini, celebrated Italian conductor.'},
+  '3-28':{y:'1941',e:'Virginia Woolf dies, walking into the River Ouse. She was 59.'},
+  '3-31':{y:'1596',e:'Birthday: René Descartes, philosopher and mathematician ("I think, therefore I am").'},
+  '4-1':{y:'1976',e:'Apple Inc. is founded by Steve Jobs, Steve Wozniak and Ronald Wayne.'},
+  '4-2':{y:'1805',e:'Birthday: Hans Christian Andersen, author of beloved fairy tales.'},
+  '4-3':{y:'1783',e:'Birthday: Washington Irving, first major American author.'},
+  '4-6':{y:'1520',e:'Renaissance painter Raphael dies in Rome on his 37th birthday.'},
+  '4-7':{y:'1770',e:'Birthday: William Wordsworth, English Romantic poet.'},
+  '4-15':{y:'1452',e:'Birthday: Leonardo da Vinci, Renaissance polymath and artist.'},
+  '4-16':{y:'1889',e:'Birthday: Charlie Chaplin, filmmaker and silent film icon.'},
+  '4-17':{y:'1837',e:'Birthday: J.P. Morgan, financier and banking mogul.'},
+  '4-22':{y:'1724',e:'Birthday: Immanuel Kant, Enlightenment philosopher.'},
+  '4-23':{y:'1616',e:'William Shakespeare dies in Stratford-upon-Avon.'},
+  '4-26':{y:'1564',e:'Birthday: William Shakespeare, playwright and poet.'},
+  '5-1':{y:'1769',e:'Birthday: Duke of Wellington, victor at the Battle of Waterloo.'},
+  '5-2':{y:'1519',e:'Leonardo da Vinci dies in Amboise, France, aged 67.'},
+  '5-3':{y:'1469',e:'Birthday: Niccolò Machiavelli, political philosopher, author of The Prince.'},
+  '5-5':{y:'1818',e:'Birthday: Karl Marx, philosopher and author of Das Kapital.'},
+  '5-9':{y:'1860',e:'Birthday: J.M. Barrie, author of Peter Pan.'},
+  '5-11':{y:'1751',e:'The first volume of the Encyclopédie, edited by Diderot and d\'Alembert, is published.'},
+  '5-12':{y:'1820',e:'Birthday: Florence Nightingale, founder of modern nursing.'},
+  '5-14':{y:'1948',e:'The State of Israel declares independence.'},
+  '5-15':{y:'1859',e:'Birthday: Pierre Curie, physicist and pioneer of radioactivity.'},
+  '5-17':{y:'1749',e:'Edward Jenner, developer of the smallpox vaccine, is born.'},
+  '5-20':{y:'1506',e:'Christopher Columbus dies in Valladolid, Spain.'},
+  '5-22':{y:'1859',e:'Birthday: Arthur Conan Doyle, creator of Sherlock Holmes.'},
+  '5-25':{y:'1878',e:'Gilbert and Sullivan\'s H.M.S. Pinafore premieres in London.'},
+  '5-29':{y:'1953',e:'Edmund Hillary and Tenzing Norgay become the first to summit Mount Everest.'},
+  '5-31':{y:'1819',e:'Birthday: Walt Whitman, American poet, author of Leaves of Grass.'},
+  '6-1':{y:'1926',e:'Birthday: Marilyn Monroe, actress and cultural icon.'},
+  '6-2':{y:'1840',e:'Birthday: Thomas Hardy, Victorian novelist.'},
+  '6-5':{y:'1967',e:'The Six-Day War begins; Israel defeats Egypt, Jordan and Syria.'},
+  '6-7':{y:'1848',e:'Birthday: Paul Gauguin, Post-Impressionist painter.'},
+  '6-8':{y:'1809',e:'Birthday: Thomas Paine, political philosopher and author of Common Sense.'},
+  '6-10':{y:'1922',e:'Birthday: Judy Garland, actress who played Dorothy in The Wizard of Oz.'},
+  '6-12':{y:'1929',e:'Birthday: Anne Frank, diarist and Holocaust victim.'},
+  '6-16':{y:'1884',e:'The first roller coaster in the US opens at Coney Island.'},
+  '6-19':{y:'1623',e:'Birthday: Blaise Pascal, mathematician and theologian.'},
+  '6-21':{y:'1905',e:'Birthday: Jean-Paul Sartre, existentialist philosopher.'},
+  '6-25':{y:'1903',e:'Birthday: George Orwell, author of 1984 and Animal Farm.'},
+  '6-27':{y:'1880',e:'Birthday: Helen Keller, deaf-blind activist and author.'},
+  '7-1':{y:'1646',e:'Birthday: Gottfried Wilhelm Leibniz, mathematician and philosopher.'},
+  '7-2':{y:'1877',e:'Birthday: Hermann Hesse, novelist and winner of the Nobel Prize in Literature.'},
+  '7-4':{y:'1776',e:'The United States Declaration of Independence is adopted.'},
+  '7-6':{y:'1946',e:'Birthday: Sylvester Stallone, actor and filmmaker.'},
+  '7-7':{y:'1860',e:'Birthday: Gustav Mahler, Austro-Bohemian Romantic composer.'},
+  '7-9':{y:'1956',e:'Birthday: Tom Hanks, actor and filmmaker.'},
+  '7-10':{y:'1856',e:'Birthday: Nikola Tesla, inventor and electrical engineer.'},
+  '7-14':{y:'1789',e:'The storming of the Bastille marks the beginning of the French Revolution.'},
+  '7-17':{y:'1899',e:'Birthday: James Cagney, actor and iconic figure of classic Hollywood.'},
+  '7-21':{y:'1969',e:'Neil Armstrong becomes the first human to walk on the Moon.'},
+  '7-22':{y:'1822',e:'Birthday: Gregor Mendel, founder of the science of genetics.'},
+  '7-25':{y:'1978',e:'Louise Brown, the first IVF baby, is born in England.'},
+  '7-26':{y:'1856',e:'Birthday: George Bernard Shaw, playwright and social critic.'},
+  '7-28':{y:'1914',e:'World War I begins as Austria-Hungary declares war on Serbia.'},
+  '8-4':{y:'1955',e:'Birthday: Barack Obama, 44th President of the United States.'},
+  '8-6':{y:'1809',e:'Birthday: Alfred Lord Tennyson, Victorian Poet Laureate.'},
+  '8-9':{y:'1945',e:'The atomic bomb is dropped on Nagasaki, Japan.'},
+  '8-12':{y:'1881',e:'Birthday: Cecil B. DeMille, pioneer Hollywood film director.'},
+  '8-15':{y:'1769',e:'Birthday: Napoleon Bonaparte, French Emperor and military genius.'},
+  '8-19':{y:'1871',e:'Birthday: Orville Wright, co-inventor of the airplane.'},
+  '8-24':{y:'79',e:'Mount Vesuvius erupts, destroying Pompeii and Herculaneum.'},
+  '8-26':{y:'1910',e:'Birthday: Mother Teresa, missionary and Nobel Peace Prize laureate.'},
+  '8-27':{y:'1770',e:'Birthday: Georg Wilhelm Friedrich Hegel, idealist philosopher.'},
+  '8-28':{y:'1963',e:'Martin Luther King Jr. delivers his "I Have a Dream" speech in Washington.'},
+  '9-2':{y:'1945',e:'Japan formally surrenders, ending World War II.'},
+  '9-4':{y:'1998',e:'Google is incorporated by Larry Page and Sergey Brin.'},
+  '9-6':{y:'1766',e:'Birthday: John Dalton, chemist and pioneer of atomic theory.'},
+  '9-9':{y:'1828',e:'Birthday: Leo Tolstoy, author of War and Peace and Anna Karenina.'},
+  '9-11':{y:'2001',e:'Terrorist attacks destroy the World Trade Center in New York City.'},
+  '9-15':{y:'1890',e:'Birthday: Agatha Christie, bestselling crime novelist.'},
+  '9-17':{y:'1787',e:'The United States Constitution is signed in Philadelphia.'},
+  '9-20':{y:'1519',e:'Ferdinand Magellan departs Spain on the first circumnavigation of the globe.'},
+  '9-21':{y:'1866',e:'Birthday: H.G. Wells, author of The War of the Worlds and The Time Machine.'},
+  '9-26':{y:'1791',e:'Birthday: Théodore Géricault, French Romantic painter.'},
+  '9-28':{y:'1928',e:'Alexander Fleming discovers penicillin — a discovery that changed medicine.'},
+  '9-30':{y:'1452',e:'Johannes Gutenberg prints the first Gutenberg Bible.'},
+  '10-1':{y:'1949',e:'The People\'s Republic of China is officially proclaimed by Mao Zedong.'},
+  '10-4':{y:'1957',e:'Sputnik 1, the first artificial satellite, is launched by the Soviet Union.'},
+  '10-9':{y:'1940',e:'Birthday: John Lennon, musician and co-founder of The Beatles.'},
+  '10-12':{y:'1492',e:'Columbus makes landfall in the Bahamas.'},
+  '10-14':{y:'1066',e:'William the Conqueror defeats Harold II at the Battle of Hastings.'},
+  '10-15':{y:'1844',e:'Birthday: Friedrich Nietzsche, philosopher ("God is dead").'},
+  '10-16':{y:'1854',e:'Birthday: Oscar Wilde, playwright and wit.'},
+  '10-19':{y:'1784',e:'Birthday: Leigh Hunt, poet who influenced Keats and Shelley.'},
+  '10-21':{y:'1833',e:'Birthday: Alfred Nobel, chemist, inventor of dynamite, founder of the Nobel Prize.'},
+  '10-22':{y:'1811',e:'Birthday: Franz Liszt, virtuoso pianist and composer.'},
+  '10-25':{y:'1881',e:'Birthday: Pablo Picasso, co-founder of Cubism.'},
+  '10-26':{y:'1685',e:'Birthday: Domenico Scarlatti, Baroque composer.'},
+  '10-28':{y:'1914',e:'Birthday: Jonas Salk, developer of the first polio vaccine.'},
+  '11-1':{y:'1512',e:'Michelangelo\'s Sistine Chapel ceiling is unveiled in Vatican City.'},
+  '11-4':{y:'1922',e:'Howard Carter discovers the entrance to Tutankhamun\'s tomb.'},
+  '11-8':{y:'1895',e:'Wilhelm Röntgen discovers X-rays.'},
+  '11-9':{y:'1989',e:'The Berlin Wall falls, marking the end of the Cold War division of Germany.'},
+  '11-10':{y:'1483',e:'Birthday: Martin Luther, theologian who started the Protestant Reformation.'},
+  '11-11':{y:'1918',e:'World War I ends — Armistice Day.'},
+  '11-14':{y:'1889',e:'Nellie Bly sets out to travel around the world in under 80 days.'},
+  '11-17':{y:'1869',e:'The Suez Canal opens, connecting the Mediterranean and Red Sea.'},
+  '11-19':{y:'1863',e:'Lincoln delivers the Gettysburg Address.'},
+  '11-22':{y:'1963',e:'U.S. President John F. Kennedy is assassinated in Dallas, Texas.'},
+  '11-24':{y:'1859',e:'Charles Darwin publishes On the Origin of Species.'},
+  '11-26':{y:'1789',e:'The United States celebrates its first Thanksgiving holiday.'},
+  '11-28':{y:'1757',e:'Birthday: William Blake, poet and painter ("Tyger Tyger, burning bright").'},
+  '11-30':{y:'1835',e:'Birthday: Mark Twain, author of Huckleberry Finn and Tom Sawyer.'},
+  '12-2':{y:'1804',e:'Napoleon Bonaparte crowns himself Emperor of France.'},
+  '12-5':{y:'1901',e:'Birthday: Walt Disney, animator, entrepreneur and pioneer of the film industry.'},
+  '12-9':{y:'1608',e:'Birthday: John Milton, poet and author of Paradise Lost.'},
+  '12-10':{y:'1830',e:'Birthday: Emily Dickinson, poet who wrote nearly 1,800 poems in isolation.'},
+  '12-16':{y:'1770',e:'Birthday: Ludwig van Beethoven, one of the greatest composers in history.'},
+  '12-17':{y:'1903',e:'The Wright Brothers make the first successful powered airplane flight.'},
+  '12-21':{y:'1620',e:'The Mayflower Pilgrims reach Plymouth Rock, Massachusetts.'},
+  '12-25':{y:'1642',e:'Birthday: Isaac Newton, born on Christmas Day (Old Style calendar).'},
+  '12-26':{y:'1791',e:'Birthday: Charles Babbage, mathematician who conceived the first computer.'},
+  '12-28':{y:'1856',e:'Birthday: Woodrow Wilson, 28th President of the United States.'},
+};
+(function(){
+  var now=new Date();
+  var key=(now.getMonth()+1)+'-'+now.getDate();
+  var e=OTD_DATA[key];
+  var h='<div class="card-label"><span class="label-pip" style="background:var(--gold)"></span>📅 On This Day</div>';
+  if(e){
+    h+='<div class="otd-year">'+esc(e.y)+'</div>';
+    h+='<p class="card-text">'+esc(e.e)+'</p>';
+  }else{
+    // Fallback: just show today's date context
+    h+='<div class="otd-year">'+now.toLocaleDateString('en-IN',{month:'long'})+'</div>';
+    h+='<p class="card-text">A day with no special entry in our archive — but history is being made today nonetheless.</p>';
+  }
+  document.getElementById('otd-inner').innerHTML=h;
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: CINEMA RECOMMENDATION
+// ═══════════════════════════════════════════════════════════
+// Curated rotating list of arthouse / notable films
+// Cinema: Kino am Rottenbacher Str. (arthouse), times vary by day
+var FILMS=[
+  {title:'Toni Erdmann',director:'Maren Ade, 2016',blurb:'A pranking father visits his estranged, high-achieving daughter in Bucharest. One of the most celebrated European films of the decade — funny, devastating and deeply human. Winner of multiple European Film Awards.',endorsement:'"An undisputed masterpiece." — Sight & Sound Magazine',lang:'German with English subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.filmmuseum-muenchen.de'},
+  {title:'All About My Mother',director:'Pedro Almodóvar, 1999',blurb:'A grieving Madrid nurse travels to Barcelona to find the father her son never knew. Almodóvar\'s most tender and exuberant film — a celebration of love, loss and the people who pick up the pieces.',endorsement:'"Exhilarating, heart-rending." — Roger Ebert, RogerEbert.com',lang:'Spanish with subtitles',cinema:'Kino am Rottenbacher Str.',addr:'Rottenbacher Str. 23, Starnberg',link:'https://www.kinosterzing.de'},
+  {title:'The Lives of Others',director:'Florian Henckel von Donnersmarck, 2006',blurb:'A Stasi officer surveilling a playwright in 1984 East Berlin begins to question everything he\'s dedicated his life to. The finest German-language film of the 21st century.',endorsement:'"Absorbing and devastating." — A.O. Scott, New York Times',lang:'German with English subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.filmmuseum-muenchen.de'},
+  {title:'Parasite',director:'Bong Joon-ho, 2019',blurb:'Two Seoul families — one wealthy, one impoverished — collide in an escalating comedy of manners that turns into something darker. Winner of four Academy Awards including Best Picture.',endorsement:'"A work of pure, undiluted cinema." — Anthony Lane, The New Yorker',lang:'Korean with subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.filmmuseum-muenchen.de'},
+  {title:'Portrait of a Lady on Fire',director:'Céline Sciamma, 2019',blurb:'In 18th-century Brittany, a painter is commissioned to create a secret portrait of a noblewoman who must marry against her will. A film of exceptional beauty and restraint.',endorsement:'"Ravishing, precise, unforgettable." — Sight & Sound',lang:'French with subtitles',cinema:'City Kinos München',addr:'Sonnenstraße 12',link:'https://www.citykinos.de'},
+  {title:'Jeanne Dielman, 23 Commerce Quay, 1080 Brussels',director:'Chantal Akerman, 1975',blurb:'Three days in the life of a Belgian widow. Akerman\'s landmark 201-minute film observes domestic labour with hypnotic rigour — voted the greatest film ever made by Sight & Sound in 2022.',endorsement:'"The most important film ever made by a woman." — Film Comment',lang:'French with subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.filmmuseum-muenchen.de'},
+  {title:'Yi Yi: A One and a Two',director:'Edward Yang, 2000',blurb:'Three generations of a Taipei family navigate love, loss, age and youth over three extraordinary hours. Yang\'s final film is a gentle, piercing masterwork of world cinema.',endorsement:'"One of the greatest films ever made." — Richard Brody, The New Yorker',lang:'Mandarin with subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.filmmuseum-muenchen.de'},
+];
+
+// Cinema showtimes by day of week (to simulate a real schedule)
+var SHOW_TIMES=['20:30','20:00','19:45','20:15','20:30','18:00','17:30'];
+(function(){
+  var now=new Date();
+  var doy=Math.floor((Date.now()-new Date(now.getFullYear(),0,1))/(864e5));
+  var f=FILMS[doy%FILMS.length];
+  var dow=now.getDay();
+  var showT=SHOW_TIMES[dow];
+  // Compute depart time: Marienstern → city center ~28-40 min
+  var tParts=showT.split(':'),tMins=parseInt(tParts[0])*60+parseInt(tParts[1]);
+  var departMins=tMins-45; // 45 min buffer
+  var dH=Math.floor(departMins/60),dM=departMins%60;
+  var departStr=(dH<10?'0':'')+dH+':'+(dM<10?'0':'')+dM+' Uhr';
+  var route=[
+    {ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},
+    {ic:'🚇',t:'U5 → Marienplatz',d:'16 min'},
+    {ic:'🚶',t:'Walk to '+f.cinema,d:'8–12 min'}
+  ];
+  var h='<div class="cinema-inner">';
+  h+='<div class="cinema-poster"><span class="cinema-poster-ph">🎬</span></div>';
+  h+='<div class="cinema-body">';
+  h+='<div class="cinema-tag">🎬 Tonight\'s Arthouse Recommendation</div>';
+  h+='<div class="cinema-title">'+esc(f.title)+'</div>';
+  h+='<div class="cinema-director">'+esc(f.director)+' · '+esc(f.lang)+'</div>';
+  h+='<p class="cinema-blurb">'+esc(f.blurb)+'</p>';
+  h+='<div class="cinema-endorsement">'+esc(f.endorsement)+'</div>';
+  h+='<a class="cinema-link" href="'+esc(f.link)+'" target="_blank" rel="noopener">'+esc(f.cinema)+' →</a>';
+  h+='</div>';
+  h+='<div class="cinema-route">';
+  h+='<div class="cinema-time-big">'+esc(showT)+'</div>';
+  h+='<div class="cinema-where">📍 '+esc(f.cinema)+'</div>';
+  h+='<div style="height:.5rem"></div>';
+  route.forEach(function(s){
+    h+='<div class="cinema-step"><span class="cinema-step-ic">'+s.ic+'</span><span><strong>'+esc(s.t)+'</strong> <span style="font-family:\'DM Mono\',monospace;font-size:.52rem;opacity:.5">'+esc(s.d)+'</span></span></div>';
+  });
+  h+='<div class="cinema-depart">Leave by '+esc(departStr)+'</div>';
+  h+='<a class="cinema-link" href="'+esc(f.link)+'" target="_blank" rel="noopener">Book tickets →</a>';
+  h+='</div>';
+  h+='</div>';
+  document.getElementById('cinema-inner').innerHTML=h;
+  // Try to load a poster image via The Movie Database search (CORS-free OMDB)
+  var cleanTitle=f.title.split(':')[0].trim();
+  tFetch('https://www.omdbapi.com/?t='+encodeURIComponent(cleanTitle)+'&apikey=trilogy')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.Poster&&d.Poster!=='N/A'){
+        var poster=document.querySelector('.cinema-poster');
+        if(poster){var img=new Image();img.src=d.Poster;img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.85';img.onerror=function(){};poster.prepend(img);}
+      }
+    }).catch(function(){});
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: WEATHER
+// ═══════════════════════════════════════════════════════════
+var WX_EM={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'🌨️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
+var WX_DS={0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Rain showers',81:'Heavy showers',82:'Violent showers',95:'Thunderstorm',96:'Thunderstorm & hail'};
+(function(){
+  var ck='wx5';var cached=lsGet(ck);
   if(cached){document.getElementById('wx-inner').innerHTML=cached;return;}
-  tFetch('https://api.open-meteo.com/v1/forecast?latitude=48.1375&longitude=11.5755&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,apparent_temperature&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=Europe%2FBerlin&forecast_days=3')
+  tFetch('https://api.open-meteo.com/v1/forecast?latitude=48.1375&longitude=11.5755&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum&timezone=Europe%2FBerlin&forecast_days=4')
     .then(function(r){return r.json();})
     .then(function(d){
       var c=d.current,dl=d.daily;
-      var em=WX_EMOJI[c.weather_code]||'🌡️',desc=WX_DESC[c.weather_code]||'';
-      var h='<div style="font-size:2.2rem;line-height:1;margin-bottom:.4rem">'+em+'</div>';
-      h+='<div class="hc-hl">'+Math.round(c.temperature_2m)+'°C <span style="font-size:.75em;font-weight:400">'+desc+'</span></div>';
-      h+='<div class="w-row">';
-      h+='<div class="w-stat"><div class="w-val">'+Math.round(c.apparent_temperature)+'°</div><div class="w-lbl">Feels</div></div>';
-      h+='<div class="w-stat"><div class="w-val">'+Math.round(c.wind_speed_10m)+'</div><div class="w-lbl">km/h</div></div>';
-      h+='</div>';
-      ['Today','Tomorrow','Day 3'].forEach(function(name,i){
-        h+='<div class="w-forecast"><span style="font-family:\'DM Mono\',monospace;font-size:.58rem;color:var(--muted);width:60px">'+name+'</span>';
-        h+='<span>'+(WX_EMOJI[dl.weather_code[i]]||'🌡️')+'</span>';
+      var em=WX_EM[c.weather_code]||'🌡️',desc=WX_DS[c.weather_code]||'';
+      var h='<div class="card-label"><span class="label-pip" style="background:var(--sky)"></span>Weather · Munich</div>';
+      h+='<div class="wx-big">'+em+'</div>';
+      h+='<div class="wx-temp">'+Math.round(c.temperature_2m)+'°C</div>';
+      h+='<div class="wx-desc">'+esc(desc)+' · feels '+Math.round(c.apparent_temperature)+'°</div>';
+      h+='<div class="wx-grid"><div class="wx-stat"><div class="wx-val">'+Math.round(c.wind_speed_10m)+'</div><div class="wx-lbl">km/h</div></div>';
+      h+='<div class="wx-stat"><div class="wx-val">'+Math.round(c.relative_humidity_2m)+'%</div><div class="wx-lbl">humidity</div></div></div>';
+      ['Today','Tmrw','Day 3','Day 4'].forEach(function(name,i){
+        h+='<div class="wx-row"><span class="wx-day">'+name+'</span><span>'+(WX_EM[dl.weather_code[i]]||'🌡️')+'</span>';
         h+='<span style="font-weight:500">'+Math.round(dl.temperature_2m_max[i])+'°</span>';
-        h+='<span style="color:var(--sky)">'+Math.round(dl.temperature_2m_min[i])+'°</span></div>';
+        h+='<span style="color:var(--sky)">'+Math.round(dl.temperature_2m_min[i])+'°</span>';
+        if(dl.precipitation_sum&&dl.precipitation_sum[i]>0)h+='<span style="color:var(--sky);font-size:.65rem">'+dl.precipitation_sum[i].toFixed(1)+'mm</span>';
+        h+='</div>';
       });
-      h+='<div class="hc-meta" style="margin-top:.6rem">Munich · Open-Meteo</div>';
-      document.getElementById('wx-inner').innerHTML=h;
-      lsSet('weather',h);
-    })
-    .catch(function(){document.getElementById('wx-inner').innerHTML='<p style="color:var(--muted);font-size:.8rem">Weather unavailable</p>';});
+      document.getElementById('wx-inner').innerHTML=h;lsSet(ck,h);
+    }).catch(function(){document.getElementById('wx-inner').innerHTML='<p style="color:var(--muted);font-size:.78rem">Weather unavailable</p>';});
 })();
 
-// ── EVENTS (instant — curated) ────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// CARD: MUNICH EVENT (curated)
+// ═══════════════════════════════════════════════════════════
 var EVENTS=[
-  {title:'Deutsches Museum',desc:'One of the world\'s largest science and tech museums — aerospace, shipbuilding, digital labs across 73,000 m².',time:'09:00',ends:'17:00',transit:30,
-   route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Isartor',d:'18 min'},{ic:'🚶',t:'Walk to Museumsinsel',d:'5 min'}],link:'https://www.deutsches-museum.de',tip:'Arrive early to avoid school groups.'},
-  {title:'English Garden & Eisbach',desc:'Munich\'s iconic urban park. Watch surfers ride the Eisbach wave, visit the Chinese Tower beer garden.',time:'All day',ends:'',transit:35,
-   route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Lehel',d:'22 min'},{ic:'🚶',t:'Walk north into the park',d:'7 min'}],link:'https://www.muenchen.de',tip:'Surfers most active 10:00–14:00.'},
-  {title:'Viktualienmarkt',desc:'Munich\'s beloved daily open-air food market — Bavarian produce, cheese, fresh bread, and a central beer garden.',time:'08:00',ends:'18:00',transit:28,
-   route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Marienplatz',d:'16 min'},{ic:'🚶',t:'Walk south 3 min',d:'3 min'}],link:'https://www.viktualienmarkt.de',tip:'Best before 11:00 for fresh produce.'},
-  {title:'Pinakothek der Moderne',desc:'World-class contemporary art, design and architecture. Permanent collection includes Warhol, Beuys, Bauhaus.',time:'10:00',ends:'18:00',transit:38,
-   route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Odeonsplatz, U3/U6 → Universität',d:'25 min'},{ic:'🚶',t:'Walk west along Veterinärstraße',d:'7 min'}],link:'https://www.pinakothek-der-moderne.de',tip:'Free on Sundays. Open until 20:00 on Thursdays.'},
-  {title:'Nymphenburg Palace',desc:'Baroque summer palace of the Bavarian kings with stunning gardens, canal and Gallery of Beauties.',time:'09:00',ends:'18:00',transit:45,
-   route:[{ic:'🚌',t:'Bus 55 → Ostbahnhof',d:'12 min'},{ic:'🚂',t:'S-Bahn → Hbf, Tram 17 → Schloss Nymphenburg',d:'25 min'},{ic:'🚶',t:'Walk to palace entrance',d:'5 min'}],link:'https://www.schloss-nymphenburg.de',tip:'Palace park is free. Palace interior ~€10.'},
-  {title:'Marienplatz & Glockenspiel',desc:'The heart of Munich. Watch the famous Rathaus Glockenspiel chime, explore the historic Frauenkirche and old town.',time:'All day',ends:'',transit:22,
-   route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Marienplatz',d:'16 min'}],link:'https://www.muenchen.de',tip:'Glockenspiel plays at 11:00, 12:00, and (summer) 17:00.'},
-  {title:'BMW Museum & BMW Welt',desc:'100 years of BMW design and engineering. Adjacent BMW Welt showroom is free — concept cars and motorcycles.',time:'10:00',ends:'18:00',transit:50,
-   route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Odeonsplatz, U3 → Olympiazentrum',d:'32 min'},{ic:'🚶',t:'Walk to BMW Welt',d:'5 min'}],link:'https://www.bmw-welt.com',tip:'BMW Welt free; museum ~€10.'}
+  {title:'Deutsches Museum',desc:'One of the world\'s largest science and technology museums, spanning 73,000 m² on Museum Island in the Isar. From aerospace and shipbuilding to digital labs, there is something extraordinary around every corner.',time:'09:00',transit:30,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Isartor',d:'18 min'},{ic:'🚶',t:'Walk to Museumsinsel',d:'5 min'}],link:'https://www.deutsches-museum.de',tip:'Arrive before 10:00 to beat school groups.'},
+  {title:'English Garden & Eisbach',desc:'Munich\'s iconic urban park stretching north from the city centre. Watch surfers ride the Eisbach standing wave, or find a deckchair at the Chinese Tower beer garden.',time:'All day',transit:35,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Lehel',d:'22 min'},{ic:'🚶',t:'Walk north into the park',d:'7 min'}],link:'https://www.muenchen.de',tip:'Surfers most active 10:00–14:00.'},
+  {title:'Viktualienmarkt',desc:'Munich\'s beloved daily open-air food market — Bavarian produce, cheese, fresh bread, and a central beer garden under the maypole.',time:'08:00',transit:25,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Marienplatz',d:'14 min'},{ic:'🚶',t:'Walk south 3 min',d:'3 min'}],link:'https://www.viktualienmarkt.de',tip:'Best before 11:00 for freshest produce. Closed Sundays.'},
+  {title:'Pinakothek der Moderne',desc:'World-class contemporary art, design and architecture. Permanent collection includes Warhol, Beuys, Bauhaus, and Munich\'s extraordinary applied arts collection.',time:'10:00',transit:38,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Odeonsplatz, U3/U6 → Universität',d:'25 min'},{ic:'🚶',t:'Walk west along Veterinärstraße',d:'7 min'}],link:'https://www.pinakothek-der-moderne.de',tip:'Free on Sundays (€1). Open until 20:00 on Thursdays.'},
+  {title:'Nymphenburg Palace',desc:'Baroque summer palace of Bavaria\'s kings with stunning gardens, canal and Gallery of Beauties — 180 hectares of formal gardens stretching westward.',time:'09:00',transit:45,route:[{ic:'🚌',t:'Bus 55 → Ostbahnhof',d:'12 min'},{ic:'🚂',t:'S1 → Hbf, Tram 17 → Schloss Nymphenburg',d:'28 min'},{ic:'🚶',t:'Walk to palace entrance',d:'5 min'}],link:'https://www.schloss-nymphenburg.de',tip:'Palace park free. Interior ~€10. Gardens best at sunrise.'},
+  {title:'Marienplatz & Old Town',desc:'The heart of Munich. The elaborate Rathaus Glockenspiel carillon, the medieval Frauenkirche with its copper onion domes, cobblestone alleys and hidden courtyards.',time:'All day',transit:22,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Marienplatz',d:'16 min'}],link:'https://www.muenchen.de',tip:'Glockenspiel at 11:00, 12:00 and (summer) 17:00. Free.'},
+  {title:'BMW Museum & BMW Welt',desc:'A hundred years of Bavarian automotive engineering — concept cars, racing legends and future mobility in a striking bowl-shaped building beside the Olympic Park.',time:'10:00',transit:50,route:[{ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},{ic:'🚇',t:'U5 → Odeonsplatz, U3 → Olympiazentrum',d:'32 min'},{ic:'🚶',t:'Walk to BMW Welt',d:'5 min'}],link:'https://www.bmw-welt.com',tip:'BMW Welt is free. Museum ~€10.'}
 ];
 (function(){
-  var now=new Date();
-  var ev=EVENTS[now.getDay()%EVENTS.length];
-  function depart(t,mins){
-    if(t==='All day')return'Whenever you like';
-    var p=t.split(':'),tot=parseInt(p[0])*60+parseInt(p[1])-mins-10;
-    if(tot<0)tot=0;
-    var h=Math.floor(tot/60),m=Math.round((tot%60)/5)*5;
-    return(h<10?'0':'')+h+':'+(m<10?'0':'')+m+' Uhr';
-  }
-  var h='<div class="ev-badge">📅 Today in Munich</div>';
-  h+='<div class="hc-hl">'+esc(ev.title)+'</div>';
-  h+='<p class="hc-text">'+esc(ev.desc)+'</p>';
-  if(ev.tip)h+='<div style="font-size:.76rem;color:var(--gold);margin:.2rem 0">💡 '+esc(ev.tip)+'</div>';
+  var now=new Date();var ev=EVENTS[now.getDay()%EVENTS.length];
+  function depart(t,mins){if(t==='All day')return'Any time';var p=t.split(':'),tot=parseInt(p[0])*60+parseInt(p[1])-mins-10;if(tot<0)tot=0;var h=Math.floor(tot/60),m=Math.round((tot%60)/5)*5;return(h<10?'0':'')+h+':'+(m<10?'0':'')+m+' Uhr';}
+  var h='<div class="card-label"><span class="label-pip" style="background:var(--gold)"></span>★ Munich Today</div>';
+  h+='<div class="ev-badge">📅 '+new Date().toLocaleDateString('en-DE',{weekday:'long'})+'</div>';
+  h+='<div class="card-hl" style="font-size:1.1rem">'+esc(ev.title)+'</div>';
+  h+='<p class="card-text">'+esc(ev.desc)+'</p>';
+  if(ev.tip)h+='<div class="ev-tip">💡 '+esc(ev.tip)+'</div>';
   h+='<div class="ev-route">';
-  ev.route.forEach(function(s){h+='<div class="ev-step"><span class="ev-step-ic">'+s.ic+'</span><span><strong>'+esc(s.t)+'</strong> <span style="font-family:\'DM Mono\',monospace;font-size:.6rem;color:var(--muted)">'+esc(s.d)+'</span></span></div>';});
-  h+='</div>';
-  h+='<div class="ev-depart">Depart by <strong>'+esc(depart(ev.time,ev.transit))+'</strong> <span style="font-size:.6rem;color:rgba(200,146,42,.7)">(~'+ev.transit+' min travel)</span></div>';
-  h+='<a class="hc-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">More info →</a>';
+  ev.route.forEach(function(s){h+='<div class="ev-step"><span class="ev-ic">'+s.ic+'</span><span><strong>'+esc(s.t)+'</strong> <span style="font-family:\'DM Mono\',monospace;font-size:.55rem;color:var(--muted)"> · '+esc(s.d)+'</span></span></div>';});
+  h+='</div><div class="ev-depart">Depart by <strong>'+esc(depart(ev.time,ev.transit))+'</strong> <span style="font-size:.56rem;opacity:.6">(~'+ev.transit+'min)</span></div>';
+  h+='<a class="card-link" style="margin-top:.4rem" href="'+esc(ev.link)+'" target="_blank" rel="noopener">More info →</a>';
   document.getElementById('ev-inner').innerHTML=h;
 })();
 
-// ── NEWS CARDS (shared render helper) ────────────────────────
-function renderNewsCard(elId, item, sourceLabel){
-  if(!item){document.getElementById(elId).innerHTML='<p style="color:var(--muted);font-size:.78rem">Unavailable</p>';return;}
-  var h='<div class="hc-hl">'+esc(trunc(item.title,100))+'</div>';
-  h+='<p class="hc-text">'+esc(trunc(item.description||'',150))+'</p>';
-  h+='<div class="hc-meta">'+esc(fmtDate(item.pubDate))+'</div>';
-  if(item.link)h+='<a class="hc-link" href="'+esc(item.link)+'" target="_blank" rel="noopener">Read →</a>';
-  document.getElementById(elId).innerHTML=h;
-}
-
-function loadHomeCard(elId, cacheKey, feedUrls, sourceLabel){
+// ═══════════════════════════════════════════════════════════
+// CARD: NEWS (4 papers with images)
+// ═══════════════════════════════════════════════════════════
+function loadNewsCard(bodyId,thumbId,cacheKey,feedUrls){
   var cached=lsGet(cacheKey);
-  if(cached){document.getElementById(elId).innerHTML=cached;return;}
-  Promise.any(feedUrls.map(function(u){
-    return fetchRSS(u).then(function(items){
-      var it=items.find(function(i){return i.title&&i.title.length>5;});
-      if(!it)throw 0;return it;
-    });
-  })).then(function(item){
-    var h='<div class="hc-hl">'+esc(trunc(item.title,100))+'</div>';
-    h+='<p class="hc-text">'+esc(trunc(item.description||'',150))+'</p>';
-    h+='<div class="hc-meta">'+esc(fmtDate(item.pubDate))+'</div>';
-    if(item.link)h+='<a class="hc-link" href="'+esc(item.link)+'" target="_blank" rel="noopener">Read →</a>';
-    document.getElementById(elId).innerHTML=h;
-    lsSet(cacheKey,h);
-  }).catch(function(){
-    document.getElementById(elId).innerHTML='<p style="color:var(--muted);font-size:.78rem">Feed unavailable — try refreshing</p>';
-  });
+  if(cached){document.getElementById(bodyId).innerHTML=cached.h;if(cached.img)loadThumb(thumbId,cached.img);return;}
+  var pArr=feedUrls.map(function(u){return fetchRSS(u).then(function(items){var it=items.find(function(i){return i.title&&i.title.length>6;});if(!it)throw 0;return it;});});
+  anyOf(pArr).then(function(item){
+    var desc=trunc(item.description||'',340);
+    var h='<div class="card-hl">'+esc(trunc(item.title,115))+'</div>';
+    if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
+    h+='<div class="card-meta">'+esc(fmtD(item.pubDate))+'</div>';
+    if(item.link)h+='<a class="card-link" href="'+esc(item.link)+'" target="_blank" rel="noopener">Read →</a>';
+    document.getElementById(bodyId).innerHTML=h;
+    var img=extractImg(item);if(img)loadThumb(thumbId,img);
+    lsSet(cacheKey,{h:h,img:img||null});
+  }).catch(function(){document.getElementById(bodyId).innerHTML='<p style="color:var(--muted);font-size:.78rem">Feed unavailable</p>';});
 }
+loadNewsCard('sz-body','sz-thumb','h5_sz',['https://rss.sueddeutsche.de/rss/Topthemen','https://rss.sueddeutsche.de/app/service/rss/alles/index.rss?output=rss']);
+loadNewsCard('hindu-body','hindu-thumb','h5_hindu',['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/news/national/kerala/?service=rss','https://www.thehindu.com/feeder/default.rss']);
+loadNewsCard('grd-body','grd-thumb','h5_grd',['https://www.theguardian.com/world/rss','https://www.theguardian.com/uk/rss']);
+loadNewsCard('nyt-body','nyt-thumb','h5_nyt',['https://rss.nytimes.com/services/xml/rss/nyt/World.xml','https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml']);
 
-// Fire all home news cards in parallel
-loadHomeCard('sz-inner','sz',
-  ['https://rss.sueddeutsche.de/rss/Topthemen',
-   'https://rss.sueddeutsche.de/app/service/rss/alles/index.rss?output=rss']);
-
-loadHomeCard('hindu-inner','hindu',
-  ['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss',
-   'https://www.thehindu.com/news/national/kerala/?service=rss',
-   'https://www.thehindu.com/feeder/default.rss']);
-
-loadHomeCard('grd-inner','guardian',
-  ['https://www.theguardian.com/world/rss',
-   'https://www.theguardian.com/uk/rss']);
-
-loadHomeCard('nyt-inner','nyt',
-  ['https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
-   'https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml']);
-
-// ── MALAYALAM WIKIPEDIA ───────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// CARD: ASTRONOMY — NASA APOD + Space.com RSS
+// ═══════════════════════════════════════════════════════════
 (function(){
-  var now=new Date();
-  var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
-  var ck=todayKey('ml_wiki');
-  var cached=lsGet(ck);
-  if(cached){document.getElementById('ml-inner').innerHTML=cached;return;}
+  var ck='astro5';var cached=lsGet(ck);
+  if(cached){document.getElementById('astro-inner').innerHTML=cached;return;}
+  // Try Space.com RSS via proxy
+  fetchRSS('https://www.space.com/feeds/all')
+    .then(function(items){
+      var it=items.find(function(i){return i.title&&i.title.length>5;});
+      if(!it)throw 0;
+      var desc=trunc(it.description||'',280);
+      var h='<div class="card-label"><span class="label-pip" style="background:var(--slate)"></span>🔭 Astronomy</div>';
+      h+='<div class="astro-icon">🌌</div>';
+      h+='<div class="card-hl">'+esc(trunc(it.title,100))+'</div>';
+      if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
+      h+='<div class="card-meta">Space.com · '+esc(fmtD(it.pubDate))+'</div>';
+      if(it.link)h+='<a class="card-link" href="'+esc(it.link)+'" target="_blank" rel="noopener">Read →</a>';
+      document.getElementById('astro-inner').innerHTML=h;lsSet(ck,h);
+    })
+    .catch(function(){
+      // Fallback: Sky & Telescope
+      return fetchRSS('https://skyandtelescope.org/feed/').then(function(items){
+        var it=items.find(function(i){return i.title&&i.title.length>5;});
+        if(!it)throw 0;
+        var desc=trunc(it.description||'',280);
+        var h='<div class="card-label"><span class="label-pip" style="background:var(--slate)"></span>🔭 Astronomy</div>';
+        h+='<div class="astro-icon">🪐</div>';
+        h+='<div class="card-hl">'+esc(trunc(it.title,100))+'</div>';
+        if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
+        h+='<div class="card-meta">Sky & Telescope · '+esc(fmtD(it.pubDate))+'</div>';
+        if(it.link)h+='<a class="card-link" href="'+esc(it.link)+'" target="_blank" rel="noopener">Read →</a>';
+        document.getElementById('astro-inner').innerHTML=h;lsSet(ck,h);
+      });
+    })
+    .catch(function(){document.getElementById('astro-inner').innerHTML='<div class="card-label"><span class="label-pip" style="background:var(--slate)"></span>🔭 Astronomy</div><p style="color:var(--muted);font-size:.78rem;margin-top:.5rem">Astronomy feed unavailable</p>';});
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: MALAYALAM WIKIPEDIA
+// ═══════════════════════════════════════════════════════════
+(function(){
+  var now=new Date();var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
+  var ck=dateKey('ml_wiki5');var cached=lsGet(ck);
+  if(cached){document.getElementById('ml-body').innerHTML=cached.h;if(cached.img)loadThumb('ml-thumb',cached.img);return;}
   tFetch('https://ml.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd)
     .then(function(r){return r.json();})
     .then(function(data){
       var tfa=data.tfa||{};
       var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'';
-      var extract=trunc(tfa.extract||'',180);
+      var extract=trunc(tfa.extract||'',360);
       var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://ml.wikipedia.org';
-      var h='<div class="hc-hl" style="font-family:\'Noto Sans Malayalam\',sans-serif;font-size:.98rem">'+esc(title)+'</div>';
-      if(extract)h+='<p class="hc-text" style="font-family:\'Noto Sans Malayalam\',sans-serif">'+esc(extract)+'</p>';
-      h+='<div class="hc-meta">Malayalam Wikipedia · '+y+'-'+mo+'-'+dd+'</div>';
-      h+='<a class="hc-link" href="'+esc(link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
-      document.getElementById('ml-inner').innerHTML=h;
-      lsSet(ck,h);
-    })
-    .catch(function(){
-      return tFetch('https://ml.wikipedia.org/api/rest_v1/page/random/summary')
-        .then(function(r){return r.json();})
-        .then(function(p){
-          var h='<div class="hc-hl" style="font-family:\'Noto Sans Malayalam\',sans-serif;font-size:.98rem">'+esc(p.title||'')+'</div>';
-          h+='<p class="hc-text" style="font-family:\'Noto Sans Malayalam\',sans-serif">'+esc(trunc(p.extract||'',180))+'</p>';
-          var link=p.content_urls&&p.content_urls.desktop?p.content_urls.desktop.page:'https://ml.wikipedia.org';
-          h+='<div class="hc-meta">Malayalam Wikipedia</div>';
-          h+='<a class="hc-link" href="'+esc(link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
-          document.getElementById('ml-inner').innerHTML=h;
-        });
-    })
-    .catch(function(){document.getElementById('ml-inner').innerHTML='<p style="color:var(--muted);font-size:.78rem">Malayalam Wikipedia unavailable</p>';});
+      var imgUrl=tfa.thumbnail&&tfa.thumbnail.source?tfa.thumbnail.source:null;
+      var h='<div class="card-hl ml-script" style="font-size:.95rem;line-height:1.35">'+esc(title)+'</div>';
+      if(extract)h+='<p class="card-text ml-script">'+esc(extract)+'</p>';
+      h+='<div class="card-meta">Malayalam Wikipedia · '+y+'/'+mo+'/'+dd+'</div>';
+      h+='<a class="card-link" href="'+esc(link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
+      document.getElementById('ml-body').innerHTML=h;if(imgUrl)loadThumb('ml-thumb',imgUrl);
+      lsSet(ck,{h:h,img:imgUrl||null});
+    }).catch(function(){
+      return tFetch('https://ml.wikipedia.org/api/rest_v1/page/random/summary').then(function(r){return r.json();}).then(function(p){
+        var imgUrl=p.thumbnail&&p.thumbnail.source?p.thumbnail.source:null;
+        var h='<div class="card-hl ml-script" style="font-size:.95rem;line-height:1.35">'+esc(p.title||'')+'</div>';
+        h+='<p class="card-text ml-script">'+esc(trunc(p.extract||'',360))+'</p>';
+        var link=p.content_urls&&p.content_urls.desktop?p.content_urls.desktop.page:'https://ml.wikipedia.org';
+        h+='<div class="card-meta">Malayalam Wikipedia</div>';
+        h+='<a class="card-link" href="'+esc(link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
+        document.getElementById('ml-body').innerHTML=h;if(imgUrl)loadThumb('ml-thumb',imgUrl);
+      });
+    }).catch(function(){document.getElementById('ml-body').innerHTML='<p style="color:var(--muted);font-size:.78rem">Malayalam Wikipedia unavailable</p>';});
 })();
 
-// ── ENGLISH WIKIPEDIA ─────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// CARD: ENGLISH WIKIPEDIA
+// ═══════════════════════════════════════════════════════════
 (function(){
-  var now=new Date();
-  var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
-  var ck=todayKey('en_wiki');
-  var cached=lsGet(ck);
-  if(cached){document.getElementById('wiki-inner').innerHTML=cached;return;}
+  var now=new Date();var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
+  var ck=dateKey('en_wiki5');var cached=lsGet(ck);
+  if(cached){document.getElementById('wiki-body').innerHTML=cached.h;if(cached.img)loadThumb('wiki-thumb',cached.img);return;}
   tFetch('https://en.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd)
     .then(function(r){return r.json();})
     .then(function(data){
       var tfa=data.tfa||{};
       var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'Article of the Day';
-      var extract=trunc(tfa.extract||'',170);
+      var extract=trunc(tfa.extract||'',340);
       var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://en.wikipedia.org';
-      var h='<div class="hc-hl">'+esc(title)+'</div>';
-      if(extract)h+='<p class="hc-text">'+esc(extract)+'</p>';
-      h+='<div class="hc-meta">Wikipedia · Featured Article · '+y+'-'+mo+'-'+dd+'</div>';
-      h+='<a class="hc-link" href="'+esc(link)+'" target="_blank" rel="noopener">Read full article →</a>';
-      document.getElementById('wiki-inner').innerHTML=h;
-      lsSet(ck,h);
-    })
-    .catch(function(){document.getElementById('wiki-inner').innerHTML='<p style="color:var(--muted);font-size:.78rem">Wikipedia unavailable</p>';});
+      var imgUrl=tfa.thumbnail&&tfa.thumbnail.source?tfa.thumbnail.source:null;
+      var h='<div class="card-hl">'+esc(title)+'</div>';
+      if(extract)h+='<p class="card-text">'+esc(extract)+'</p>';
+      h+='<div class="card-meta">Wikipedia · Featured Article</div>';
+      h+='<a class="card-link" href="'+esc(link)+'" target="_blank" rel="noopener">Read full article →</a>';
+      document.getElementById('wiki-body').innerHTML=h;if(imgUrl)loadThumb('wiki-thumb',imgUrl);
+      lsSet(ck,{h:h,img:imgUrl||null});
+    }).catch(function(){document.getElementById('wiki-body').innerHTML='<p style="color:var(--muted);font-size:.78rem">Wikipedia unavailable</p>';});
 })();
 
-// ══════════════════════════════════════════════════════════════
-// NEWS SUBPAGE — loads when user navigates there
-// ══════════════════════════════════════════════════════════════
-var NEWSPAPERS=[
-  {id:'sz',   label:'Süddeutsche Zeitung',color:'#c00',
-   feeds:['https://rss.sueddeutsche.de/rss/Topthemen','https://rss.sueddeutsche.de/app/service/rss/alles/index.rss?output=rss']},
-  {id:'guardian',label:'The Guardian',color:'#005689',
-   feeds:['https://www.theguardian.com/world/rss','https://www.theguardian.com/uk/rss']},
-  {id:'nyt',  label:'New York Times',color:'#333',
-   feeds:['https://rss.nytimes.com/services/xml/rss/nyt/World.xml','https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml']},
-  {id:'hindu',label:'The Hindu · Kerala',color:'var(--rust)',
-   feeds:['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/news/national/kerala/?service=rss','https://www.thehindu.com/feeder/default.rss']},
-  {id:'merkur',label:'Münchner Merkur',color:'#004f9f',
-   feeds:['https://www.merkur.de/rss/muenchen.rss','https://www.merkur.de/rss/politik.rss','https://www.merkur.de/rss/deutschland.rss']}
-];
+// ═══════════════════════════════════════════════════════════
+// CARD: HACKER NEWS TOP STORY
+// ═══════════════════════════════════════════════════════════
+(function(){
+  var ck='hn_h5';var cached=lsGet(ck);
+  if(cached){document.getElementById('hn-home').innerHTML=cached;return;}
+  tFetch('https://hacker-news.firebaseio.com/v0/topstories.json')
+    .then(function(r){return r.json();})
+    .then(function(ids){return tFetch('https://hacker-news.firebaseio.com/v0/item/'+ids[0]+'.json').then(function(r){return r.json();});})
+    .then(function(s){
+      var domain='';try{domain=new URL(s.url||'').hostname.replace(/^www\./,'');}catch(e){}
+      var h='<div class="card-label"><span class="label-pip"></span>⬆ Hacker News · Top Story</div>';
+      h+='<div class="hn-score">▲ '+(s.score||0)+' pts</div>';
+      h+='<div class="card-hl">'+esc(trunc(s.title||'',120))+'</div>';
+      if(domain)h+='<div class="hn-domain">'+esc(domain)+'</div>';
+      h+='<p class="card-text">'+(s.descendants||0)+' comments · by '+esc(s.by||'anon')+' · '+esc(fmtD(new Date((s.time||0)*1000).toUTCString()))+'</p>';
+      h+='<div class="hn-links">';
+      if(s.url)h+='<a class="card-link" href="'+esc(s.url)+'" target="_blank" rel="noopener">Article →</a>';
+      h+='<a class="card-link" href="https://news.ycombinator.com/item?id='+s.id+'" target="_blank" rel="noopener">Discussion →</a>';
+      h+='</div>';
+      document.getElementById('hn-home').innerHTML=h;lsSet(ck,h);
+    }).catch(function(){document.getElementById('hn-home').innerHTML='<p style="color:var(--muted);font-size:.78rem">HN unavailable</p>';});
+})();
 
+// ═══════════════════════════════════════════════════════════
+// CARD: PODCAST OF THE DAY
+// ═══════════════════════════════════════════════════════════
+var POD_PRIORITY=[
+  {name:'In Focus · The Hindu',feeds:['https://feeds.megaphone.fm/THGU4956605070','https://feeds.megaphone.fm/THGU3684108625']},
+  {name:'NL Hafta · Newslaundry',feeds:['https://feeds.acast.com/public/shows/5ec3d9497cef7479d2ef4798']},
+  {name:'After Hours Malayalis',feeds:['https://anchor.fm/s/408591a8/podcast/rss']},
+  {name:'Seen & Unseen · Amit Varma',feeds:['https://seenunseen.libsyn.com/rss']},
+  {name:'DW Inside Europe',feeds:['https://rss.dw.com/xml/podcast_inside-europe']},
+  {name:'Radiowissen · BR',feeds:['https://feeds.br.de/radiowissen/feed.xml']},
+  {name:'The Daily · NYT',feeds:['https://feeds.simplecast.com/54nAGcIl']}
+];
+(function(){
+  var ck='pod_h5';var cached=lsGet(ck);
+  if(cached){document.getElementById('pod-home').innerHTML=cached;return;}
+  var today=new Date();var dow=today.getDay();
+  var picks=[POD_PRIORITY[0]];
+  var alt=POD_PRIORITY[1+(dow%(POD_PRIORITY.length-1))];
+  if(alt&&alt.name!==picks[0].name)picks.push(alt);
+  function tryPod(idx){
+    if(idx>=picks.length){document.getElementById('pod-home').innerHTML='<p style="color:var(--muted);font-size:.78rem">Podcast unavailable</p>';return;}
+    var pick=picks[idx];
+    var pArr=pick.feeds.map(function(u){return fetchRSS(u);});
+    anyOf(pArr).then(function(items){
+      if(!items||!items.length)throw new Error('empty');
+      var todayStr=today.toDateString();
+      var ep=items.find(function(it){return it.pubDate&&new Date(it.pubDate).toDateString()===todayStr;})||items[0];
+      if(!ep||!ep.title)throw new Error('no ep');
+      var isNew=ep.pubDate&&new Date(ep.pubDate).toDateString()===todayStr;
+      var desc=trunc(ep.description||'',280);var audioUrl=ep.enclosure||'';
+      var bars='<div class="pod-wave">';
+      [60,100,45,78,32,88,55,72,40,82,50,95,35,68,58,44,78,52,96,62].forEach(function(ht,i){bars+='<div class="pod-bar" style="height:'+ht+'%;--d:'+(0.35+i*0.052).toFixed(2)+'s"></div>';});
+      bars+='</div>';
+      var h='<div class="card-label"><span class="label-pip" style="background:var(--rust)"></span>🎙 Podcast of the Day</div>';
+      if(isNew)h+='<div class="pod-new">🔴 New Today</div>';
+      h+='<div class="pod-show">'+esc(pick.name)+'</div>';
+      h+='<div class="card-hl">'+esc(trunc(ep.title,90))+'</div>';
+      h+=bars;
+      if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
+      h+='<div class="card-meta">'+esc(fmtD(ep.pubDate))+'</div>';
+      if(audioUrl)h+='<button class="pod-play" onclick="window.__podPlay(\''+esc(pick.name).replace(/'/g,'\\x27')+'\',\''+esc(trunc(ep.title,65)).replace(/'/g,'\\x27')+'\',\''+esc(audioUrl)+'\')">▶ Play Episode</button>';
+      else if(ep.link)h+='<a class="card-link" style="margin-top:.35rem" href="'+esc(ep.link)+'" target="_blank" rel="noopener">Open episode →</a>';
+      document.getElementById('pod-home').innerHTML=h;lsSet(ck,h);
+    }).catch(function(){tryPod(idx+1);});
+  }
+  tryPod(0);
+})();
+window.__podPlay=function(show,title,url){doPlay(show,title,url,null);};
+
+// ═══════════════════════════════════════════════════════════
+// CARD: SPORT — BBC Sport, ESPN RSS
+// ═══════════════════════════════════════════════════════════
+(function(){
+  var ck='sport5';var cached=lsGet(ck);
+  if(cached){document.getElementById('sport-inner').innerHTML=cached;return;}
+  fetchRSS('https://www.espn.com/espn/rss/news')
+    .then(function(items){
+      var it=items.find(function(i){return i.title&&i.title.length>5;});
+      if(!it)throw 0;
+      var desc=trunc(it.description||'',280);
+      var h='<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>🏆 Sport · World</div>';
+      h+='<div class="card-hl">'+esc(trunc(it.title,110))+'</div>';
+      if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
+      h+='<div class="card-meta">ESPN · '+esc(fmtD(it.pubDate))+'</div>';
+      if(it.link)h+='<a class="card-link" href="'+esc(it.link)+'" target="_blank" rel="noopener">Read →</a>';
+      document.getElementById('sport-inner').innerHTML=h;lsSet(ck,h);
+    }).catch(function(){
+      return fetchRSS('https://feeds.bbci.co.uk/sport/rss.xml').then(function(items){
+        var it=items.find(function(i){return i.title&&i.title.length>5;});if(!it)throw 0;
+        var desc=trunc(it.description||'',280);
+        var h='<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>🏆 Sport · World</div>';
+        h+='<div class="card-hl">'+esc(trunc(it.title,110))+'</div>';
+        if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
+        h+='<div class="card-meta">BBC Sport · '+esc(fmtD(it.pubDate))+'</div>';
+        if(it.link)h+='<a class="card-link" href="'+esc(it.link)+'" target="_blank" rel="noopener">Read →</a>';
+        document.getElementById('sport-inner').innerHTML=h;lsSet(ck,h);
+      });
+    }).catch(function(){document.getElementById('sport-inner').innerHTML='<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>🏆 Sport</div><p style="color:var(--muted);font-size:.78rem;margin-top:.5rem">Sport feed unavailable</p>';});
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: MALAYALAM NEWS — newsmalayalam.com + Mathrubhumi + Madhyamam
+// ═══════════════════════════════════════════════════════════
+(function(){
+  var ck='mln5';var cached=lsGet(ck);
+  if(cached){document.getElementById('mln-body').innerHTML=cached.h;if(cached.src){var b=document.getElementById('mln-badge');if(b)b.innerHTML='<span class="src-dot" style="background:#1a6b40"></span>'+esc(cached.src);}if(cached.img)loadThumb('mln-thumb',cached.img);return;}
+  var ML_SOURCES=[
+    {name:'News Malayalam',feeds:['https://newsmalayalam.com/feed/','https://newsmalayalam.com/rss']},
+    {name:'Mathrubhumi',feeds:['https://www.mathrubhumi.com/rss/news.xml','https://www.mathrubhumi.com/rss/kerala.xml']},
+    {name:'Madhyamam',feeds:['https://www.madhyamam.com/rss/all','https://www.madhyamam.com/rss/kerala']},
+    {name:'Manorama Online',feeds:['https://www.manoramaonline.com/news.rss']}
+  ];
+  var sourcePromises=ML_SOURCES.map(function(src){
+    var feedP=src.feeds.map(function(u){return fetchRSS(u).then(function(items){var it=items.find(function(i){return i.title&&i.title.length>5;});if(!it)throw 0;return{src:src.name,item:it};});});
+    return anyOf(feedP);
+  });
+  anyOf(sourcePromises).then(function(res){
+    var it=res.item;var desc=trunc(it.description||'',360);var img=extractImg(it);
+    var b=document.getElementById('mln-badge');if(b)b.innerHTML='<span class="src-dot" style="background:#1a6b40"></span>'+esc(res.src);
+    var h='<div class="card-hl ml-script" style="font-size:.95rem;line-height:1.35">'+esc(trunc(it.title,105))+'</div>';
+    if(desc)h+='<p class="card-text ml-script">'+esc(desc)+'</p>';
+    h+='<div class="card-meta">'+esc(res.src)+' · '+esc(fmtD(it.pubDate))+'</div>';
+    if(it.link)h+='<a class="card-link" href="'+esc(it.link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
+    document.getElementById('mln-body').innerHTML=h;if(img)loadThumb('mln-thumb',img);
+    lsSet(ck,{h:h,img:img||null,src:res.src});
+  }).catch(function(){document.getElementById('mln-body').innerHTML='<p style="color:var(--muted);font-size:.78rem;font-family:\'Noto Sans Malayalam\',sans-serif">Malayalam news unavailable</p>';});
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: BOOK RECOMMENDATION — The New Yorker Books RSS
+// ═══════════════════════════════════════════════════════════
+(function(){
+  var ck='book5';var cached=lsGet(ck);
+  if(cached){document.getElementById('book-inner').innerHTML=cached;return;}
+  // New Yorker Books section RSS
+  fetchRSS('https://www.newyorker.com/feed/books/rss')
+    .then(function(items){
+      var it=items.find(function(i){return i.title&&i.title.length>5;});if(!it)throw 0;
+      var desc=trunc(it.description||'',380);
+      var h='<div class="card-label"><span class="label-pip" style="background:var(--rust)"></span>📚 Book · The New Yorker</div>';
+      h+='<div class="book-tag">New Yorker Books</div>';
+      h+='<div class="card-hl">'+esc(trunc(it.title,120))+'</div>';
+      if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
+      h+='<div class="card-meta">The New Yorker · '+esc(fmtD(it.pubDate))+'</div>';
+      if(it.link)h+='<a class="card-link" href="'+esc(it.link)+'" target="_blank" rel="noopener">Read in The New Yorker →</a>';
+      document.getElementById('book-inner').innerHTML=h;lsSet(ck,h);
+    }).catch(function(){
+      // Fallback: curated rotating book recs
+      var BOOKS=[
+        {title:'The Rings of Saturn',author:'W.G. Sebald',blurb:'A melancholy walking tour of Suffolk coastline that becomes a meditation on time, memory, empire and extinction. Among the strangest and most beautiful books of the last century.'},
+        {title:'Housekeeping',author:'Marilynne Robinson',blurb:'Two orphaned sisters are raised by a transient aunt in an Idaho lakeside town. Robinson\'s debut is a lyrical masterpiece about impermanence, loss, and the pull of the vagrant life.'},
+        {title:'The Master and Margarita',author:'Mikhail Bulgakov',blurb:'The Devil visits Soviet Moscow with his chaotic retinue. Bulgakov\'s satirical masterpiece, banned for decades, is wickedly funny, philosophically rich and utterly unlike anything else.'},
+        {title:'Invisible Cities',author:'Italo Calvino',blurb:'Marco Polo describes 55 fantastical cities to Kublai Khan. Each is an essay on memory, desire, mortality, or the nature of language. Reading it feels like dreaming lucidly.'},
+        {title:'So Long a Letter',author:'Mariama Bâ',blurb:'An epistolary novel about female friendship and the lives of two Senegalese women navigating polygamy and loss. Short, devastating and essential.'},
+        {title:'Pedro Páramo',author:'Juan Rulfo',blurb:'A man returns to his father\'s ghost town in Mexico and discovers a world of the dead. This spare, hallucinatory novel influenced a generation of writers including García Márquez.'},
+        {title:'Milkman',author:'Anna Burns',blurb:'A nameless woman in a nameless Northern Irish city during the Troubles is stalked by an older paramilitary. Burns\'s Booker Prize-winning novel is original, funny, and terrifying.'}
+      ];
+      var doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,1))/(864e5));
+      var b=BOOKS[doy%BOOKS.length];
+      var h='<div class="card-label"><span class="label-pip" style="background:var(--rust)"></span>📚 Book Recommendation</div>';
+      h+='<div class="book-tag">Staff Pick</div>';
+      h+='<div class="book-author">'+esc(b.author)+'</div>';
+      h+='<div class="card-hl">'+esc(b.title)+'</div>';
+      h+='<p class="card-text">'+esc(b.blurb)+'</p>';
+      document.getElementById('book-inner').innerHTML=h;lsSet(ck,h);
+    });
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: SEMICONDUCTOR / EE — EE Times + SemiWiki
+// ═══════════════════════════════════════════════════════════
+(function(){
+  var ck='semi5';var cached=lsGet(ck);
+  if(cached){document.getElementById('semi-inner').innerHTML=cached;return;}
+  fetchRSS('https://www.eetimes.com/feed/')
+    .then(function(items){
+      var it=items.find(function(i){return i.title&&i.title.length>5;});if(!it)throw 0;
+      var desc=trunc(it.description||'',260);
+      var h='<div class="card-label"><span class="label-pip" style="background:var(--sky)"></span>💾 EE Times</div>';
+      h+='<div class="card-hl">'+esc(trunc(it.title,105))+'</div>';
+      if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
+      h+='<div class="card-meta">EE Times · '+esc(fmtD(it.pubDate))+'</div>';
+      if(it.link)h+='<a class="card-link" href="'+esc(it.link)+'" target="_blank" rel="noopener">Read →</a>';
+      document.getElementById('semi-inner').innerHTML=h;lsSet(ck,h);
+    }).catch(function(){
+      return fetchRSS('https://semiwiki.com/feed/').then(function(items){
+        var it=items.find(function(i){return i.title&&i.title.length>5;});if(!it)throw 0;
+        var desc=trunc(it.description||'',260);
+        var h='<div class="card-label"><span class="label-pip" style="background:var(--sky)"></span>💾 SemiWiki</div>';
+        h+='<div class="card-hl">'+esc(trunc(it.title,105))+'</div>';
+        if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
+        h+='<div class="card-meta">SemiWiki · '+esc(fmtD(it.pubDate))+'</div>';
+        if(it.link)h+='<a class="card-link" href="'+esc(it.link)+'" target="_blank" rel="noopener">Read →</a>';
+        document.getElementById('semi-inner').innerHTML=h;lsSet(ck,h);
+      });
+    }).catch(function(){document.getElementById('semi-inner').innerHTML='<div class="card-label"><span class="label-pip" style="background:var(--sky)"></span>💾 Semiconductor</div><p style="color:var(--muted);font-size:.78rem;margin-top:.5rem">Feed unavailable</p>';});
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: CARTOON — xkcd (JSON API, no CORS issues)
+// ═══════════════════════════════════════════════════════════
+(function(){
+  var ck='xkcd5';var cached=lsGet(ck);
+  if(cached){
+    document.getElementById('cartoon-img').innerHTML=cached.img;
+    document.getElementById('cartoon-body').innerHTML=cached.body;
+    return;
+  }
+  // xkcd has a JSON endpoint with no CORS issues
+  tFetch('https://xkcd.com/info.0.json')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      // Pick a strip based on day-of-year for variety (not always the latest)
+      var doy=Math.floor((Date.now()-new Date(d.num>1?new Date().getFullYear():2000,0,1))/(864e5));
+      var num=Math.max(1,d.num-(doy%90)); // within last 90 strips, rotated by day
+      return tFetch('https://xkcd.com/'+num+'/info.0.json').then(function(r){return r.json();});
+    })
+    .then(function(strip){
+      var imgH='<img src="'+esc(strip.img)+'" alt="'+esc(strip.alt)+'" style="max-width:100%;max-height:130px;object-fit:contain;padding:.4rem" loading="lazy">';
+      var bodyH='<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>🖊 xkcd · #'+strip.num+'</div>';
+      bodyH+='<div style="font-family:\'DM Mono\',monospace;font-size:.56rem;font-weight:500;color:var(--ink);line-height:1.3">'+esc(strip.title)+'</div>';
+      bodyH+='<p style="font-size:.72rem;color:var(--muted);line-height:1.5;font-style:italic">'+esc(strip.alt)+'</p>';
+      bodyH+='<a class="card-link" href="https://xkcd.com/'+strip.num+'/" target="_blank" rel="noopener">Open on xkcd.com →</a>';
+      document.getElementById('cartoon-img').innerHTML=imgH;
+      document.getElementById('cartoon-body').innerHTML=bodyH;
+      lsSet(ck,{img:imgH,body:bodyH});
+    }).catch(function(){
+      document.getElementById('cartoon-body').innerHTML='<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>🖊 xkcd</div><p style="color:var(--muted);font-size:.75rem;margin-top:.5rem">xkcd unavailable today</p>';
+    });
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: GERMAN WORD
+// ═══════════════════════════════════════════════════════════
+var WORDS=[
+  {w:'Weltanschauung',ph:'/ˈwɛltˌanˌʃaʊʊŋ/',ty:'Noun · fem.',def:'A comprehensive worldview or philosophy — the lens through which one sees and interprets all of existence. It shapes how a person understands morality, history, and the cosmos.',ex:'Jeder Mensch entwickelt im Laufe des Lebens seine eigene Weltanschauung.',tr:'Every person develops their own worldview over the course of their life.'},
+  {w:'Fingerspitzengefühl',ph:'/ˈfɪŋɐˌʃpɪtsənˌfyːl/',ty:'Noun · neut.',def:'An exquisite sensitivity and instinct — literally "fingertip feeling." The ability to read a situation and respond with exactly the right touch, tact or precision.',ex:'Die Verhandlung erforderte viel Fingerspitzengefühl.',tr:'The negotiation required a great deal of delicacy and tact.'},
+  {w:'Fernweh',ph:'/ˈfɛrnˌveː/',ty:'Noun · neut.',def:'A deep longing for distant, unknown places — the wandering cousin of nostalgia. Unlike Heimweh (homesickness), Fernweh pulls you away from the familiar and toward the unknown horizon.',ex:'Fernweh überkam sie, sobald sie den Flughafen betrat.',tr:'Wanderlust overcame her the moment she entered the airport.'},
+  {w:'Schadenfreude',ph:'/ˈʃaːdənˌfʁɔʏdə/',ty:'Noun · fem.',def:'Pleasure derived from another person\'s misfortune or failure. One of the most widely exported German words, reflecting a complex and very human emotional reality.',ex:'Er versuchte seine Schadenfreude zu verbergen.',tr:'He tried to hide his delight at the other\'s misfortune.'},
+  {w:'Waldeinsamkeit',ph:'/ˈvaltˌaɪnˌzaːmkaɪt/',ty:'Noun · fem.',def:'The peaceful, almost mystical solitude felt when alone in a forest. A meditative state of oneness with nature, far from human noise and distraction.',ex:'Er fand in der Waldeinsamkeit die Ruhe, die er brauchte.',tr:'He found the peace he needed in the solitude of the forest.'},
+  {w:'Lebensfreude',ph:'/ˈleːbənsˌfʁɔʏdə/',ty:'Noun · fem.',def:'An exuberant joy of being alive — a delight in everyday pleasures, laughter and human connection. More than happiness, it is an active celebration of existence.',ex:'Ihre Lebensfreude war ansteckend und verwandelte jeden Raum.',tr:'Her zest for life was infectious and transformed every room she entered.'},
+  {w:'Verschlimmbessern',ph:'/fɛrˈʃlɪmbɛsɐn/',ty:'Verb',def:'To make something worse while genuinely trying to improve it. The perfect word for well-meaning meddling that backfires — a peril of perfectionism.',ex:'Er hat das Gemälde leider verschlimmbessert.',tr:'Unfortunately, he made the painting worse trying to fix it.'},
+  {w:'Torschlusspanik',ph:'/ˈtoːɐʃlʊsˌpanik/',ty:'Noun · fem.',def:'Literally "gate-closing panic" — the rising anxiety that time is running out, opportunities are closing, and important life decisions must be made before a door shuts forever.',ex:'Mit dreißig Jahren überkam sie plötzlich die Torschlusspanik.',tr:'At thirty, she was suddenly overcome by the fear of closing doors.'},
+  {w:'Gemütlichkeit',ph:'/ɡəˈmyːtlɪçkaɪt/',ty:'Noun · fem.',def:'A warm, cosy, and deeply convivial atmosphere — the feeling of belonging, unhurried comfort and sincere friendliness that defines the best Bavarian evenings.',ex:'Die alte Gaststätte strahlte echte Gemütlichkeit aus.',tr:'The old inn radiated genuine cosiness and warmth.'},
+  {w:'Sehnsucht',ph:'/ˈzeːnzʊxt/',ty:'Noun · fem.',def:'A profound, aching longing — for something half-remembered, half-imagined. It carries the sweetness of nostalgia and the pain of incompleteness, often without a clear object.',ex:'Sehnsucht nach der verlorenen Heimat erfüllte sein Herz.',tr:'A longing for his lost homeland filled his heart.'},
+  {w:'Zweisamkeit',ph:'/ˈtsvaɪzaːmkaɪt/',ty:'Noun · fem.',def:'The intimate togetherness of two — the quiet warmth of being alone with someone you love, undisturbed by the outside world. A cosy sanctuary for two.',ex:'Sie genossen die stille Zweisamkeit der langen Winterabende.',tr:'They savoured the quiet togetherness of the long winter evenings.'},
+  {w:'Drachenfutter',ph:'/ˈdʁaxənˌfʊtɐ/',ty:'Noun · neut.',def:'Literally "dragon fodder" — a small peace offering (flowers, chocolate) brought home to appease a partner after a mistake or an evening out.',ex:'Er kaufte Blumen als Drachenfutter, bevor er nach Hause fuhr.',tr:'He bought flowers as a peace offering before driving home.'}
+];
+(function(){
+  var doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,1))/(864e5));
+  var w=WORDS[doy%WORDS.length];
+  var h='<div class="de-inner"><div style="flex-shrink:0;min-width:200px">';
+  h+='<div class="de-word">'+esc(w.w)+'</div>';
+  h+='<div class="de-phon">'+esc(w.ph)+'</div>';
+  h+='<span class="de-pos">'+esc(w.ty)+'</span>';
+  h+='</div><div style="flex:1">';
+  h+='<p class="de-def">'+esc(w.def)+'</p>';
+  h+='<p class="de-ex">\u201c'+esc(w.ex)+'\u201d</p>';
+  h+='<p class="de-tr">'+esc(w.tr)+'</p>';
+  h+='<div class="card-meta" style="margin-top:.6rem">Daily rotation · Wort des Tages</div>';
+  h+='<a class="card-link" style="margin-top:.3rem" href="https://de.wiktionary.org/wiki/'+encodeURIComponent(w.w)+'" target="_blank" rel="noopener">Wiktionary →</a>';
+  h+='</div></div>';
+  document.getElementById('de-inner').innerHTML=h;
+})();
+
+// ═══════════════════════════════════════════════════════════
+// SUBPAGE: NEWS
+// ═══════════════════════════════════════════════════════════
+var NEWSPAPERS=[
+  {id:'sz',label:'Süddeutsche Zeitung',color:'#c00',feeds:['https://rss.sueddeutsche.de/rss/Topthemen']},
+  {id:'guardian',label:'The Guardian',color:'#005689',feeds:['https://www.theguardian.com/world/rss']},
+  {id:'nyt',label:'New York Times',color:'#222',feeds:['https://rss.nytimes.com/services/xml/rss/nyt/World.xml']},
+  {id:'hindu',label:'The Hindu · Kerala',color:'var(--rust)',feeds:['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/feeder/default.rss']},
+  {id:'merkur',label:'Münchner Merkur',color:'#004f9f',feeds:['https://www.merkur.de/rss/muenchen.rss','https://www.merkur.de/rss/politik.rss']},
+  {id:'mlnews',label:'Malayalam News',color:'#1a6b40',feeds:['https://newsmalayalam.com/feed/','https://www.mathrubhumi.com/rss/news.xml','https://www.madhyamam.com/rss/all']}
+];
 function loadNewsPage(){
   NEWSPAPERS.forEach(function(np){
-    var elId='np-'+np.id;
-    var ck='np_full_'+np.id;
-    var cached=lsGet(ck);
+    var elId='np-'+np.id;var ck='np5_'+np.id;var cached=lsGet(ck);
     if(cached){document.getElementById(elId).innerHTML=cached;return;}
-    Promise.any(np.feeds.map(function(u){
-      return fetchRSS(u).then(function(items){if(!items.length)throw 0;return items;});
-    })).then(function(items){
-      var h='';
+    var pArr=np.feeds.map(function(u){return fetchRSS(u).then(function(items){if(!items.length)throw 0;return items;});});
+    anyOf(pArr).then(function(items){
+      var ml=np.id==='mlnews';var h='';
       items.slice(0,6).forEach(function(it){
         if(!it.title||it.title.length<5)return;
         h+='<a class="art-item" href="'+esc(it.link)+'" target="_blank" rel="noopener">';
-        h+='<div class="art-hl">'+esc(trunc(it.title,110))+'</div>';
-        if(it.description)h+='<div class="art-text">'+esc(trunc(it.description,160))+'</div>';
-        h+='<div class="art-meta">'+esc(fmtDate(it.pubDate))+'</div>';
-        h+='</a>';
+        h+='<div class="art-hl'+(ml?' ml-script':'')+'">'+esc(trunc(it.title,120))+'</div>';
+        if(it.description)h+='<div class="art-text'+(ml?' ml-script':'')+'">'+esc(trunc(it.description,260))+'</div>';
+        h+='<div class="art-meta">'+esc(fmtD(it.pubDate))+'</div></a>';
       });
       if(!h)h='<div class="art-item"><p style="color:var(--muted);font-size:.8rem">No articles found</p></div>';
-      document.getElementById(elId).innerHTML=h;
-      lsSet(ck,h);
-    }).catch(function(){
-      document.getElementById(elId).innerHTML='<div class="art-item"><p style="color:var(--muted);font-size:.8rem">Feed unavailable</p></div>';
-    });
+      document.getElementById(elId).innerHTML=h;lsSet(ck,h);
+    }).catch(function(){document.getElementById(elId).innerHTML='<div class="art-item"><p style="color:var(--muted);font-size:.8rem">Feed unavailable</p></div>';});
   });
 }
 
-// ══════════════════════════════════════════════════════════════
-// HACKER NEWS SUBPAGE
-// ══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// SUBPAGE: HACKER NEWS
+// ═══════════════════════════════════════════════════════════
 function loadHNPage(){
-  var ck='hn_full';
-  var cached=lsGet(ck);
+  var ck='hn_full5';var cached=lsGet(ck);
   if(cached){document.getElementById('hn-list').innerHTML=cached;return;}
   tFetch('https://hacker-news.firebaseio.com/v0/topstories.json')
     .then(function(r){return r.json();})
-    .then(function(ids){
-      // Fetch top 10 in parallel
-      return Promise.all(ids.slice(0,10).map(function(id){
-        return tFetch('https://hacker-news.firebaseio.com/v0/item/'+id+'.json').then(function(r){return r.json();});
-      }));
-    })
+    .then(function(ids){return Promise.all(ids.slice(0,12).map(function(id){return tFetch('https://hacker-news.firebaseio.com/v0/item/'+id+'.json').then(function(r){return r.json();});}));})
     .then(function(stories){
       var h='';
       stories.forEach(function(s){
         if(!s||!s.title)return;
-        h+='<div class="art-item">';
-        h+='<div class="hn-score">▲ '+(s.score||0)+' pts</div>';
+        var domain='';try{domain=new URL(s.url||'').hostname.replace(/^www\./,'');}catch(e){}
+        h+='<div class="art-item"><div class="art-score">▲ '+(s.score||0)+' pts</div>';
         h+='<div class="art-hl">'+esc(s.title)+'</div>';
-        h+='<div class="art-meta">by '+esc(s.by||'anon')+' · '+fmtDate(new Date((s.time||0)*1000).toUTCString())+' · '+(s.descendants||0)+' comments</div>';
-        h+='<div style="display:flex;gap:1rem;margin-top:.4rem">';
-        if(s.url)h+='<a class="hc-link" href="'+esc(s.url)+'" target="_blank" rel="noopener">Article →</a>';
-        h+='<a class="hc-link" href="https://news.ycombinator.com/item?id='+s.id+'" target="_blank" rel="noopener">Discussion →</a>';
+        if(domain)h+='<div style="font-family:\'DM Mono\',monospace;font-size:.52rem;color:var(--muted);margin:.1rem 0">'+esc(domain)+'</div>';
+        h+='<div class="art-text">'+esc(s.by||'anon')+' · '+esc(fmtD(new Date((s.time||0)*1000).toUTCString()))+' · '+(s.descendants||0)+' comments</div>';
+        h+='<div style="display:flex;gap:.7rem;flex-wrap:wrap;margin-top:.35rem">';
+        if(s.url)h+='<a class="card-link" href="'+esc(s.url)+'" target="_blank" rel="noopener">Article →</a>';
+        h+='<a class="card-link" href="https://news.ycombinator.com/item?id='+s.id+'" target="_blank" rel="noopener">Discussion →</a>';
         h+='</div></div>';
       });
-      document.getElementById('hn-list').innerHTML=h||'<div class="art-item"><p>No stories found</p></div>';
+      document.getElementById('hn-list').innerHTML=h||'<div class="art-item">No stories loaded</div>';
       lsSet(ck,h);
-    })
-    .catch(function(){
-      document.getElementById('hn-list').innerHTML='<div class="art-item"><p style="color:var(--muted)">Hacker News unavailable</p></div>';
-    });
+    }).catch(function(){document.getElementById('hn-list').innerHTML='<div class="art-item"><p style="color:var(--muted)">Hacker News unavailable</p></div>';});
 }
 
-// ══════════════════════════════════════════════════════════════
-// MORE SUBPAGE — full Wikipedia + all events
-// ══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// SUBPAGE: MORE
+// ═══════════════════════════════════════════════════════════
 function loadMorePage(){
-  // Full Malayalam Wikipedia
-  (function(){
-    var now=new Date();
-    var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
-    tFetch('https://ml.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd)
-      .then(function(r){return r.json();})
-      .then(function(data){
-        var tfa=data.tfa||{};
-        var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'';
-        var extract=tfa.extract||'';
-        var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://ml.wikipedia.org';
-        var thumb=tfa.thumbnail&&tfa.thumbnail.source?'<img src="'+esc(tfa.thumbnail.source)+'" style="width:100%;max-height:200px;object-fit:cover;display:block;margin-bottom:.8rem" alt="">':'';
-        var h='<div class="art-item">';
-        h+=thumb;
-        h+='<div class="art-hl" style="font-family:\'Noto Sans Malayalam\',sans-serif">'+esc(title)+'</div>';
-        h+='<p class="art-text" style="font-family:\'Noto Sans Malayalam\',sans-serif">'+esc(trunc(extract,600))+'</p>';
-        h+='<a class="hc-link" href="'+esc(link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
-        h+='</div>';
-        document.getElementById('more-ml').innerHTML=h;
-      }).catch(function(){document.getElementById('more-ml').innerHTML='<div class="art-item"><p style="color:var(--muted);font-size:.8rem">Malayalam Wikipedia unavailable</p></div>';});
-  })();
-
-  // Full English Wikipedia
-  (function(){
-    var now=new Date();
-    var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
-    tFetch('https://en.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd)
-      .then(function(r){return r.json();})
-      .then(function(data){
-        var tfa=data.tfa||{};
-        var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'Article of the Day';
-        var extract=tfa.extract||'';
-        var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://en.wikipedia.org';
-        var thumb=tfa.thumbnail&&tfa.thumbnail.source?'<img src="'+esc(tfa.thumbnail.source)+'" style="width:100%;max-height:200px;object-fit:cover;display:block;margin-bottom:.8rem" alt="">':'';
-        var h='<div class="art-item">';
-        h+=thumb;
-        h+='<div class="art-hl">'+esc(title)+'</div>';
-        h+='<p class="art-text">'+esc(trunc(extract,600))+'</p>';
-        h+='<a class="hc-link" href="'+esc(link)+'" target="_blank" rel="noopener">Read full article →</a>';
-        h+='</div>';
-        document.getElementById('more-wiki').innerHTML=h;
-      }).catch(function(){document.getElementById('more-wiki').innerHTML='<div class="art-item"><p style="color:var(--muted);font-size:.8rem">Wikipedia unavailable</p></div>';});
-  })();
-
+  var now=new Date();var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
+  tFetch('https://ml.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd).then(function(r){return r.json();}).then(function(data){
+    var tfa=data.tfa||{};var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'';var extract=tfa.extract||'';var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://ml.wikipedia.org';
+    var thumb=tfa.thumbnail&&tfa.thumbnail.source?'<img src="'+esc(tfa.thumbnail.source)+'" alt="" style="width:100%;max-height:220px;object-fit:cover;display:block;margin-bottom:.8rem">':'';
+    document.getElementById('more-ml').innerHTML='<div class="art-item">'+thumb+'<div class="art-hl ml-script">'+esc(title)+'</div><p class="art-text ml-script">'+esc(trunc(extract,700))+'</p><a class="card-link" style="margin-top:.4rem" href="'+esc(link)+'" target="_blank">വായിക്കുക →</a></div>';
+  }).catch(function(){document.getElementById('more-ml').innerHTML='<div class="art-item"><p style="color:var(--muted);font-size:.8rem">Malayalam Wikipedia unavailable</p></div>';});
+  tFetch('https://en.wikipedia.org/api/rest_v1/feed/featured/'+y+'/'+mo+'/'+dd).then(function(r){return r.json();}).then(function(data){
+    var tfa=data.tfa||{};var title=(tfa.titles&&tfa.titles.normalized)||tfa.title||'Article of the Day';var extract=tfa.extract||'';var link=(tfa.content_urls&&tfa.content_urls.desktop&&tfa.content_urls.desktop.page)||'https://en.wikipedia.org';
+    var thumb=tfa.thumbnail&&tfa.thumbnail.source?'<img src="'+esc(tfa.thumbnail.source)+'" alt="" style="width:100%;max-height:220px;object-fit:cover;display:block;margin-bottom:.8rem">':'';
+    document.getElementById('more-wiki').innerHTML='<div class="art-item">'+thumb+'<div class="art-hl">'+esc(title)+'</div><p class="art-text">'+esc(trunc(extract,700))+'</p><a class="card-link" style="margin-top:.4rem" href="'+esc(link)+'" target="_blank">Read full article →</a></div>';
+  }).catch(function(){document.getElementById('more-wiki').innerHTML='<div class="art-item"><p style="color:var(--muted);font-size:.8rem">Wikipedia unavailable</p></div>';});
   // All Munich events
-  var now=new Date();
-  var h='';
-  EVENTS.forEach(function(ev,i){
+  var h='';EVENTS.forEach(function(ev,i){
     var isToday=(i===now.getDay()%EVENTS.length);
-    function depart(t,mins){
-      if(t==='All day')return'Whenever you like';
-      var p=t.split(':'),tot=parseInt(p[0])*60+parseInt(p[1])-mins-10;if(tot<0)tot=0;
-      var h2=Math.floor(tot/60),m=Math.round((tot%60)/5)*5;
-      return(h2<10?'0':'')+h2+':'+(m<10?'0':'')+m+' Uhr';
-    }
-    h+='<div class="art-item" style="'+(isToday?'border-left:3px solid var(--gold);background:#fffef7':'')+'"><div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.3rem">';
-    if(isToday)h+='<span style="background:var(--gold);color:var(--ink);font-family:\'DM Mono\',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;padding:.15rem .45rem">TODAY</span>';
-    h+='<div class="art-hl">'+esc(ev.title)+'</div></div>';
+    function depart(t,mins){if(t==='All day')return'Any time';var p=t.split(':'),tot=parseInt(p[0])*60+parseInt(p[1])-mins-10;if(tot<0)tot=0;var h2=Math.floor(tot/60),m=Math.round((tot%60)/5)*5;return(h2<10?'0':'')+h2+':'+(m<10?'0':'')+m+' Uhr';}
+    h+='<div class="art-item" style="'+(isToday?'border-left:3px solid var(--gold);background:#fffef8':'')+'">';
+    if(isToday)h+='<span style="background:var(--gold);color:var(--ink);font-family:\'DM Mono\',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;padding:.13rem .4rem;display:inline-block;margin-bottom:.3rem">TODAY</span>';
+    h+='<div class="art-hl">'+esc(ev.title)+'</div>';
     h+='<p class="art-text">'+esc(ev.desc)+'</p>';
-    h+='<div style="margin:.5rem 0;font-size:.78rem">';
-    ev.route.forEach(function(s){h+='<div style="display:flex;gap:.5rem;margin-bottom:.2rem"><span>'+s.ic+'</span><span>'+esc(s.t)+' <span style="font-family:\'DM Mono\',monospace;font-size:.62rem;color:var(--muted)">'+esc(s.d)+'</span></span></div>';});
-    h+='</div>';
-    h+='<div style="font-family:\'DM Mono\',monospace;font-size:.65rem;color:var(--gold);margin-bottom:.3rem">Depart by '+esc(depart(ev.time,ev.transit))+'</div>';
-    if(ev.tip)h+='<div style="font-size:.76rem;color:var(--gold)">💡 '+esc(ev.tip)+'</div>';
-    h+='<a class="hc-link" style="margin-top:.5rem" href="'+esc(ev.link)+'" target="_blank" rel="noopener">More info →</a>';
-    h+='</div>';
+    h+='<div style="margin:.4rem 0;font-size:.76rem">';
+    ev.route.forEach(function(s){h+='<div style="display:flex;gap:.45rem;margin-bottom:.2rem"><span>'+s.ic+'</span><span>'+esc(s.t)+' <span style="font-family:\'DM Mono\',monospace;font-size:.56rem;color:var(--muted)">'+esc(s.d)+'</span></span></div>';});
+    h+='</div><div style="font-family:\'DM Mono\',monospace;font-size:.6rem;color:var(--gold);margin-bottom:.25rem">Depart by '+esc(depart(ev.time,ev.transit))+'</div>';
+    if(ev.tip)h+='<div style="font-size:.74rem;color:var(--gold)">💡 '+esc(ev.tip)+'</div>';
+    h+='<a class="card-link" style="margin-top:.4rem" href="'+esc(ev.link)+'" target="_blank">More info →</a></div>';
   });
   document.getElementById('more-events').innerHTML=h;
 }
 
-// ══════════════════════════════════════════════════════════════
-// PODCAST SUBPAGE
-// ══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// PODCAST SHELF
+// ═══════════════════════════════════════════════════════════
 var PODCASTS={
   Malayalam:[
     {t:'After Hours Malayalis',u:'https://anchor.fm/s/408591a8/podcast/rss',ic:'🎙️'},
-    {t:'Crime Story Malayalam · Mathrubhumi',u:'https://www.spreaker.com/show/5363741/episodes/feed',ic:'🔍'},
+    {t:'Crime Story Malayalam',u:'https://www.spreaker.com/show/5363741/episodes/feed',ic:'🔍'},
     {t:'DoolNews',u:'https://anchor.fm/s/336c897c/podcast/rss',ic:'📰'},
-    {t:'Journo\'s Diary · Nileena Atholi',u:'https://www.spreaker.com/show/5700590/episodes/feed',ic:'✍️'},
-    {t:'kaecawdo Malayalam',u:'https://anchor.fm/s/e15dc64/podcast/rss',ic:'🎵'},
-    {t:'MBIFL 2025 · Mathrubhumi',u:'https://www.spreaker.com/show/6579051/episodes/feed',ic:'📚'},
+    {t:'Journo\'s Diary',u:'https://www.spreaker.com/show/5700590/episodes/feed',ic:'✍️'},
     {t:'Madhyamam Podcast',u:'https://anchor.fm/s/47e3da54/podcast/rss',ic:'🗞️'},
-    {t:'Novel Sahithyamaala',u:'https://feeds.hubhopper.com/2b2c60f8a7b3a46d74d93fed80f15e97.rss',ic:'📖'},
-    {t:'RADIO LUCA · റേഡിയോ ലൂക്ക',u:'https://anchor.fm/s/31d35f00/podcast/rss',ic:'📡'},
+    {t:'RADIO LUCA',u:'https://anchor.fm/s/31d35f00/podcast/rss',ic:'📡'},
     {t:'Truecopy THINK',u:'https://anchor.fm/s/fd484df8/podcast/rss',ic:'💡'},
     {t:'Vayanalokam Book Podcast',u:'https://anchor.fm/s/c024b114/podcast/rss',ic:'📕'},
-    {t:'Inner Dialogues · ഇന്നർ ഡയലോഗ്സ്',u:'https://www.spreaker.com/show/6300771/episodes/feed',ic:'💬'},
-    {t:'Service Stories · Nileena Atholi',u:'https://www.spreaker.com/show/6220052/episodes/feed',ic:'🤝'}
+    {t:'Inner Dialogues',u:'https://www.spreaker.com/show/6300771/episodes/feed',ic:'💬'},
+    {t:'Novel Sahithyamaala',u:'https://feeds.hubhopper.com/2b2c60f8a7b3a46d74d93fed80f15e97.rss',ic:'📖'},
+    {t:'kaecawdo Malayalam',u:'https://anchor.fm/s/e15dc64/podcast/rss',ic:'🎵'},
+    {t:'MBIFL 2025 · Mathrubhumi',u:'https://www.spreaker.com/show/6579051/episodes/feed',ic:'📚'},
+    {t:'Service Stories',u:'https://www.spreaker.com/show/6220052/episodes/feed',ic:'🤝'}
   ],
   German:[
     {t:'Coffee Break German',u:'https://feeds.acast.com/public/shows/0c3c53a1-180f-435a-9453-cec3883b4ada',ic:'☕'},
@@ -1062,16 +1618,16 @@ var PODCASTS={
     {t:'Inside Europe · DW',u:'https://rss.dw.com/xml/podcast_inside-europe',ic:'🗺️'}
   ],
   India:[
-    {t:'3 Things · Indian Express',u:'https://www.spreaker.com/show/5008053/episodes/feed',ic:'3️⃣'},
     {t:'In Focus · The Hindu',u:'https://feeds.megaphone.fm/THGU4956605070',ic:'🎙️'},
     {t:'NL Hafta · Newslaundry',u:'https://feeds.acast.com/public/shows/5ec3d9497cef7479d2ef4798',ic:'🗞️'},
     {t:'Parley · The Hindu',u:'https://feeds.megaphone.fm/THGU3684108625',ic:'🎤'},
     {t:'Seen & Unseen · Amit Varma',u:'https://seenunseen.libsyn.com/rss',ic:'👁️'},
+    {t:'3 Things · Indian Express',u:'https://www.spreaker.com/show/5008053/episodes/feed',ic:'3️⃣'},
     {t:'Mint Lite Morning Shot',u:'https://feeds.megaphone.fm/HTMEDIALTD5734807184',ic:'💹'},
     {t:'Interpreting India',u:'https://feeds.simplecast.com/PJlAlBwi',ic:'🗺️'},
     {t:'DH Radio · Deccan Herald',u:'https://anchor.fm/s/1b98ea5c/podcast/rss',ic:'📻'},
-    {t:'Echoes of India: History',u:'https://www.omnycontent.com/d/playlist/e0dce4b3-2eb8-48cb-822c-af1d00e03e20/e832d5d5-f1ba-41e9-9f30-af4d00b05e65/fffb4b33-5385-4548-9abc-af4d00b05e86/podcast.rss',ic:'🪘'},
-    {t:'Yuddha · Indian Military History',u:'https://www.omnycontent.com/d/playlist/e0dce4b3-2eb8-48cb-822c-af1d00e03e20/2f56b963-1462-43ff-9b91-af4800b6e3dc/7be079d1-e355-4a2b-9148-af4800b6e40b/podcast.rss',ic:'⚔️'}
+    {t:'Echoes of India',u:'https://www.omnycontent.com/d/playlist/e0dce4b3-2eb8-48cb-822c-af1d00e03e20/e832d5d5-f1ba-41e9-9f30-af4d00b05e65/fffb4b33-5385-4548-9abc-af4d00b05e86/podcast.rss',ic:'🪘'},
+    {t:'Yuddha · Military History',u:'https://www.omnycontent.com/d/playlist/e0dce4b3-2eb8-48cb-822c-af1d00e03e20/2f56b963-1462-43ff-9b91-af4800b6e3dc/7be079d1-e355-4a2b-9148-af4800b6e40b/podcast.rss',ic:'⚔️'}
   ],
   World:[
     {t:'The Daily · NYT',u:'https://feeds.simplecast.com/54nAGcIl',ic:'📰'},
@@ -1106,9 +1662,9 @@ var PODCASTS={
     {t:'Practical AI',u:'https://feeds.transistor.fm/practical-ai-machine-learning-data-science-llm',ic:'🧩'},
     {t:'Oxide and Friends',u:'https://feeds.transistor.fm/oxide-and-friends',ic:'💾'},
     {t:'On The Metal',u:'https://feeds.transistor.fm/on-the-metal-0294649e-ec23-4eab-975a-9eb13fd94e06',ic:'🔩'},
-    {t:'Talking Machines',u:'https://feeds.acast.com/public/shows/6310c29b8aeabb0014b25f40',ic:'🗜️'},
     {t:'The TWIML AI Podcast',u:'https://feeds.megaphone.fm/MLN2155636147',ic:'🧬'},
-    {t:'The Amp Hour Electronics',u:'https://theamphour.com/feed/podcast',ic:'📻'}
+    {t:'The Amp Hour Electronics',u:'https://theamphour.com/feed/podcast',ic:'📻'},
+    {t:'Talking Machines',u:'https://feeds.acast.com/public/shows/6310c29b8aeabb0014b25f40',ic:'🗜️'}
   ],
   Culture:[
     {t:'99% Invisible',u:'https://feeds.simplecast.com/BqbsxVfO',ic:'🏗️'},
@@ -1122,153 +1678,54 @@ var PODCASTS={
     {t:'Stuff You Should Know',u:'https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/a91018a4-ea4f-4130-bf55-ae270180c327/44710ecc-10bb-48d1-93c7-ae270180c33e/podcast.rss',ic:'🧐'}
   ]
 };
-
-var allPodcasts=[];
-Object.keys(PODCASTS).forEach(function(cat){PODCASTS[cat].forEach(function(p){allPodcasts.push(Object.assign({},p,{cat:cat}));});});
-
-var shelfCache={};
-var currentCat='all';
-var currentPlayBtn=null;
-
+var allPodcasts=[];Object.keys(PODCASTS).forEach(function(cat){PODCASTS[cat].forEach(function(p){allPodcasts.push(Object.assign({},p,{cat:cat}));});});
+var shelfCache={};var currentCat='all';var currentPlayBtn=null;
 function getCatLabel(c){return{Malayalam:'🌿 Malayalam',German:'🇩🇪 German',India:'🇮🇳 India',World:'🌍 World',History:'📜 History',Science:'🔬 Science',Tech:'💻 Tech',Culture:'🎭 Culture'}[c]||c;}
-
 function renderShelf(cat){
-  currentCat=cat;
-  var list=cat==='all'?allPodcasts:(PODCASTS[cat]||[]);
-  var html='';
+  currentCat=cat;var list=cat==='all'?allPodcasts:(PODCASTS[cat]||[]);var html='';
   list.forEach(function(p,idx){
     var ck=shelfCache[p.u];
-    var epHtml=ck
-      ?'<div class="shelf-ep">'+esc(ck.title)+'</div><div class="shelf-date">'+esc(ck.date)+'</div>'
-      :'<div class="shelf-ep" style="color:var(--muted);font-style:italic;font-size:.68rem">Tap ▶ to load</div>';
-    var catBadge=cat==='all'?'<span style="font-size:.5rem;background:var(--cream);padding:.1rem .35rem;border-radius:2px;color:var(--muted)">'+getCatLabel(p.cat)+'</span>':'';
-    html+='<div class="shelf-card" data-idx="'+idx+'">';
-    html+='<div class="shelf-icon">'+p.ic+'</div>';
-    html+='<div class="shelf-title">'+esc(p.t)+'</div>';
-    html+=epHtml;
-    html+='<div class="shelf-meta">'+catBadge+'</div>';
-    html+='<button class="play-btn" data-idx="'+idx+'" title="Play latest episode">▶</button>';
-    html+='</div>';
+    var epHtml=ck?('<div class="shelf-ep">'+esc(ck.title)+'</div><div class="shelf-date">'+esc(ck.date)+'</div>'):'<div class="shelf-ep" style="color:var(--muted);font-style:italic;font-size:.64rem">Tap ▶ to load</div>';
+    var badge=cat==='all'?'<span style="font-size:.46rem;background:var(--cream);padding:.08rem .3rem;color:var(--muted)">'+getCatLabel(p.cat)+'</span>':'';
+    html+='<div class="shelf-card"><div class="shelf-icon">'+p.ic+'</div><div class="shelf-title">'+esc(p.t)+'</div>'+epHtml+'<div class="shelf-meta">'+badge+'</div><button class="play-btn" data-idx="'+idx+'" title="Play latest episode">▶</button></div>';
   });
-  document.getElementById('shelfGrid').innerHTML=html||'<div style="padding:2rem;color:var(--muted);font-size:.8rem">No podcasts in this category</div>';
-
-  // Wire play buttons
+  document.getElementById('shelfGrid').innerHTML=html||'<div style="padding:2rem;color:var(--muted);font-size:.8rem">No podcasts</div>';
   document.querySelectorAll('#shelfGrid .play-btn').forEach(function(btn){
     btn.addEventListener('click',function(e){
-      e.stopPropagation();
-      var idx=parseInt(btn.dataset.idx,10);
-      var list2=currentCat==='all'?allPodcasts:(PODCASTS[currentCat]||[]);
-      var p=list2[idx];if(!p)return;
+      e.stopPropagation();var idx=parseInt(btn.dataset.idx,10);
+      var list2=currentCat==='all'?allPodcasts:(PODCASTS[currentCat]||[]);var p=list2[idx];if(!p)return;
       var ck=shelfCache[p.u];
-      if(ck&&ck.audioUrl){
-        doPlay(p.t,ck.title,ck.audioUrl,btn);
-      } else {
-        btn.textContent='⟳';
-        fetchRSS(p.u).then(function(items){
-          var it=items[0];
-          if(it){
-            var d={title:it.title.slice(0,60),date:fmtDate(it.pubDate),audioUrl:it.enclosure||null};
-            shelfCache[p.u]=d;
-            renderShelf(currentCat);// refresh to show ep title
-            if(d.audioUrl){doPlay(p.t,d.title,d.audioUrl,null);}
-            else{btn.textContent='▶';window.open(p.u,'_blank');}
-          } else {btn.textContent='▶';}
-        }).catch(function(){btn.textContent='⚠';});
-      }
+      if(ck&&ck.audioUrl){doPlay(p.t,ck.title,ck.audioUrl,btn);}
+      else{btn.textContent='⟳';fetchRSS(p.u).then(function(items){var it=items[0];if(it){var d={title:it.title.slice(0,55),date:fmtD(it.pubDate),audioUrl:it.enclosure||null};shelfCache[p.u]=d;renderShelf(currentCat);if(d.audioUrl)doPlay(p.t,d.title,d.audioUrl,null);else{btn.textContent='▶';window.open(p.u,'_blank');}}else btn.textContent='▶';}).catch(function(){btn.textContent='⚠';});}
     });
   });
 }
-
 function loadPodcastPage(){
-  // Restore any cached episode data
-  var savedCache=lsGet('shelf_cache');
-  if(savedCache)shelfCache=savedCache;
+  var saved=lsGet('shelf5');if(saved)shelfCache=saved;
   renderShelf('all');
-
-  // Lazy-load episode metadata using IntersectionObserver
-  var grid=document.getElementById('shelfGrid');
-  var fetched=false;
-  function doFetch(){
-    if(fetched)return;fetched=true;
-    var toFetch=allPodcasts.slice(0,40);// first 40 = 5 per category
-    var done=0;
-    toFetch.forEach(function(p){
-      if(shelfCache[p.u]){done++;if(done===toFetch.length){lsSet('shelf_cache',shelfCache);renderShelf(currentCat);}return;}
-      fetchRSS(p.u).then(function(items){
-        if(items[0])shelfCache[p.u]={title:items[0].title.slice(0,55),date:fmtDate(items[0].pubDate),audioUrl:items[0].enclosure||null};
-      }).catch(function(){}).then(function(){
-        done++;if(done===toFetch.length){lsSet('shelf_cache',shelfCache);renderShelf(currentCat);}
-      });
-    });
-  }
-  if('IntersectionObserver' in window){
-    var obs=new IntersectionObserver(function(en){if(en[0].isIntersecting){obs.disconnect();doFetch();}},{rootMargin:'100px'});
-    obs.observe(grid);
-  } else {setTimeout(doFetch,800);}
-
-  // Tab clicks
-  document.getElementById('catTabs').addEventListener('click',function(e){
-    var tab=e.target.closest('.cat-tab');if(!tab)return;
-    document.querySelectorAll('.cat-tab').forEach(function(t){t.classList.remove('active');});
-    tab.classList.add('active');
-    renderShelf(tab.dataset.cat);
-  });
+  var grid=document.getElementById('shelfGrid');var fetched=false;
+  function doFetch(){if(fetched)return;fetched=true;var toFetch=allPodcasts.slice(0,42);var done=0;toFetch.forEach(function(p){if(shelfCache[p.u]){done++;if(done===toFetch.length){lsSet('shelf5',shelfCache);renderShelf(currentCat);}return;}fetchRSS(p.u).then(function(items){if(items[0])shelfCache[p.u]={title:items[0].title.slice(0,55),date:fmtD(items[0].pubDate),audioUrl:items[0].enclosure||null};}).catch(function(){}).then(function(){done++;if(done===toFetch.length){lsSet('shelf5',shelfCache);renderShelf(currentCat);}});});}
+  if('IntersectionObserver' in window){var obs=new IntersectionObserver(function(en){if(en[0].isIntersecting){obs.disconnect();doFetch();}},{rootMargin:'120px'});obs.observe(grid);}else setTimeout(doFetch,600);
+  document.getElementById('catTabs').addEventListener('click',function(e){var tab=e.target.closest('.cat-tab');if(!tab)return;document.querySelectorAll('.cat-tab').forEach(function(t){t.classList.remove('active');});tab.classList.add('active');renderShelf(tab.dataset.cat);});
 }
 
-// ── AUDIO PLAYER ─────────────────────────────────────────────
-var gAudio=document.getElementById('gAudio');
-var audioBar=document.getElementById('audioBar');
-
+// ═══════════════════════════════════════════════════════════
+// AUDIO PLAYER
+// ═══════════════════════════════════════════════════════════
+var gAudio=document.getElementById('gAudio');var audioBar=document.getElementById('audioBar');
 function doPlay(showTitle,epTitle,url,btn){
   if(currentPlayBtn&&currentPlayBtn!==btn){currentPlayBtn.classList.remove('playing');currentPlayBtn.textContent='▶';}
-  currentPlayBtn=btn;
-  if(btn){btn.classList.add('playing');btn.textContent='⏸';}
-  gAudio.src=url;
-  document.getElementById('audioTitle').textContent=showTitle;
-  document.getElementById('audioEp').textContent=epTitle||'';
-  audioBar.classList.add('on');
-  document.getElementById('audioPP').textContent='⏸';
-  gAudio.play().catch(function(){});
+  currentPlayBtn=btn;if(btn){btn.classList.add('playing');btn.textContent='⏸';}
+  gAudio.src=url;document.getElementById('audioTitle').textContent=showTitle||'';document.getElementById('audioEp').textContent=epTitle||'';
+  audioBar.classList.add('on');document.getElementById('audioPP').textContent='⏸';gAudio.play().catch(function(){});
 }
+document.getElementById('audioPP').addEventListener('click',function(){if(gAudio.paused){gAudio.play();this.textContent='⏸';}else{gAudio.pause();this.textContent='▶';}});
+document.getElementById('audioClose').addEventListener('click',function(){gAudio.pause();gAudio.src='';audioBar.classList.remove('on');document.getElementById('audioPP').textContent='▶';if(currentPlayBtn){currentPlayBtn.classList.remove('playing');currentPlayBtn.textContent='▶';currentPlayBtn=null;}});
+gAudio.addEventListener('timeupdate',function(){if(gAudio.duration&&isFinite(gAudio.duration)){document.getElementById('audioFill').style.width=((gAudio.currentTime/gAudio.duration)*100)+'%';document.getElementById('audioTime').textContent=fmtT(gAudio.currentTime)+' / '+fmtT(gAudio.duration);}});
+gAudio.addEventListener('ended',function(){document.getElementById('audioPP').textContent='▶';if(currentPlayBtn){currentPlayBtn.classList.remove('playing');currentPlayBtn.textContent='▶';}});
+document.getElementById('audioProg').addEventListener('click',function(e){if(gAudio.duration&&isFinite(gAudio.duration)){var r=this.getBoundingClientRect();gAudio.currentTime=((e.clientX-r.left)/r.width)*gAudio.duration;}});
 
-document.getElementById('audioPP').addEventListener('click',function(){
-  if(gAudio.paused){gAudio.play();this.textContent='⏸';}
-  else{gAudio.pause();this.textContent='▶';}
-});
-
-document.getElementById('audioClose').addEventListener('click',function(){
-  gAudio.pause();gAudio.src='';audioBar.classList.remove('on');
-  document.getElementById('audioPP').textContent='▶';
-  if(currentPlayBtn){currentPlayBtn.classList.remove('playing');currentPlayBtn.textContent='▶';currentPlayBtn=null;}
-});
-
-gAudio.addEventListener('timeupdate',function(){
-  if(gAudio.duration&&isFinite(gAudio.duration)){
-    document.getElementById('audioFill').style.width=((gAudio.currentTime/gAudio.duration)*100)+'%';
-    document.getElementById('audioTime').textContent=fmtTime(gAudio.currentTime)+'/'+fmtTime(gAudio.duration);
-  }
-});
-
-gAudio.addEventListener('ended',function(){
-  document.getElementById('audioPP').textContent='▶';
-  if(currentPlayBtn){currentPlayBtn.classList.remove('playing');currentPlayBtn.textContent='▶';}
-});
-
-document.getElementById('audioProg').addEventListener('click',function(e){
-  if(gAudio.duration&&isFinite(gAudio.duration)){
-    var r=this.getBoundingClientRect();
-    gAudio.currentTime=((e.clientX-r.left)/r.width)*gAudio.duration;
-  }
-});
-
-// ── SERVICE WORKER ────────────────────────────────────────────
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(function(){});
-}
-
-// init home page
-pageLoaded['home']=true;
-
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(function(){});
 })();
 </script>
 </body>
