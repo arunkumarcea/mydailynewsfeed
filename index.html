@@ -11,8 +11,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Daily Digest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Noto+Sans+Malayalam:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ── TOKENS ─────────────────────────────────────────────────── */
@@ -83,39 +82,48 @@ nav::-webkit-scrollbar{display:none}
 .hc:nth-child(21){animation-delay:1.05s}.hc:nth-child(22){animation-delay:1.1s}
 
 /* GRID PLACEMENT — 5 col newspaper layout */
-/* Row 1: EVENT — full 5 cols, prominent like cinema */
+/* Row 1: EVENT — full 5 cols */
 .hc-event    {grid-column:1/6;grid-row:1;border-right:none}
 
-/* Row 2: Today stats — Weather, Curiosity, On This Day (3 cols; cinema stays row 3) */
-.hc-weather  {grid-column:1;grid-row:2}
-.hc-curiosity{grid-column:2/4;grid-row:2}
-.hc-otd      {grid-column:4/6;grid-row:2;border-right:none}
+/* Row 2: German word prominent (3 cols) + Weather (1 col) + Today digest (1 col) */
+.hc-german   {grid-column:1/4;grid-row:2}
+.hc-weather  {grid-column:4;grid-row:2}
+.hc-today    {grid-column:5;grid-row:2;border-right:none}
 
 /* Row 3: CINEMA — full 5 cols */
 .hc-cinema   {grid-column:1/6;grid-row:3;border-right:none}
 
-/* Row 4: SZ, Hindu, Guardian, NYT, Astronomy */
-.hc-sz       {grid-column:1;grid-row:4}
-.hc-hindu    {grid-column:2;grid-row:4}
-.hc-guardian {grid-column:3;grid-row:4}
-.hc-nyt      {grid-column:4;grid-row:4}
-.hc-astro    {grid-column:5;grid-row:4;border-right:none}
+/* Row 4: Akashavani (2col) + German TV pick (3col) */
+.hc-akasha   {grid-column:1/3;grid-row:4}
+.hc-tvpick   {grid-column:3/6;grid-row:4;border-right:none}
 
-/* Row 5: ML Wikipedia, EN Wikipedia, HN, Podcast, Sport */
-.hc-ml       {grid-column:1;grid-row:5}
-.hc-wiki     {grid-column:2;grid-row:5}
-.hc-hn       {grid-column:3;grid-row:5}
-.hc-podcast  {grid-column:4;grid-row:5}
-.hc-sport    {grid-column:5;grid-row:5;border-right:none}
+/* Row 5: MVHS English course (2col) + Gasteig HP8 today (3col) */
+.hc-mvhs     {grid-column:1/3;grid-row:5}
+.hc-gasteig  {grid-column:3/6;grid-row:5;border-right:none}
 
-/* Row 6: ML News, Book (2col), Semi/EE News, Cartoon */
-.hc-mlnews   {grid-column:1;grid-row:6}
-.hc-book     {grid-column:2/4;grid-row:6}
-.hc-semi     {grid-column:4;grid-row:6}
-.hc-cartoon  {grid-column:5;grid-row:6;border-right:none}
+/* Row 6: News — wider cards, 2-3 cols each */
+.hc-sz       {grid-column:1/3;grid-row:6}
+.hc-hindu    {grid-column:3/5;grid-row:6}
+.hc-astro    {grid-column:5;grid-row:6;border-right:none}
 
-/* Row 7: German word — full width */
-.hc-german   {grid-column:1/6;grid-row:7;border-right:none;border-bottom:none}
+/* Row 7: Guardian (2col) + NYT (2col) + ML Wikipedia (1col) */
+.hc-guardian {grid-column:1/3;grid-row:7}
+.hc-nyt      {grid-column:3/5;grid-row:7}
+.hc-ml       {grid-column:5;grid-row:7;border-right:none}
+
+/* Row 8: HN (2col), Podcast (2col), Sport (1col) */
+.hc-hn       {grid-column:1/3;grid-row:8}
+.hc-podcast  {grid-column:3/5;grid-row:8}
+.hc-sport    {grid-column:5;grid-row:8;border-right:none}
+
+/* Row 9: Wiki (2col), ML News (1col), Book (2col) */
+.hc-wiki     {grid-column:1/3;grid-row:9}
+.hc-mlnews   {grid-column:3;grid-row:9}
+.hc-book     {grid-column:4/6;grid-row:9;border-right:none}
+
+/* Row 10: Semi/EE (2col), Cartoon (3col) */
+.hc-semi     {grid-column:1/3;grid-row:10}
+.hc-cartoon  {grid-column:3/6;grid-row:10;border-right:none;border-bottom:none}
 
 /* CARD INTERIOR PADDING WRAPPER */
 .hc-pad{padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.45rem;flex:1}
@@ -151,17 +159,19 @@ nav::-webkit-scrollbar{display:none}
 .hc-curiosity .card-label{color:var(--plum)}.hc-curiosity .label-pip{background:var(--plum)}
 .hc-otd     .card-label{color:var(--gold)}.hc-otd     .label-pip{background:var(--gold)}
 .hc-cartoon .card-label{color:var(--sage)}.hc-cartoon .label-pip{background:var(--sage)}
+.hc-mvhs    .card-label{color:var(--slate)}.hc-mvhs    .label-pip{background:var(--slate)}
+.hc-gasteig .card-label{color:var(--gold)} .hc-gasteig .label-pip{background:var(--gold)}
 
 /* ══════════════════════════════════════════════════════════════
-   🎬 CINEMA CARD — full-width, luxurious
+   🎬 CINEMA CARD — full-width, editorial warm dark
 ══════════════════════════════════════════════════════════════ */
 .hc-cinema{
-  background:var(--film)!important;
+  background:#2c2418!important; /* warm dark walnut — not purple */
   color:var(--paper);
   cursor:default;
   min-height:200px
 }
-.hc-cinema:hover{background:#221238!important}
+.hc-cinema:hover{background:#342a1e!important}
 .cinema-inner{
   display:grid;
   grid-template-columns:280px 1fr auto;
@@ -170,14 +180,14 @@ nav::-webkit-scrollbar{display:none}
   min-height:200px
 }
 .cinema-poster{
-  position:relative;background:rgba(255,255,255,.06);overflow:hidden;
+  position:relative;background:rgba(255,255,255,.05);overflow:hidden;
   flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
-  border-right:1px solid rgba(255,255,255,.1)
+  border-right:1px solid rgba(255,255,255,.08)
 }
 .cinema-poster img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.9}
 .cinema-poster-ph{font-size:4rem;opacity:.18;position:relative;z-index:1}
-.cinema-poster::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,transparent 70%,var(--film));pointer-events:none}
+.cinema-poster::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,transparent 70%,#2c2418);pointer-events:none}
 .cinema-body{padding:1.6rem 2rem;display:flex;flex-direction:column;gap:.6rem;justify-content:center}
 .cinema-tag{
   font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;
@@ -189,11 +199,11 @@ nav::-webkit-scrollbar{display:none}
   font-weight:900;line-height:1.08;color:#fff
 }
 .cinema-director{font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(245,240,232,.55);letter-spacing:.1em}
-.cinema-blurb{font-size:.83rem;line-height:1.65;color:rgba(245,240,232,.8);max-width:540px}
+.cinema-blurb{font-size:.83rem;line-height:1.65;color:rgba(245,240,232,.82);max-width:540px}
 .cinema-endorsement{font-family:'DM Mono',monospace;font-size:.56rem;color:var(--gold);font-style:italic;max-width:540px}
 .cinema-route{
   padding:1.4rem 1.6rem;
-  border-left:1px solid rgba(255,255,255,.1);
+  border-left:1px solid rgba(255,255,255,.08);
   display:flex;flex-direction:column;gap:.55rem;
   justify-content:center;
   min-width:230px
@@ -202,7 +212,7 @@ nav::-webkit-scrollbar{display:none}
   font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;
   color:var(--gold);line-height:1
 }
-.cinema-where{font-family:'DM Mono',monospace;font-size:.56rem;color:rgba(245,240,232,.65);letter-spacing:.1em;margin-top:.1rem}
+.cinema-where{font-family:'DM Mono',monospace;font-size:.56rem;color:rgba(245,240,232,.55);letter-spacing:.1em;margin-top:.1rem}
 .cinema-step{display:flex;gap:.5rem;font-size:.72rem;color:rgba(245,240,232,.7);align-items:flex-start;line-height:1.4}
 .cinema-step-ic{flex-shrink:0;margin-top:.05rem}
 .cinema-depart{
@@ -212,11 +222,11 @@ nav::-webkit-scrollbar{display:none}
 }
 .cinema-link{
   font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(245,240,232,.4);text-decoration:none;border-bottom:1px solid rgba(245,240,232,.2);
+  color:rgba(245,240,232,.38);text-decoration:none;border-bottom:1px solid rgba(245,240,232,.18);
   padding-bottom:1px;width:fit-content;margin-top:.15rem;transition:color .15s
 }
 .cinema-link:hover{color:var(--gold);border-color:var(--gold)}
-.cinema-skeleton{padding:1.6rem 2rem;color:rgba(245,240,232,.35);display:flex;align-items:center;gap:1rem;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em}
+.cinema-skeleton{padding:1.6rem 2rem;color:rgba(245,240,232,.3);display:flex;align-items:center;gap:1rem;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em}
 
 /* ── WEATHER ────────────────────────────────────────────────── */
 .wx-big{font-size:2.6rem;line-height:1;margin:.1rem 0}
@@ -329,8 +339,42 @@ nav::-webkit-scrollbar{display:none}
   font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.15em;width:100%
 }
 
-/* More tab: map */
-#evmap{width:100%;height:440px;border:1px solid var(--border);margin-bottom:0;position:relative;z-index:0}
+/* More tab: proximity visual guide */
+.prox-bar{border:1px solid var(--border);margin-bottom:0;background:var(--card)}
+.prox-header{background:var(--ink);color:var(--paper);padding:.55rem 1.2rem;display:flex;align-items:center;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase}
+.prox-legend{display:flex;gap:1.2rem;font-size:.44rem;opacity:.7;align-items:center}
+.prox-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+.prox-track{padding:.8rem 1.2rem 1rem;position:relative}
+.prox-line{height:3px;background:linear-gradient(to right,#1a3d1a,#c8922a,#b34a2a);margin:2.2rem 1rem .8rem;position:relative;border-radius:2px}
+.prox-line::before{content:'📍';position:absolute;left:-1.2rem;top:-1.1rem;font-size:1.1rem}
+.prox-line::after{content:'';position:absolute;right:0;top:-3px;width:8px;height:8px;border-top:3px solid #b34a2a;border-right:3px solid #b34a2a;transform:rotate(45deg)}
+.prox-pins{position:relative;height:3.2rem}
+.prox-pin{position:absolute;transform:translateX(-50%);bottom:0;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.prox-pin-dot{border-radius:50%;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.prox-pin-label{font-family:'DM Mono',monospace;font-size:.42rem;white-space:nowrap;color:var(--ink);max-width:80px;overflow:hidden;text-overflow:ellipsis;text-align:center;line-height:1.2}
+.prox-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0;border-top:1px solid var(--border)}
+.prox-card{padding:.75rem 1rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:.22rem;text-decoration:none;color:var(--ink);background:var(--card);transition:background .15s}
+.prox-card:hover{background:#fff}
+.prox-card.near{border-left:3px solid var(--sage)}
+.prox-rank{font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sage)}
+.prox-dist-pill{display:inline-flex;align-items:center;gap:.25rem;font-family:'DM Mono',monospace;font-size:.48rem;color:var(--sage);font-weight:500}
+.prox-ev-title{font-family:'Playfair Display',serif;font-size:.82rem;font-weight:700;line-height:1.2;color:var(--ink)}
+.prox-ev-venue{font-size:.66rem;color:var(--muted);margin-top:.05rem}
+.prox-ev-time{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--gold)}
+/* MVHS / Gasteig panels */
+.cultural-section{margin-top:1.4rem;border:1px solid var(--border)}
+.cultural-head{background:var(--ink);color:var(--paper);padding:.6rem 1.2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold)}
+.cultural-head-title{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.2em;text-transform:uppercase}
+.cultural-head a{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--gold);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid rgba(200,146,42,.4);padding-bottom:1px}
+.cultural-head a:hover{color:#fff}
+.cultural-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0}
+.cultural-item{padding:.85rem 1.1rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:.28rem;text-decoration:none;color:var(--ink);background:var(--card);transition:background .15s}
+.cultural-item:hover{background:#fff}
+.cultural-tag{font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+.cultural-title{font-family:'Playfair Display',serif;font-size:.88rem;font-weight:700;line-height:1.22;color:var(--ink)}
+.cultural-meta{font-family:'DM Mono',monospace;font-size:.48rem;color:var(--muted);margin-top:auto}
+.cultural-desc{font-size:.72rem;color:#4a4035;line-height:1.52}
+.cultural-loading{padding:1.2rem;font-family:'DM Mono',monospace;font-size:.54rem;color:var(--muted);text-align:center;letter-spacing:.1em}
 /* More tab: event widgets — light newspaper palette matching home card */
 .evw-list{display:flex;flex-direction:column;gap:0;margin-top:0;border:1px solid var(--ev-border);border-top:none}
 .evw-section-head{
@@ -381,6 +425,7 @@ nav::-webkit-scrollbar{display:none}
 }
 .evw-venue{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--ev-sub);letter-spacing:.06em}
 .evw-dist{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--ev-accent);letter-spacing:.08em;margin-top:.1rem;font-weight:600}
+.evw-desc{font-size:.72rem;line-height:1.58;color:#5a4a38;margin-top:.25rem;max-width:480px}
 .evw-go{
   padding:.8rem 1rem;
   border-left:1px solid var(--ev-border);
@@ -446,14 +491,50 @@ nav::-webkit-scrollbar{display:none}
 /* ── MALAYALAM NEWS ─────────────────────────────────────────── */
 .ml-script{font-family:'Noto Sans Malayalam',sans-serif}
 
-/* ── GERMAN CARD ────────────────────────────────────────────── */
+/* ── GERMAN CARD — prominent, 3-col banner in row 2 ──────────── */
 .de-inner{display:flex;gap:2rem;align-items:flex-start}
-.de-word{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,2.8vw,2.5rem);font-weight:900;font-style:italic;line-height:1}
-.de-phon{font-family:'DM Mono',monospace;font-size:.64rem;color:var(--plum);margin:.28rem 0}
+.de-word{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.2vw,3.2rem);font-weight:900;font-style:italic;line-height:1;color:var(--plum)}
+.de-phon{font-family:'DM Mono',monospace;font-size:.64rem;color:var(--plum);margin:.28rem 0;opacity:.7}
 .de-pos{display:inline-block;background:#f0e8f5;color:var(--plum);padding:.1rem .42rem;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase}
 .de-def{font-size:.84rem;line-height:1.65;color:#4a4035;margin:.5rem 0}
 .de-ex{font-size:.78rem;color:var(--plum);font-style:italic}
 .de-tr{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:.2rem}
+/* compact "today" card combining curiosity + OTD */
+.today-section{padding:.5rem 0;border-bottom:1px dashed var(--border)}
+.today-section:last-child{border-bottom:none;padding-bottom:0}
+.today-label{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem}
+.today-fact{font-size:.74rem;line-height:1.55;color:#4a4035}
+/* Akashavani card */
+.akasha-inner{display:flex;flex-direction:column;gap:.6rem}
+.akasha-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--ink)}
+.akasha-next{background:var(--ink);color:var(--paper);padding:.65rem 1rem;display:flex;align-items:center;gap:1rem;margin:.1rem 0}
+.akasha-countdown{font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:500;color:var(--gold);letter-spacing:.04em;min-width:80px}
+.akasha-when{font-family:'DM Mono',monospace;font-size:.52rem;color:rgba(245,240,232,.6);letter-spacing:.06em;line-height:1.5}
+.akasha-sched{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.06em;line-height:1.7}
+/* German TV pick card */
+.tvpick-inner{display:flex;gap:0;height:100%}
+.tvpick-poster{width:120px;flex-shrink:0;background:#1a1208;position:relative;display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+.tvpick-body{flex:1;padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.38rem}
+.tvpick-channel{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.15rem}
+.tvpick-when{font-family:'DM Mono',monospace;font-size:.56rem;color:var(--muted);letter-spacing:.06em}
+.tvpick-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;line-height:1.22;color:var(--ink)}
+.tvpick-genre{display:inline-block;background:var(--cream);color:var(--slate);font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;padding:.1rem .4rem;margin:.1rem 0}
+.tvpick-desc{font-size:.8rem;line-height:1.62;color:#4a4035;flex:1}
+
+/* ── MVHS English course card ───────────────────────────────── */
+.mvhs-inner{display:flex;flex-direction:column;gap:.45rem;height:100%}
+.mvhs-tag{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.18em;text-transform:uppercase;display:inline-block;background:var(--cream);color:var(--slate);padding:.12rem .4rem;margin-bottom:.05rem}
+.mvhs-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;line-height:1.25;color:var(--ink)}
+.mvhs-desc{font-size:.78rem;line-height:1.6;color:#4a4035;flex:1}
+.mvhs-meta{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.05em;border-top:1px solid var(--border);padding-top:.4rem;margin-top:auto}
+/* ── Gasteig HP8 today card ─────────────────────────────────── */
+.gasteig-inner{display:flex;flex-direction:column;gap:.45rem;height:100%}
+.gasteig-when{font-family:'DM Mono',monospace;font-size:.58rem;font-weight:500;color:var(--gold);letter-spacing:.04em}
+.gasteig-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;line-height:1.22;color:var(--ink)}
+.gasteig-desc{font-size:.78rem;line-height:1.6;color:#4a4035;flex:1}
+.gasteig-venue{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.04em}
+.gasteig-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.1rem}
+.gasteig-tag{display:inline-block;background:var(--cream);color:var(--slate);font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;padding:.1rem .38rem}
 
 /* ── SKELETON ───────────────────────────────────────────────── */
 .sk{display:block;border-radius:2px;background:linear-gradient(90deg,var(--cream) 25%,#e4dfd4 50%,var(--cream) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
@@ -520,48 +601,47 @@ nav::-webkit-scrollbar{display:none}
 /* ── RESPONSIVE ─────────────────────────────────────────────── */
 @media(max-width:980px){
   .home-grid{grid-template-columns:repeat(3,1fr)}
-  /* Row 1: event full width */
   .hc-event{grid-column:1/4;grid-row:1;border-right:none}
-  /* Row 2: weather, curiosity, otd */
-  .hc-weather{grid-column:1;grid-row:2}.hc-curiosity{grid-column:2;grid-row:2}.hc-otd{grid-column:3;grid-row:2;border-right:none}
-  /* Row 3: cinema full width */
-  .hc-cinema{grid-column:1/4;grid-row:3;border-right:none}
+  .hc-german{grid-column:1/4;grid-row:2;border-right:none}
+  .hc-weather{grid-column:1/2;grid-row:3}.hc-today{grid-column:2/4;grid-row:3;border-right:none}
+  .hc-cinema{grid-column:1/4;grid-row:4;border-right:none}
   .cinema-inner{grid-template-columns:200px 1fr}.cinema-route{display:none}
-  /* Row 4: news 3col */
-  .hc-sz{grid-column:1;grid-row:4}.hc-hindu{grid-column:2;grid-row:4}.hc-guardian{grid-column:3;grid-row:4;border-right:none}
-  /* Row 5: */
-  .hc-nyt{grid-column:1;grid-row:5}.hc-astro{grid-column:2;grid-row:5}.hc-ml{grid-column:3;grid-row:5;border-right:none}
-  /* Row 6: */
-  .hc-wiki{grid-column:1;grid-row:6}.hc-hn{grid-column:2;grid-row:6}.hc-podcast{grid-column:3;grid-row:6;border-right:none}
-  /* Row 7: */
-  .hc-sport{grid-column:1;grid-row:7}.hc-mlnews{grid-column:2;grid-row:7}.hc-book{grid-column:3;grid-row:7;border-right:none}
-  /* Row 8: */
-  .hc-semi{grid-column:1;grid-row:8}.hc-cartoon{grid-column:2;grid-row:8}
-  /* Row 9: */
-  .hc-german{grid-column:1/4;grid-row:9;border-right:none}
-  /* Event inner layout */
+  .hc-akasha{grid-column:1/2;grid-row:5}.hc-tvpick{grid-column:2/4;grid-row:5;border-right:none}
+  .hc-mvhs{grid-column:1/2;grid-row:6}.hc-gasteig{grid-column:2/4;grid-row:6;border-right:none}
+  .hc-sz{grid-column:1/2;grid-row:7}.hc-hindu{grid-column:2/4;grid-row:7;border-right:none}
+  .hc-guardian{grid-column:1/2;grid-row:8}.hc-nyt{grid-column:2/4;grid-row:8;border-right:none}
+  .hc-astro{grid-column:1/2;grid-row:9}.hc-ml{grid-column:2/4;grid-row:9;border-right:none}
+  .hc-hn{grid-column:1/2;grid-row:10}.hc-podcast{grid-column:2/4;grid-row:10;border-right:none}
+  .hc-sport{grid-column:1/2;grid-row:11}.hc-mlnews{grid-column:2/4;grid-row:11;border-right:none}
+  .hc-wiki{grid-column:1/2;grid-row:12}.hc-book{grid-column:2/4;grid-row:12;border-right:none}
+  .hc-semi{grid-column:1/2;grid-row:13}.hc-cartoon{grid-column:2/4;grid-row:13;border-right:none;border-bottom:none}
   .ev-inner-wrap{grid-template-columns:190px 1fr}.ev-logistics{display:none}
   .np-grid{grid-template-columns:1fr}
   .np-col{border-right:none;border-bottom:1px solid var(--border)}.np-col:last-child{border-bottom:none}
-  .de-inner{flex-direction:column;gap:1rem}
+  .de-inner{flex-direction:row;gap:1.5rem}
   .evweek-grid{grid-template-columns:1fr 1fr}
+  .tvpick-poster{width:90px}
 }
 @media(max-width:620px){
   .home-grid{grid-template-columns:repeat(2,1fr)}
   .hc-event{grid-column:1/3;grid-row:1}
   .ev-inner-wrap{grid-template-columns:1fr}.ev-photo{min-height:160px;max-height:160px}.ev-logistics{display:none}
   .ev-photo::after{background:linear-gradient(to bottom,transparent 60%,var(--ev))}
-  .hc-weather{grid-column:1;grid-row:2}.hc-curiosity{grid-column:2;grid-row:2;border-right:none}
-  .hc-otd{grid-column:1/3;grid-row:3;border-right:none}
+  .hc-german{grid-column:1/3;grid-row:2;border-right:none}
+  .hc-weather{grid-column:1;grid-row:3}.hc-today{grid-column:2;grid-row:3;border-right:none}
   .hc-cinema{grid-column:1/3;grid-row:4}.cinema-inner{grid-template-columns:1fr}.cinema-poster{min-height:160px;max-height:160px}.cinema-route{display:none}
-  .hc-sz{grid-column:1;grid-row:5}.hc-hindu{grid-column:2;grid-row:5;border-right:none}
-  .hc-guardian{grid-column:1;grid-row:6}.hc-nyt{grid-column:2;grid-row:6;border-right:none}
-  .hc-astro{grid-column:1;grid-row:7}.hc-ml{grid-column:2;grid-row:7;border-right:none}
-  .hc-wiki{grid-column:1;grid-row:8}.hc-hn{grid-column:2;grid-row:8;border-right:none}
-  .hc-podcast{grid-column:1;grid-row:9}.hc-sport{grid-column:2;grid-row:9;border-right:none}
-  .hc-mlnews{grid-column:1;grid-row:10}.hc-book{grid-column:2;grid-row:10;border-right:none}
-  .hc-semi{grid-column:1;grid-row:11}.hc-cartoon{grid-column:2;grid-row:11;border-right:none}
-  .hc-german{grid-column:1/3;grid-row:12}
+  .hc-akasha{grid-column:1/3;grid-row:5;border-right:none}
+  .hc-tvpick{grid-column:1/3;grid-row:6;border-right:none}
+  .hc-mvhs{grid-column:1;grid-row:7}.hc-gasteig{grid-column:2;grid-row:7;border-right:none}
+  .hc-sz{grid-column:1;grid-row:8}.hc-hindu{grid-column:2;grid-row:8;border-right:none}
+  .hc-guardian{grid-column:1;grid-row:9}.hc-nyt{grid-column:2;grid-row:9;border-right:none}
+  .hc-astro{grid-column:1;grid-row:10}.hc-ml{grid-column:2;grid-row:10;border-right:none}
+  .hc-hn{grid-column:1;grid-row:11}.hc-podcast{grid-column:2;grid-row:11;border-right:none}
+  .hc-sport{grid-column:1;grid-row:12}.hc-mlnews{grid-column:2;grid-row:12;border-right:none}
+  .hc-wiki{grid-column:1;grid-row:13}.hc-book{grid-column:2;grid-row:13;border-right:none}
+  .hc-semi{grid-column:1;grid-row:14}.hc-cartoon{grid-column:2;grid-row:14;border-right:none;border-bottom:none}
+  .de-inner{flex-direction:column;gap:1rem}
+  .tvpick-poster{display:none}
   .page{padding:.9rem .8rem}
   .evweek-grid{grid-template-columns:1fr}
 }
@@ -609,28 +689,29 @@ nav::-webkit-scrollbar{display:none}
       </div>
     </div>
 
-    <!-- 2 · WEATHER -->
+    <!-- 2 · GERMAN WORD OF THE DAY — prominent 3-col in row 2 -->
+    <div class="hc hc-german" id="hc-german">
+      <div class="hc-pad">
+        <div class="card-label"><span class="label-pip" style="background:var(--plum)"></span>🇩🇪 Wort des Tages · German Word of the Day</div>
+        <div id="de-inner"><span class="sk sk-big" style="width:35%"></span><span class="sk sk-t" style="width:65%"></span><span class="sk sk-s"></span></div>
+      </div>
+    </div>
+
+    <!-- 3 · WEATHER -->
     <div class="hc hc-weather" id="hc-weather">
       <div class="hc-pad" id="wx-inner">
         <span class="sk sk-big"></span><span class="sk sk-t"></span><span class="sk sk-s"></span>
       </div>
     </div>
 
-    <!-- 3 · CURIOSITY OF THE DAY -->
-    <div class="hc hc-curiosity" id="hc-curiosity">
-      <div class="hc-pad" id="curiosity-inner">
+    <!-- 4 · TODAY DIGEST — compact curiosity + on this day -->
+    <div class="hc hc-today" id="hc-today">
+      <div class="hc-pad" id="today-inner">
         <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
       </div>
     </div>
 
-    <!-- 4 · ON THIS DAY / BIRTHDAY -->
-    <div class="hc hc-otd" id="hc-otd">
-      <div class="hc-pad" id="otd-inner">
-        <span class="sk sk-big"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
-      </div>
-    </div>
-
-    <!-- 5 · CINEMA RECOMMENDATION — full width, luxurious -->
+    <!-- 5 · CINEMA RECOMMENDATION — full width -->
     <div class="hc hc-cinema" id="hc-cinema">
       <div id="cinema-inner" class="cinema-skeleton">
         <span>🎬</span>
@@ -639,6 +720,35 @@ nav::-webkit-scrollbar{display:none}
           <span class="sk-dk" style="height:1.4rem;width:340px;display:block;margin-bottom:.4rem"></span>
           <span class="sk-dk" style="height:.7rem;width:260px;display:block"></span>
         </div>
+      </div>
+    </div>
+
+    <!-- 6 · AKASHAVANI KERALA RADIO — Hello Akashavani schedule -->
+    <div class="hc hc-akasha" id="hc-akasha">
+      <div class="hc-pad" id="akasha-inner">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 7 · GERMAN TV PICK — curated ARD/ZDF weekly highlight -->
+    <div class="hc hc-tvpick" id="hc-tvpick">
+      <div id="tvpick-inner" style="display:flex;height:100%">
+        <div class="tvpick-poster">📺</div>
+        <div class="tvpick-body"><span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span></div>
+      </div>
+    </div>
+
+    <!-- 8 · MVHS ENGLISH COURSE — non-language course pick -->
+    <div class="hc hc-mvhs" id="hc-mvhs">
+      <div class="hc-pad" id="mvhs-home-inner">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
+    <!-- 9 · GASTEIG HP8 TODAY — one event happening today -->
+    <div class="hc hc-gasteig" id="hc-gasteig">
+      <div class="hc-pad" id="gasteig-home-inner">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
       </div>
     </div>
 
@@ -762,13 +872,6 @@ nav::-webkit-scrollbar{display:none}
       </div>
     </div>
 
-    <!-- 20 · GERMAN WORD (full width) -->
-    <div class="hc hc-german" id="hc-german">
-      <div class="hc-pad">
-        <div class="card-label"><span class="label-pip" style="background:var(--plum)"></span>🇩🇪 Wort des Tages</div>
-        <div id="de-inner"><span class="sk sk-big" style="width:35%"></span><span class="sk sk-t" style="width:65%"></span><span class="sk sk-s"></span></div>
-      </div>
-    </div>
 
   </div><!-- /home-grid -->
 </div><!-- /page-home -->
@@ -817,7 +920,7 @@ nav::-webkit-scrollbar{display:none}
 <div class="page" id="page-more">
   <div class="page-header">
     <h2>Munich This Week</h2>
-    <p>Live events · map · tap to expand Wikipedia</p>
+    <p>Live events · proximity guide · MVHS & Gasteig HP8 · Wikipedia</p>
   </div>
 
   <!-- Wikipedia: compact collapsible panels -->
@@ -840,12 +943,34 @@ nav::-webkit-scrollbar{display:none}
     </div>
   </div>
 
-  <!-- Live Munich events: map then event widgets -->
+  <!-- Live Munich events: proximity guide + event widgets -->
   <div style="font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);padding:.6rem 0 .4rem;border-bottom:1px solid var(--border);margin-bottom:0">
-    🗺 Munich Events Map — from Marienstern Bus Stop
+    🚶 Munich Events — Reachability from Marienstern Bus Stop
   </div>
-  <div id="evmap"></div>
+  <div id="evprox" class="prox-bar"></div>
   <div id="more-events" class="evw-list"></div>
+
+  <!-- MVHS English Programmes -->
+  <div class="cultural-section">
+    <div class="cultural-head">
+      <span class="cultural-head-title">🎓 MVHS · Courses in English — Gasteig HP8</span>
+      <a href="https://www.mvhs.de/kurse/460-CAT-KAT17997" target="_blank" rel="noopener">All courses →</a>
+    </div>
+    <div id="mvhs-grid" class="cultural-grid">
+      <div class="cultural-loading">⏳ Loading courses…</div>
+    </div>
+  </div>
+
+  <!-- Gasteig HP8 Events -->
+  <div class="cultural-section">
+    <div class="cultural-head">
+      <span class="cultural-head-title">🏛 Gasteig HP8 · Upcoming Events (English)</span>
+      <a href="https://www.gasteig.de/en/events/" target="_blank" rel="noopener">All events →</a>
+    </div>
+    <div id="gasteig-grid" class="cultural-grid">
+      <div class="cultural-loading">⏳ Loading events…</div>
+    </div>
+  </div>
 </div>
 
 <!-- AUDIO BAR -->
@@ -987,60 +1112,51 @@ var QUOTES=[
   {q:'The purpose of our lives is to be happy.',by:'Dalai Lama'}
 ];
 (function(){
-  var doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,1))/(864e5));
-  var q=QUOTES[doy%QUOTES.length];
+  // Rotate every 2 hours — use hour-of-year as index for variety
+  var now=new Date();
+  var hourOfYear=Math.floor((Date.now()-new Date(now.getFullYear(),0,1))/3600000);
+  var q=QUOTES[hourOfYear%QUOTES.length];
   document.getElementById('mastQuote').textContent='\u201c'+q.q+'\u201d';
   document.getElementById('mastAuthor').textContent='— '+q.by;
 })();
 
-// ═══════════════════════════════════════════════════════════
-// CARD: CURIOSITY OF THE DAY
-// ═══════════════════════════════════════════════════════════
-var CURIOSITIES=[
-  {n:'1',f:'A day on Venus is longer than its year. Venus takes 243 Earth days to rotate once, but only 225 Earth days to orbit the Sun.'},
-  {n:'2',f:'Octopuses have three hearts, blue blood, and can edit their own RNA. They are so neurologically unusual that some scientists suggest they may have evolved intelligence independently from vertebrates.'},
-  {n:'3',f:'The Great Wall of China is not visible from space with the naked eye. This is one of the most persistent myths in geography — the wall is wide enough but too narrow relative to its length.'},
-  {n:'4',f:'Honey never spoils. Archaeologists have found 3,000-year-old honey in Egyptian tombs that was still perfectly edible. Its low moisture content and acidic pH prevent bacterial growth.'},
-  {n:'5',f:'There are more possible iterations of a game of chess than there are atoms in the observable universe. The Shannon number estimates 10¹²⁰ possible games.'},
-  {n:'6',f:'The human body contains enough iron to make a nail about 8 cm long. Most of it is in hemoglobin, the molecule that carries oxygen in red blood cells.'},
-  {n:'7',f:'Cleopatra lived closer in time to the Moon landing than to the construction of the Great Pyramid at Giza. The pyramids are about 2,500 years older than Cleopatra.'},
-  {n:'8',f:'Water can boil and freeze at the same time. This phenomenon, called the triple point, occurs at a very specific combination of temperature (0.01°C) and pressure.'},
-  {n:'9',f:'The shortest war in history lasted 38–45 minutes. The Anglo-Zanzibar War of 1896 ended so quickly because British naval firepower overwhelmed the Sultan\'s palace before a ceasefire.'},
-  {n:'10',f:'A group of flamingos is called a flamboyance. And a group of cats is a clowder. A group of ravens is an unkindness.'},
-  {n:'11',f:'The average person walks the equivalent of three times around the Earth in a lifetime. That\'s roughly 100,000 miles over 80 years.'},
-  {n:'12',f:'Oxford University is older than the Aztec Empire. Teaching began at Oxford in 1096–1167. The Aztec capital Tenochtitlán was founded in 1325.'},
-  {n:'13',f:'It rains diamonds on Neptune and Uranus. The intense pressure deep in these ice giants converts carbon into crystalline diamonds that may sink toward a solid diamond core.'},
-  {n:'14',f:'The human nose can detect about 1 trillion distinct scents — far more than the 10,000 scientists previously estimated, according to research published in Science.'},
-  {n:'15',f:'Light takes 1.3 seconds to travel from the Moon to Earth, and about 8 minutes from the Sun. When you look at the Andromeda Galaxy, you see it as it was 2.537 million years ago.'},
-  {n:'16',f:'Sharks are older than trees. Sharks appeared around 450 million years ago; trees evolved only about 360 million years ago.'},
-  {n:'17',f:'The Eiffel Tower can be 15 cm taller in summer. Thermal expansion causes the iron to expand noticeably as the metal heats up on warm days.'},
-  {n:'18',f:'A single cloud can weigh more than a million pounds. A typical cumulus cloud contains about 500 million grams of water droplets suspended in air.'},
-  {n:'19',f:'The word "robot" comes from the Czech word "robota" meaning forced labour or drudgery. It was coined in Karel Čapek\'s 1921 play R.U.R.'},
-  {n:'20',f:'There is a species of jellyfish, Turritopsis dohrnii, that is biologically immortal. When it ages or faces stress, it can revert back to its juvenile polyp stage indefinitely.'},
-  {n:'21',f:'The fingerprints of a koala are so similar to human fingerprints that they have confused crime scene investigators. They evolved independently — a remarkable example of convergent evolution.'},
-  {n:'22',f:'Hot water can freeze faster than cold water under certain conditions. This is called the Mpemba effect, and despite being observed since Aristotle\'s time, its mechanism is still debated.'},
-  {n:'23',f:'There are more trees on Earth than stars in the Milky Way. Estimates put the number of trees at about 3 trillion; the Milky Way has around 100–400 billion stars.'},
-  {n:'24',f:'A teaspoon of a neutron star would weigh about 10 million tons. Neutron stars pack more mass than our Sun into a sphere roughly 20 km across.'},
-  {n:'25',f:'Wombats produce cube-shaped droppings — they are the only known animals to do so. The cube shape may help mark territory without the droppings rolling away.'},
-  {n:'26',f:'The first computer bug was an actual bug. In 1947, Grace Hopper\'s team found a moth trapped in Harvard\'s Mark II computer relay, and taped it into their logbook.'},
-  {n:'27',f:'Bananas are slightly radioactive. They contain potassium-40, a naturally occurring radioactive isotope. The "banana equivalent dose" is used as an informal unit in radiation safety.'},
-  {n:'28',f:'Glass is technically not a solid — it is an amorphous solid or a supercooled liquid. At room temperature it behaves like a solid but lacks the ordered crystalline structure of true solids.'},
-  {n:'29',f:'The total weight of all ants on Earth likely rivals or exceeds the total weight of all humans. There are estimated to be 20 quadrillion ants alive at any one time.'},
-  {n:'30',f:'A day on Mars is 24 hours and 37 minutes long — almost exactly the same as Earth\'s. This made it easy for NASA engineers to plan rover operations on Martian "sols".'},
-  {n:'31',f:'Cats can\'t taste sweetness. They lack a key taste receptor (Tas1r2) required to detect sugars, which may explain their indifference to fruit and candy.'},
-];
-(function(){
-  var doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,1))/(864e5));
-  var c=CURIOSITIES[doy%CURIOSITIES.length];
-  var h='<div class="card-label"><span class="label-pip" style="background:var(--plum)"></span>💡 Did You Know?</div>';
-  h+='<div class="curiosity-num">?</div>';
-  h+='<p class="card-text" style="font-size:.8rem;line-height:1.65">'+esc(c.f)+'</p>';
-  document.getElementById('curiosity-inner').innerHTML=h;
-})();
 
 // ═══════════════════════════════════════════════════════════
-// CARD: ON THIS DAY / BIRTHDAY
+// DATA: CURIOSITIES + OTD (used by today-digest card below)
 // ═══════════════════════════════════════════════════════════
+var CURIOSITIES=[
+  {f:'A day on Venus is longer than its year. Venus takes 243 Earth days to rotate once, but only 225 Earth days to orbit the Sun.'},
+  {f:'Octopuses have three hearts, blue blood, and can edit their own RNA — among the most neurologically unusual animals on Earth.'},
+  {f:'The Great Wall of China is NOT visible from space with the naked eye. One of the most persistent myths in geography.'},
+  {f:'Honey never spoils. Archaeologists found 3,000-year-old honey in Egyptian tombs that was still perfectly edible.'},
+  {f:'There are more possible chess games than atoms in the observable universe — the Shannon number estimates 10¹²⁰ possible games.'},
+  {f:'The human body contains enough iron to make a nail about 8 cm long. Most is in hemoglobin, the molecule carrying oxygen.'},
+  {f:'Cleopatra lived closer in time to the Moon landing than to the construction of the Great Pyramid at Giza.'},
+  {f:'Water can boil and freeze simultaneously. The "triple point" occurs at exactly 0.01°C and 611.73 pascals.'},
+  {f:'The shortest war in history lasted 38–45 minutes — the Anglo-Zanzibar War of 1896.'},
+  {f:'A group of flamingos is a flamboyance. A group of cats is a clowder. A group of ravens is an unkindness.'},
+  {f:'The average person walks roughly three times around the Earth in a lifetime — about 160,000 km total.'},
+  {f:'Oxford University is older than the Aztec Empire. Teaching started at Oxford c. 1096; Tenochtitlán was founded in 1325.'},
+  {f:'It rains diamonds on Neptune and Uranus. Intense pressure converts carbon into crystalline diamonds.'},
+  {f:'The human nose can detect about 1 trillion distinct scents — far more than the 10,000 scientists previously estimated.'},
+  {f:'Light takes 1.3 seconds from the Moon, 8 minutes from the Sun, and 2.5 million years from Andromeda.'},
+  {f:'Sharks are older than trees. Sharks appeared ~450 million years ago; trees evolved only about 360 million years ago.'},
+  {f:'The Eiffel Tower can be 15 cm taller in summer, as thermal expansion stretches the iron on hot days.'},
+  {f:'A single cumulus cloud can weigh over 500 tonnes — water droplets so dispersed the mass stays airborne.'},
+  {f:'The word "robot" comes from Czech "robota" (forced labour), coined in Karel Čapek\'s 1921 play R.U.R.'},
+  {f:'Turritopsis dohrnii, the immortal jellyfish, can revert from adult to juvenile stage indefinitely when stressed.'},
+  {f:'Koala fingerprints are almost indistinguishable from human fingerprints — evolved entirely independently.'},
+  {f:'Hot water can freeze faster than cold water (the Mpemba effect) — observed since Aristotle\'s time and still debated.'},
+  {f:'There are more trees on Earth (~3 trillion) than stars in the Milky Way (~400 billion).'},
+  {f:'A teaspoon of neutron star material would weigh roughly 10 million tonnes on Earth.'},
+  {f:'Wombats are the only animals known to produce cube-shaped droppings.'},
+  {f:'The first computer bug was a real moth found inside Harvard\'s Mark II relay in 1947 by Grace Hopper\'s team.'},
+  {f:'Bananas are mildly radioactive — the "banana equivalent dose" is used as an informal unit in radiation safety.'},
+  {f:'Glass is an amorphous solid — not a true crystal. Medieval window glass is NOT thicker at the bottom due to flow.'},
+  {f:'All the ants on Earth together weigh roughly as much as all the humans combined — around 20 quadrillion individuals.'},
+  {f:'A Martian day (sol) is 24 hours and 37 minutes — close enough that NASA engineers use Martian time for rover ops.'},
+  {f:'Cats cannot taste sweetness at all. They lack the Tas1r2 receptor gene required to detect sugar.'},
+];
 var OTD_DATA={
   // keyed by "M-D" (month 1-indexed, day)
   '1-1':{y:'1863',e:'Emancipation Proclamation takes effect in the United States.'},
@@ -1192,21 +1308,34 @@ var OTD_DATA={
   '12-26':{y:'1791',e:'Birthday: Charles Babbage, mathematician who conceived the first computer.'},
   '12-28':{y:'1856',e:'Birthday: Woodrow Wilson, 28th President of the United States.'},
 };
+
+// ═══════════════════════════════════════════════════════════
+// RENDER: TODAY DIGEST — curiosity + on this day combined
+// (CURIOSITIES and OTD_DATA must both be defined before this runs)
+// ═══════════════════════════════════════════════════════════
 (function(){
+  var doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,1))/(864e5));
+  var c=CURIOSITIES[doy%CURIOSITIES.length];
   var now=new Date();
-  var key=(now.getMonth()+1)+'-'+now.getDate();
-  var e=OTD_DATA[key];
-  var h='<div class="card-label"><span class="label-pip" style="background:var(--gold)"></span>📅 On This Day</div>';
+  var otdKey=(now.getMonth()+1)+'-'+now.getDate();
+  var e=OTD_DATA[otdKey];
+  var h='';
+  h+='<div class="today-section">';
+  h+='<div class="card-label" style="margin-bottom:.3rem"><span class="label-pip" style="background:var(--plum)"></span>💡 Did You Know?</div>';
+  h+='<p class="today-fact">'+esc(c.f)+'</p>';
+  h+='</div>';
+  h+='<div class="today-section">';
+  h+='<div class="card-label" style="margin-bottom:.3rem"><span class="label-pip" style="background:var(--gold)"></span>📅 On This Day</div>';
   if(e){
-    h+='<div class="otd-year">'+esc(e.y)+'</div>';
-    h+='<p class="card-text">'+esc(e.e)+'</p>';
-  }else{
-    // Fallback: just show today's date context
-    h+='<div class="otd-year">'+now.toLocaleDateString('en-IN',{month:'long'})+'</div>';
-    h+='<p class="card-text">A day with no special entry in our archive — but history is being made today nonetheless.</p>';
+    h+='<div style="font-family:\'DM Mono\',monospace;font-size:.58rem;color:var(--gold);font-weight:500;margin-bottom:.15rem">'+esc(e.y)+'</div>';
+    h+='<p class="today-fact">'+esc(e.e)+'</p>';
+  } else {
+    h+='<p class="today-fact" style="color:var(--muted)">History being made today.</p>';
   }
-  document.getElementById('otd-inner').innerHTML=h;
+  h+='</div>';
+  document.getElementById('today-inner').innerHTML=h;
 })();
+
 
 // ═══════════════════════════════════════════════════════════
 // CARD: CINEMA RECOMMENDATION
@@ -1276,7 +1405,325 @@ var SHOW_TIMES=['20:30','20:00','19:45','20:15','20:30','18:00','17:30'];
 })();
 
 // ═══════════════════════════════════════════════════════════
-// CARD: WEATHER
+// CARD: AKASHAVANI KERALA RADIO — Hello Akashavani
+// Broadcast: Mon–Sat 06:30 CET (German time) · 30 min
+// ═══════════════════════════════════════════════════════════
+(function(){
+  // Get current Berlin offset in minutes (CET=+60, CEST=+120)
+  function getBerlinOffset(){
+    try{
+      var now=new Date();
+      var s=now.toLocaleString('en-US',{timeZone:'Europe/Berlin',hour12:false,
+        year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+      var p=s.match(/(\d+)\/(\d+)\/(\d+),\s*(\d+):(\d+)/);
+      if(p){
+        var berlinUTC=new Date(p[3]+'-'+p[1]+'-'+p[2]+'T'+('0'+p[4]).slice(-2)+':'+p[5]+':00Z');
+        return Math.round((berlinUTC.getTime()-now.getTime())/60000);
+      }
+    }catch(e){}
+    var m=new Date().getMonth()+1;
+    return(m>=4&&m<=10)?120:60;
+  }
+
+  // Format a future Date as natural "Today 6:30 am" / "Tomorrow 6:30 am" / "Monday 6:30 am"
+  function naturalLabel(d){
+    var now=new Date();
+    // Compare calendar days in Berlin timezone
+    var todayStr=now.toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'}); // YYYY-MM-DD
+    var candStr=d.toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'});
+    var todayD=new Date(todayStr),candD=new Date(candStr);
+    var dayDiff=Math.round((candD-todayD)/(864e5));
+    var timeStr=d.toLocaleTimeString('en-GB',{timeZone:'Europe/Berlin',hour:'2-digit',minute:'2-digit'});
+    // Convert "06:30" → "6:30 am"
+    var parts=timeStr.split(':');
+    var h=parseInt(parts[0]),m=parts[1];
+    var ampm=h<12?'am':'pm';
+    var h12=h%12||12;
+    var pretty=h12+':'+m+' '+ampm;
+    if(dayDiff===0)return'Today at '+pretty;
+    if(dayDiff===1)return'Tomorrow at '+pretty;
+    return d.toLocaleDateString('en-GB',{timeZone:'Europe/Berlin',weekday:'long'})+' at '+pretty;
+  }
+
+  function renderAkasha(){
+    var now=new Date();
+    var offsetMins=getBerlinOffset(); // +60 CET or +120 CEST
+
+    // Show time: 06:30 Berlin → UTC
+    var showUTCmins=6*60+30-offsetMins;
+    var showUTC_H=((showUTCmins%1440)+1440)%1440/60|0;
+    var showUTC_M=((showUTCmins%1440)+1440)%1440%60;
+
+    // IST = UTC+5:30
+    var istMins=showUTC_H*60+showUTC_M+330;
+    var istH=(istMins/60|0)%24, istM=istMins%60;
+    var istStr=(istH<10?'0':'')+istH+':'+(istM<10?'0':'')+istM+' IST';
+
+    var SHOW_DAYS=[1,2,3,4,5,6]; // Mon–Sat
+    var SHOW_DUR=30; // minutes
+
+    // Find next occurrence (search up to 8 days ahead)
+    var nextDate=null, onAir=false;
+    for(var d=0;d<8;d++){
+      var cand=new Date(now);
+      cand.setUTCDate(cand.getUTCDate()+d);
+      cand.setUTCHours(showUTC_H,showUTC_M,0,0);
+      if(SHOW_DAYS.indexOf(cand.getUTCDay())===-1)continue;
+      if(cand<=now){
+        // on air right now?
+        if(now<new Date(cand.getTime()+SHOW_DUR*60000)){onAir=true;}
+        continue;
+      }
+      nextDate=cand;
+      break;
+    }
+
+    var h='<div class="akasha-inner">';
+    h+='<div class="card-label"><span class="label-pip" style="background:#d44"></span>📻 Akashavani Kerala · Hello Akashavani</div>';
+    h+='<div class="akasha-title">ഹലോ ആകാശവാണി</div>';
+    h+='<div style="font-size:.72rem;color:#4a4035;line-height:1.5;margin:.1rem 0 .3rem">Interactive listener programme · AIR Kerala · Mon–Sat</div>';
+
+    if(onAir){
+      h+='<div class="akasha-next" style="background:#c00">';
+      h+='<div style="font-size:1.1rem">🔴</div>';
+      h+='<div><div style="font-family:\'DM Mono\',monospace;font-size:.82rem;font-weight:600;color:#fff;letter-spacing:.06em">ON AIR NOW</div>';
+      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.5rem;color:rgba(255,255,255,.7);margin-top:.15rem">Live · Stream on newsonair.gov.in</div></div>';
+      h+='</div>';
+    } else if(nextDate){
+      var label=naturalLabel(nextDate);
+      h+='<div class="akasha-next">';
+      h+='<div style="line-height:1">';
+      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.46rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.45);margin-bottom:.3rem">Next broadcast</div>';
+      h+='<div style="font-family:\'Playfair Display\',serif;font-size:1.15rem;font-weight:700;color:var(--gold);line-height:1.1">'+esc(label)+'</div>';
+      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.48rem;color:rgba(245,240,232,.45);margin-top:.25rem">'+esc(istStr)+'</div>';
+      h+='</div>';
+      h+='</div>';
+    }
+
+    h+='<div class="akasha-sched">';
+    h+='Mon – Sat &nbsp; 6:30 am CET ('+esc(istStr)+') &nbsp;·&nbsp; 30 min<br>';
+    h+='<a class="card-link" style="margin-top:.3rem;display:inline-block" href="https://newsonair.gov.in/air-station-detail.aspx?id=7" target="_blank" rel="noopener">Stream live →</a>';
+    h+='&nbsp;&nbsp;<a class="card-link" href="https://cuesheets.prasarbharati.org/viewsheet/329" target="_blank" rel="noopener">Cue sheet →</a>';
+    h+='</div></div>';
+    document.getElementById('akasha-inner').innerHTML=h;
+  }
+  renderAkasha();
+  setInterval(renderAkasha,30000);
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: GERMAN TV PICK — curated weekly ARD/ZDF highlight
+// One genuinely special programme per week — not Tatort, not
+// Bergdoktor, not soap operas. Rotates weekly.
+// ═══════════════════════════════════════════════════════════
+(function(){
+  var TV_PICKS=[
+    {
+      channel:'ZDF',emoji:'📡',
+      show:'Terra X',
+      title:'Das Geheimnis der versunkenen Städte',
+      genre:'Doku · Geschichte',
+      when:'So, 19:30 Uhr',
+      desc:'Terra X präsentiert jede Woche eine hochwertige Doku über Geschichte, Natur oder Wissenschaft. Sonntags ab 19:30 Uhr — eine der verlässlichsten Sendeplätze für gehaltvolles Fernsehen im deutschsprachigen Raum.',
+      link:'https://www.zdf.de/dokumentation/terra-x'
+    },
+    {
+      channel:'ARD Das Erste',emoji:'📺',
+      show:'Die Kanzlei',
+      title:'Gerechtigkeit oder Gesetz?',
+      genre:'Drama · Recht',
+      when:'Di, 20:15 Uhr',
+      desc:'Eine der besten deutschen Rechtssendungen — komplex, moralisch vielschichtig und weit entfernt vom Krimi-Einerlei. Starke Charaktere, echte Dilemmata.',
+      link:'https://www.daserste.de/unterhaltung/serie/die-kanzlei'
+    },
+    {
+      channel:'ZDF',emoji:'📡',
+      show:'37 Grad',
+      title:'Zwischen den Welten',
+      genre:'Doku · Menschen',
+      when:'Di, 22:15 Uhr',
+      desc:'37 Grad erzählt persönliche Geschichten über Menschen in außergewöhnlichen Lebenssituationen — empathisch, tiefgründig, ohne Sensationslust. Eines der besten Doku-Formate im deutschen Fernsehen.',
+      link:'https://www.zdf.de/gesellschaft/37-grad'
+    },
+    {
+      channel:'ARD Das Erste',emoji:'📺',
+      show:'Babylon Berlin',
+      title:'Die Neue Staffel',
+      genre:'Historische Serie',
+      when:'Do, 21:45 Uhr',
+      desc:'Die aufwendigste deutsche TV-Produktion aller Zeiten: Berlin der späten Weimarer Republik, mit Ästhetik und Atmosphäre, die jeden internationalen Vergleich standhalten.',
+      link:'https://www.daserste.de/unterhaltung/serie/babylon-berlin'
+    },
+    {
+      channel:'ZDF',emoji:'📡',
+      show:'ZDFzeit',
+      title:'Die großen Fragen unserer Zeit',
+      genre:'Doku · Zeitgeschichte',
+      when:'Di, 20:15 Uhr',
+      desc:'ZDFzeit macht aktuelle und historische Themen mit journalistischem Tiefgang zugänglich — vergleichbar mit einem starken Titelthema in einem Qualitätsmagazin.',
+      link:'https://www.zdf.de/dokumentation/zdfzeit'
+    },
+    {
+      channel:'ARD/Arte',emoji:'🎭',
+      show:'Großes Schauspiel',
+      title:'Faust I — Theatermitschnitt',
+      genre:'Theater · Klassik',
+      when:'Sa, 22:30 Uhr',
+      desc:'Arte und Das Erste übertragen regelmäßig bedeutende Theateraufführungen — oft Goethe, Schiller oder internationales Regietheater in Sendungen, die man nicht verpassen sollte.',
+      link:'https://www.arte.tv/de/videos/theater'
+    },
+    {
+      channel:'ZDF',emoji:'📡',
+      show:'Krimi-Highlight',
+      title:'Unter anderen Umständen',
+      genre:'Krimi · Drama',
+      when:'Sa, 20:15 Uhr',
+      desc:'Unter anderen Umständen ist der beste Krimi im deutschen Fernsehen jenseits des Tatorts — psychologisch komplex, mit exzellenter Hauptdarstellerin Natalia Wörner.',
+      link:'https://www.zdf.de/serien/unter-anderen-umstaenden'
+    },
+  ];
+
+  var now=new Date();
+  var weekOfYear=Math.floor((Date.now()-new Date(now.getFullYear(),0,1))/(7*864e5));
+  var pick=TV_PICKS[weekOfYear%TV_PICKS.length];
+
+  var el=document.getElementById('tvpick-inner');
+  if(!el)return;
+  var h='';
+  h+='<div class="tvpick-poster" style="background:var(--ink);font-size:2.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;width:110px">'+pick.emoji+'</div>';
+  h+='<div class="tvpick-body">';
+  h+='<div class="tvpick-channel">📺 '+esc(pick.channel)+' · Wochentipp</div>';
+  h+='<div class="tvpick-when">'+esc(pick.when)+'</div>';
+  h+='<div class="tvpick-title">'+esc(pick.show)+'</div>';
+  h+='<span class="tvpick-genre">'+esc(pick.genre)+'</span>';
+  h+='<div style="font-family:\'Playfair Display\',serif;font-size:.82rem;font-style:italic;color:var(--slate);margin:.15rem 0 .1rem">'+esc(pick.title)+'</div>';
+  h+='<p class="tvpick-desc">'+esc(pick.desc)+'</p>';
+  h+='<a class="card-link" href="'+esc(pick.link)+'" target="_blank" rel="noopener">Zur Sendung →</a>';
+  h+='</div>';
+  el.innerHTML=h;
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: MVHS ENGLISH COURSE (home) — one non-language course
+// Curated weekly rotation from the English courses category.
+// Tries live fetch; falls back to built-in list.
+// ═══════════════════════════════════════════════════════════
+(function(){
+  var MVHS_COURSES=[
+    {title:'Creative Writing in English',tag:'Creative Writing',desc:'Develop your own voice in a small, supportive English-speaking workshop. Exercises in fiction, memoir and poetry — no prior experience needed.',when:'Wednesday evenings · 6 sessions',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997'},
+    {title:'Philosophy of Mind — in English',tag:'Philosophy',desc:'Explore consciousness, perception and identity through key texts by Nagel, Searle and Chalmers. All readings and discussion in English.',when:'Thursday evenings · 8 sessions',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997'},
+    {title:'Film Analysis: Classic Hollywood',tag:'Film & Culture',desc:'Watch and discuss landmark Hollywood films from the 1940s–70s. Themes, cinematography, historical context — entirely in English.',when:'Friday evenings · 6 sessions',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997'},
+    {title:'Introduction to Watercolour Painting',tag:'Visual Art',desc:'A relaxed, bilingual course for beginners covering colour mixing, composition and brush technique. Materials list provided on enrolment.',when:'Tuesday afternoons · 8 sessions',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997'},
+    {title:'World History Through Maps',tag:'History',desc:'A visual journey through geopolitics and cartography from antiquity to the present — lectures and discussion entirely in English.',when:'Monday evenings · 6 sessions',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997'},
+    {title:'Introduction to Psychology',tag:'Psychology',desc:'Core concepts in human behaviour, cognition and emotion — an accessible survey course taught entirely in English at Gasteig HP8.',when:'Wednesday evenings · 10 sessions',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997'},
+    {title:'Cooking the Mediterranean',tag:'Cooking',desc:'Hands-on cooking class exploring Italian, Greek and Lebanese cuisine. All instruction in English; small groups.',when:'Saturday mornings · 5 sessions',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997'},
+  ];
+
+  var el=document.getElementById('mvhs-home-inner');
+  if(!el)return;
+
+  function renderMVHS(course){
+    var h='<div class="mvhs-inner">';
+    h+='<div class="card-label"><span class="label-pip"></span>🎓 MVHS · English Programme</div>';
+    h+='<div class="mvhs-tag">'+esc(course.tag)+'</div>';
+    h+='<div class="mvhs-title">'+esc(course.title)+'</div>';
+    h+='<p class="mvhs-desc">'+esc(course.desc)+'</p>';
+    h+='<div class="mvhs-meta">';
+    h+='🕐 '+esc(course.when)+' &nbsp;·&nbsp; <a class="card-link" href="'+esc(course.link)+'" target="_blank" rel="noopener">Enrol at MVHS →</a>';
+    h+='</div></div>';
+    el.innerHTML=h;
+  }
+
+  // Pick by week so it rotates weekly; try live fetch first
+  var weekIdx=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,1))/(7*864e5));
+  var fallback=MVHS_COURSES[weekIdx%MVHS_COURSES.length];
+
+  // Attempt live scrape
+  tFetch('https://corsproxy.io/?'+encodeURIComponent('https://www.mvhs.de/kurse/460-CAT-KAT17997'),8000)
+    .then(function(r){return r.text();})
+    .then(function(html){
+      // Extract first non-language course with a title we can parse
+      var found=null;
+      // Look for course titles in h3 or the course-title class
+      var re=/<(?:h3|h4|[a-z]+[^>]+class="[^"]*(?:kurs-titel|course-title|kursangebot-title)[^"]*")[^>]*>([\s\S]*?)<\/(?:h3|h4|[a-z]+)>/gi;
+      var m;
+      var skip=/language|sprache|english for|grammar|vocabul|conversation|deutsch/i;
+      while((m=re.exec(html))!==null){
+        var txt=m[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+        if(txt.length>8&&txt.length<100&&!skip.test(txt)){
+          found={title:txt,tag:'MVHS Course',desc:'Taught in English at Gasteig HP8. Check the MVHS website for current dates and to enrol.',when:'See MVHS website for schedule',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997'};
+          break;
+        }
+      }
+      renderMVHS(found||fallback);
+    }).catch(function(){renderMVHS(fallback);});
+})();
+
+// ═══════════════════════════════════════════════════════════
+// CARD: GASTEIG HP8 TODAY (home) — one event happening today
+// Scrapes gasteig.de/en/events/ for today; fallback to known
+// recurring events, picks one matching today's day of week.
+// ═══════════════════════════════════════════════════════════
+(function(){
+  // Recurring events keyed by day (0=Sun…6=Sat), multiple per day
+  var GASTEIG_RECURRING={
+    0:[{title:'Munich Symphony Orchestra',tag:'Classic · Music',when:'Sunday 15:30',venue:'Isarphilharmonie',desc:'World-class classical performance at the Isarphilharmonie — Munich\'s finest concert hall. Check Gasteig website for current programme.',link:'https://www.gasteig.de/en/events/'}],
+    1:[{title:'Gaming Monday',tag:'Play · Free · Kids',when:'Monday 15:30',venue:'Gasteig Motorama',desc:'Open gaming sessions on laptops and consoles — free of charge, all welcome. A fun afternoon for all ages.',link:'https://www.gasteig.de/en/events/gaming-monday-67/'}],
+    2:[{title:'German Language Café',tag:'Languages · Free',when:'Tuesday 18:00',venue:'Hall E · Gasteig HP8',desc:'A free conversation circle for people learning German at any level. Welcoming, informal and a great way to meet Münchners.',link:'https://www.gasteig.de/en/events/sprachcafe-deutsch-155/'},{title:'Münchner Rudelsingen',tag:'Singing · Highlight',when:'Tuesday 19:30',venue:'Hall E · Gasteig HP8',desc:'Munich\'s beloved mass karaoke sing-along — one of the most joyful crowd events in the city. Recurring monthly.',link:'https://www.gasteig.de/en/events/muenchner-rudelsingen-collective-karaoke-15/'}],
+    3:[{title:'The Sweat Set',tag:'Fitness · Live Music',when:'Wednesday 18:30',venue:'Hall X · Gasteig HP8',desc:'A one-of-a-kind fitness class with live music. Move to a real band at Gasteig HP8\'s Hall X — no experience needed.',link:'https://www.gasteig.de/en/events/the-sweat-set/'}],
+    4:[{title:'PLAY — Installation by Ayzit Bostan',tag:'Exhibition · Free',when:'Open daily until Jul 2026',venue:'Hall E · Gasteig HP8',desc:'Part of the Gasteig\'s 40th anniversary — a free interactive installation by acclaimed designer Ayzit Bostan.',link:'https://www.gasteig.de/en/events/play-installation-by-ayzit-bostan/'}],
+    5:[{title:'PLAY — Installation by Ayzit Bostan',tag:'Exhibition · Free',when:'Open daily until Jul 2026',venue:'Hall E · Gasteig HP8',desc:'Part of the Gasteig\'s 40th anniversary — a free interactive installation by acclaimed designer Ayzit Bostan.',link:'https://www.gasteig.de/en/events/play-installation-by-ayzit-bostan/'}],
+    6:[{title:'PLAY — Installation by Ayzit Bostan',tag:'Exhibition · Free',when:'Open daily until Jul 2026',venue:'Hall E · Gasteig HP8',desc:'Part of the Gasteig\'s 40th anniversary — a free interactive installation by acclaimed designer Ayzit Bostan.',link:'https://www.gasteig.de/en/events/play-installation-by-ayzit-bostan/'}]
+  };
+
+  var el=document.getElementById('gasteig-home-inner');
+  if(!el)return;
+
+  // Get today's day-of-week in Berlin time
+  var berlinDay=parseInt(new Date().toLocaleDateString('en-US',{timeZone:'Europe/Berlin',weekday:'short'}).replace(/Sun/,0).replace(/Mon/,1).replace(/Tue/,2).replace(/Wed/,3).replace(/Thu/,4).replace(/Fri/,5).replace(/Sat/,6))||new Date().getDay();
+  var pool=GASTEIG_RECURRING[berlinDay]||GASTEIG_RECURRING[0];
+  var fallback=pool[Math.floor(Date.now()/86400000)%pool.length];
+
+  function renderGasteig(ev){
+    var h='<div class="gasteig-inner">';
+    h+='<div class="card-label"><span class="label-pip"></span>🏛 Gasteig HP8 · Today</div>';
+    h+='<div class="gasteig-when">'+esc(ev.when)+'</div>';
+    h+='<div class="gasteig-title">'+esc(ev.title)+'</div>';
+    h+='<p class="gasteig-desc">'+esc(ev.desc)+'</p>';
+    h+='<div class="gasteig-tags"><span class="gasteig-tag">'+esc(ev.tag)+'</span></div>';
+    h+='<div class="gasteig-venue">📍 '+esc(ev.venue)+'</div>';
+    h+='<div style="margin-top:auto;padding-top:.4rem"><a class="card-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">Details & tickets →</a></div>';
+    h+='</div>';
+    el.innerHTML=h;
+  }
+
+  // Try live scrape for today's events
+  var todayStr=new Date().toLocaleDateString('en-GB',{timeZone:'Europe/Berlin',day:'2-digit',month:'2-digit',year:'numeric'}).replace(/\//g,'.');
+  tFetch('https://corsproxy.io/?'+encodeURIComponent('https://www.gasteig.de/en/events/'),8000)
+    .then(function(r){return r.text();})
+    .then(function(html){
+      // Look for event cards mentioning "Today" or today's date
+      var todayPatt=/Today|Heute/i;
+      var titleRe=/<h3[^>]*>([\s\S]*?)<\/h3>/gi;
+      var linkRe=/href="(https:\/\/www\.gasteig\.de\/en\/events\/[^"]+)"/;
+      var found=null;
+      // Find sections mentioning Today
+      var blocks=html.split(/<li[^>]*>/);
+      for(var i=0;i<blocks.length;i++){
+        if(!todayPatt.test(blocks[i]))continue;
+        var tM=titleRe.exec(blocks[i]);titleRe.lastIndex=0;
+        var lM=linkRe.exec(blocks[i]);
+        if(tM&&lM){
+          var title=tM[1].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+          if(title.length>4){
+            found={title:title,tag:'Gasteig HP8',when:'Today',venue:'Gasteig HP8',desc:'Happening today at Gasteig HP8. Check the website for full details and tickets.',link:lM[1]};
+            break;
+          }
+        }
+      }
+      renderGasteig(found||fallback);
+    }).catch(function(){renderGasteig(fallback);});
+})();
 // ═══════════════════════════════════════════════════════════
 // CARD: WEATHER
 // Cache key includes date+hour so stale data auto-expires hourly.
@@ -1678,51 +2125,67 @@ loadNewsCard('nyt-body','nyt-thumb','h5_nyt',['https://rss.nytimes.com/services/
 })();
 
 // ═══════════════════════════════════════════════════════════
-// CARD: PODCAST OF THE DAY
+// CARD: PODCAST OF THE DAY  — always fetch fresh (no daily cache)
+// Tries each priority feed in order; shows latest episode
 // ═══════════════════════════════════════════════════════════
 var POD_PRIORITY=[
-  {name:'In Focus · The Hindu',feeds:['https://feeds.megaphone.fm/THGU4956605070','https://feeds.megaphone.fm/THGU3684108625']},
+  {name:'The Daily · NYT',      feeds:['https://feeds.simplecast.com/54nAGcIl']},
+  {name:'In Focus · The Hindu', feeds:['https://feeds.megaphone.fm/THGU4956605070']},
   {name:'NL Hafta · Newslaundry',feeds:['https://feeds.acast.com/public/shows/5ec3d9497cef7479d2ef4798']},
+  {name:'Up First · NPR',       feeds:['https://feeds.npr.org/510318/podcast.xml']},
   {name:'After Hours Malayalis',feeds:['https://anchor.fm/s/408591a8/podcast/rss']},
-  {name:'Seen & Unseen · Amit Varma',feeds:['https://seenunseen.libsyn.com/rss']},
-  {name:'DW Inside Europe',feeds:['https://rss.dw.com/xml/podcast_inside-europe']},
-  {name:'Radiowissen · BR',feeds:['https://feeds.br.de/radiowissen/feed.xml']},
-  {name:'The Daily · NYT',feeds:['https://feeds.simplecast.com/54nAGcIl']}
+  {name:'Radiowissen · BR',     feeds:['https://feeds.br.de/radiowissen/feed.xml']},
+  {name:'Seen & Unseen · Amit Varma',feeds:['https://seenunseen.libsyn.com/rss']}
 ];
 (function(){
-  var ck='pod_h5';var cached=lsGet(ck);
+  // Use a short hourly cache so page reloads in same hour reuse result
+  var ck='pod_h6_'+new Date().toISOString().slice(0,13); // key = YYYY-MM-DDTHH
+  var cached=lsGet(ck);
   if(cached){document.getElementById('pod-home').innerHTML=cached;return;}
-  var today=new Date();var dow=today.getDay();
-  var picks=[POD_PRIORITY[0]];
-  var alt=POD_PRIORITY[1+(dow%(POD_PRIORITY.length-1))];
-  if(alt&&alt.name!==picks[0].name)picks.push(alt);
-  function tryPod(idx){
-    if(idx>=picks.length){document.getElementById('pod-home').innerHTML='<p style="color:var(--muted);font-size:.78rem">Podcast unavailable</p>';return;}
-    var pick=picks[idx];
-    var pArr=pick.feeds.map(function(u){return fetchRSS(u);});
-    anyOf(pArr).then(function(items){
-      if(!items||!items.length)throw new Error('empty');
-      var todayStr=today.toDateString();
-      var ep=items.find(function(it){return it.pubDate&&new Date(it.pubDate).toDateString()===todayStr;})||items[0];
-      if(!ep||!ep.title)throw new Error('no ep');
-      var isNew=ep.pubDate&&new Date(ep.pubDate).toDateString()===todayStr;
-      var desc=trunc(ep.description||'',280);var audioUrl=ep.enclosure||'';
-      var bars='<div class="pod-wave">';
-      [60,100,45,78,32,88,55,72,40,82,50,95,35,68,58,44,78,52,96,62].forEach(function(ht,i){bars+='<div class="pod-bar" style="height:'+ht+'%;--d:'+(0.35+i*0.052).toFixed(2)+'s"></div>';});
-      bars+='</div>';
-      var h='<div class="card-label"><span class="label-pip" style="background:var(--rust)"></span>🎙 Podcast of the Day</div>';
-      if(isNew)h+='<div class="pod-new">🔴 New Today</div>';
-      h+='<div class="pod-show">'+esc(pick.name)+'</div>';
-      h+='<div class="card-hl">'+esc(trunc(ep.title,90))+'</div>';
-      h+=bars;
-      if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
-      h+='<div class="card-meta">'+esc(fmtD(ep.pubDate))+'</div>';
-      if(audioUrl)h+='<button class="pod-play" onclick="window.__podPlay(\''+esc(pick.name).replace(/'/g,'\\x27')+'\',\''+esc(trunc(ep.title,65)).replace(/'/g,'\\x27')+'\',\''+esc(audioUrl)+'\')">▶ Play Episode</button>';
-      else if(ep.link)h+='<a class="card-link" style="margin-top:.35rem" href="'+esc(ep.link)+'" target="_blank" rel="noopener">Open episode →</a>';
-      document.getElementById('pod-home').innerHTML=h;lsSet(ck,h);
-    }).catch(function(){tryPod(idx+1);});
+
+  function renderPodEp(pick,ep){
+    var bars='<div class="pod-wave">';
+    [60,100,45,78,32,88,55,72,40,82,50,95,35,68,58,44,78,52,96,62].forEach(function(ht,i){
+      bars+='<div class="pod-bar" style="height:'+ht+'%;--d:'+(0.35+i*0.052).toFixed(2)+'s"></div>';
+    });
+    bars+='</div>';
+    var age=ep.pubDate?Math.floor((Date.now()-new Date(ep.pubDate))/(3600*1000)):999;
+    var isNew=age<36;
+    var desc=trunc(ep.description||'',300);
+    var audioUrl=ep.enclosure||'';
+    var h='<div class="card-label"><span class="label-pip" style="background:var(--rust)"></span>🎙 Podcast of the Day</div>';
+    if(isNew)h+='<div class="pod-new">🔴 New · '+Math.round(age)+'h ago</div>';
+    h+='<div class="pod-show">'+esc(pick.name)+'</div>';
+    h+='<div class="card-hl">'+esc(trunc(ep.title,90))+'</div>';
+    h+=bars;
+    if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
+    h+='<div class="card-meta">'+esc(fmtD(ep.pubDate))+'</div>';
+    if(audioUrl){
+      h+='<button class="pod-play" onclick="window.__podPlay(\''+esc(pick.name).replace(/'/g,'\\x27')+'\',\''+esc(trunc(ep.title,65)).replace(/'/g,'\\x27')+'\',\''+esc(audioUrl)+'\')">▶ Play Episode</button>';
+    } else if(ep.link){
+      h+='<a class="card-link" style="margin-top:.35rem" href="'+esc(ep.link)+'" target="_blank" rel="noopener">Open episode →</a>';
+    }
+    document.getElementById('pod-home').innerHTML=h;
+    lsSet(ck,h);
   }
-  tryPod(0);
+
+  // Try feeds in order, show first one that returns a valid episode
+  var idx=0;
+  function tryNext(){
+    if(idx>=POD_PRIORITY.length){
+      document.getElementById('pod-home').innerHTML='<div class="card-label"><span class="label-pip" style="background:var(--rust)"></span>🎙 Podcast</div><p style="color:var(--muted);font-size:.78rem;margin-top:.5rem">Could not load podcast feeds right now.</p>';
+      return;
+    }
+    var pick=POD_PRIORITY[idx++];
+    var feedPromises=pick.feeds.map(function(u){return fetchRSS(u);});
+    anyOf(feedPromises)
+      .then(function(items){
+        if(!items||!items.length||!items[0].title)throw 0;
+        renderPodEp(pick,items[0]); // items[0] = latest episode
+      })
+      .catch(function(){tryNext();});
+  }
+  tryNext();
 })();
 window.__podPlay=function(show,title,url){doPlay(show,title,url,null);};
 
@@ -2035,8 +2498,6 @@ function loadHNPage(){
 // ═══════════════════════════════════════════════════════════
 // SUBPAGE: MORE — Wikipedia (compact) + Leaflet map + event widgets
 // ═══════════════════════════════════════════════════════════
-var _mapInitialised=false;
-var _evMap=null;
 
 function loadMorePage(){
   var now=new Date();var y=now.getFullYear(),mo=('0'+(now.getMonth()+1)).slice(-2),dd=('0'+now.getDate()).slice(-2);
@@ -2077,248 +2538,393 @@ function loadMorePage(){
     document.getElementById('more-wiki').innerHTML=h;
   }).catch(function(){document.getElementById('more-wiki').innerHTML='<p style="color:var(--muted);font-size:.8rem">Wikipedia unavailable</p>';});
 
-  // ── Events: fetch, build map + widgets ───────────────────
+  // ══════════════════════════════════════════════════════════
+  // EVENTS — one curated pick per category, multiple sources
+  // ══════════════════════════════════════════════════════════
   var evEl=document.getElementById('more-events');
-  var ck=dateKey('evweek7');
-  var cached=lsGet(ck);
-  if(cached){
-    evEl.innerHTML=cached;
-    // Re-init map from stored events
-    if(window._cachedEventsForMap)initMap(window._cachedEventsForMap);
-    return;
-  }
 
-  evEl.innerHTML='<div style="background:var(--ev);border:1px solid var(--ev-border);padding:1.5rem 2rem;color:var(--ev-sub);font-family:\'DM Mono\',monospace;font-size:.58rem;letter-spacing:.18em;text-align:center">⏳ LOADING EVENTS FROM IN-MUENCHEN.DE…</div>';
+  // Never use stale cache for events — always fetch fresh
+  evEl.innerHTML='<div style="background:var(--ev);border:1px solid var(--ev-border);padding:1.5rem 2rem;color:var(--ev-sub);font-family:\'DM Mono\',monospace;font-size:.58rem;letter-spacing:.18em;text-align:center">⏳ Fetching today\'s Munich events…</div>';
 
-  var FETCH_PAGES=[
-    {label:'🗓 Heute',   url:'https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen', max:6},
-    {label:'📅 Morgen',  url:'https://www.in-muenchen.de/veranstaltungen/morgen-in-muenchen',max:5},
-    {label:'🎵 Konzerte',url:'https://www.in-muenchen.de/konzerte',                          max:5},
-    {label:'🎭 Theater', url:'https://www.in-muenchen.de/theater',                           max:4},
-    {label:'🖼 Ausstellungen',url:'https://www.in-muenchen.de/ausstellungen',                max:4},
-    {label:'🎻 Klassik', url:'https://www.in-muenchen.de/klassik',                           max:4},
-    {label:'🌙 Nightlife',url:'https://www.in-muenchen.de/nightlife',                        max:4}
-  ];
-
-  // Known Munich venue geocoords for map pins (best effort)
+  // ── Comprehensive venue → coordinates table ──────────────
   var VENUE_COORDS={
+    // Concert halls / Klassik
     'Gasteig HP8':[48.1340,11.5912],'Isarphilharmonie':[48.1340,11.5912],
-    'Deutsches Museum':[48.1300,11.5833],'Pinakothek':[48.1508,11.5706],
-    'Olympiazentrum':[48.1750,11.5500],'Olympiapark':[48.1750,11.5500],
-    'BMW Welt':[48.1776,11.5564],'Marienplatz':[48.1374,11.5755],
-    'Maximilianeum':[48.1363,11.5869],'Hofbräuhaus':[48.1376,11.5799],
-    'Nationatheater':[48.1398,11.5797],'Nationaltheater':[48.1398,11.5797],
-    'Staatsoper':[48.1398,11.5797],'Bayerische Staatsoper':[48.1398,11.5797],
-    'Residenz':[48.1410,11.5788],'Residenztheater':[48.1405,11.5791],
-    'Kammerspiele':[48.1394,11.5795],'Münchner Kammerspiele':[48.1394,11.5795],
-    'Ampere':[48.1328,11.5572],'Backstage':[48.1420,11.5228],
-    'Backstage Halle':[48.1420,11.5228],'Backstage Werk':[48.1420,11.5228],
-    'Muffatwerk':[48.1327,11.5874],'Muffathalle':[48.1327,11.5874],
-    'Strom':[48.1350,11.5592],'Freiheitshalle':[48.1140,11.5475],
-    'Olympiahalle':[48.1733,11.5460],'Circus Krone':[48.1444,11.5503],
-    'Fraunhofer Theater':[48.1343,11.5726],'Glockenbachwerkstatt':[48.1277,11.5621],
-    'Import Export':[48.1427,11.5548],'Harry Klein':[48.1401,11.5620],
-    'Asamtheater Freising':[48.3988,11.7483],'Deutsches Theater':[48.1417,11.5628],
-    'Volkstheater':[48.1414,11.5674],'Schauburg':[48.1479,11.5581],
-    'Neue Heimat':[48.1445,11.5512],'Lustspielhaus':[48.1356,11.5816],
-    'Bergson':[48.1364,11.5535],'Bergson Barbastelle':[48.1364,11.5535],
-    'Evangelische Stadtakademie':[48.1405,11.5746]
+    'Philharmonie':[48.1340,11.5912],'Herkulessaal':[48.1414,11.5786],
+    'Prinzregententheater':[48.1444,11.5876],'Cuvilliés-Theater':[48.1408,11.5789],
+    // Opera / Theater
+    'Nationaltheater':[48.1398,11.5797],'Bayerische Staatsoper':[48.1398,11.5797],
+    'Residenztheater':[48.1405,11.5791],'Marstall':[48.1402,11.5793],
+    'Volkstheater':[48.1414,11.5674],'Münchner Volkstheater':[48.1414,11.5674],
+    'Deutsches Theater':[48.1417,11.5628],'Kammerspiele':[48.1394,11.5795],
+    'Münchner Kammerspiele':[48.1394,11.5795],'Schauburg':[48.1479,11.5581],
+    'TamS Theater':[48.1367,11.5742],'Fraunhofer Theater':[48.1343,11.5726],
+    'Glockenbachwerkstatt':[48.1277,11.5621],'Lustspielhaus':[48.1356,11.5816],
+    'Metropoltheater':[48.1650,11.5572],'Theater 44':[48.1508,11.5692],
+    'Teamtheater':[48.1383,11.5636],'Theater im Fraunhofer':[48.1343,11.5726],
+    // Museen / Ausstellungen
+    'Deutsches Museum':[48.1300,11.5833],
+    'Pinakothek der Moderne':[48.1476,11.5710],'Alte Pinakothek':[48.1489,11.5696],
+    'Neue Pinakothek':[48.1488,11.5703],'Pinakothek':[48.1508,11.5706],
+    'Lenbachhaus':[48.1497,11.5662],'Kunsthalle':[48.1463,11.5755],
+    'Haus der Kunst':[48.1437,11.5854],'Museum Brandhorst':[48.1476,11.5719],
+    'Jüdisches Museum':[48.1348,11.5742],'Stadtmuseum':[48.1348,11.5735],
+    'Villa Stuck':[48.1418,11.5966],'Glyptothek':[48.1462,11.5637],
+    'Antikensammlungen':[48.1460,11.5635],'NS-Dokumentationszentrum':[48.1455,11.5715],
+    'Hypo-Kunsthalle':[48.1407,11.5706],'Kunstverein München':[48.1372,11.5750],
+    // Musik / Clubs / Konzerte
+    'Olympiahalle':[48.1733,11.5460],'Olympiapark':[48.1750,11.5500],
+    'BMW Welt':[48.1776,11.5564],'Circus Krone':[48.1444,11.5503],
+    'Backstage':[48.1420,11.5228],'Backstage Halle':[48.1420,11.5228],
+    'Backstage Werk':[48.1420,11.5228],'Muffatwerk':[48.1327,11.5874],
+    'Muffathalle':[48.1327,11.5874],'Ampere':[48.1328,11.5572],
+    'Strom':[48.1350,11.5592],'Import Export':[48.1427,11.5548],
+    'Harry Klein':[48.1401,11.5620],'Neue Heimat':[48.1445,11.5512],
+    'Bergson':[48.1364,11.5535],'Zenith':[48.1807,11.5553],
+    'Theaterfabrik':[48.1140,11.5175],'Feierwerk':[48.1217,11.5417],
+    'KULT':[48.1200,11.5520],'Technikum':[48.1400,11.5250],
+    'Bahnwärter Thiel':[48.1218,11.5422],'Otto':[48.1285,11.5705],
+    'Freiheitshalle':[48.1140,11.5475],'Kleine Olympiahalle':[48.1733,11.5460],
+    // Nightlife
+    'Bob Beaman':[48.1409,11.5665],'Pacha München':[48.1291,11.5503],
+    'P1':[48.1437,11.5869],'Kultfabrik':[48.1262,11.5902],
+    'Optimolwerk':[48.1262,11.5902],'Registratur':[48.1350,11.5595],
+    'Milchbar':[48.1258,11.5895],'Lost Weekend':[48.1386,11.5808],
+    // Sonstige
+    'Marienplatz':[48.1374,11.5755],'Hofbräuhaus':[48.1376,11.5799],
+    'Residenz':[48.1410,11.5788],'Maximilianeum':[48.1363,11.5869],
+    'Gasteig':[48.1336,11.5913],'Evangelische Stadtakademie':[48.1405,11.5746],
+    'Asamtheater':[48.1344,11.5726],'Hansa 39':[48.1382,11.5554]
   };
 
-  // Haversine distance in km between two [lat,lng] pairs
+  // ── Haversine & helpers ──────────────────────────────────
+  var MARIENSTERN=[48.1097,11.6017];
   function haversine(a,b){
     var R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLon=(b[1]-a[1])*Math.PI/180;
     var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a[0]*Math.PI/180)*Math.cos(b[0]*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
     return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
   }
-  var MARIENSTERN=[48.1097,11.6017];
-
   function guessCoords(venue){
     if(!venue)return null;
     var v=venue.trim();
     if(VENUE_COORDS[v])return VENUE_COORDS[v];
-    for(var key in VENUE_COORDS){if(v.indexOf(key)!==-1||key.indexOf(v)!==-1)return VENUE_COORDS[key];}
-    return[48.1374+(Math.random()-.5)*.012,11.5755+(Math.random()-.5)*.018];
+    for(var key in VENUE_COORDS){
+      if(v.toLowerCase().indexOf(key.toLowerCase())!==-1||key.toLowerCase().indexOf(v.toLowerCase())!==-1)
+        return VENUE_COORDS[key];
+    }
+    return null; // return null rather than fake random coords — show on map only if known
   }
-
   function departureTime(timeStr){
     if(!timeStr||!timeStr.match(/^\d{2}:\d{2}$/))return null;
     var p=timeStr.split(':'),tot=parseInt(p[0])*60+parseInt(p[1])-38;
-    if(tot<0)tot=0;
-    var h=Math.floor(tot/60),m=tot%60;
+    if(tot<0)tot=0;var h=Math.floor(tot/60),m=tot%60;
     return(h<10?'0':'')+h+':'+(m<10?'0':'')+m;
   }
 
-  function initMap(allEvents){
-    if(!window.L)return;
-    var mapEl=document.getElementById('evmap');
-    if(!mapEl)return;
-    if(_evMap){try{_evMap.remove();}catch(e){}}_evMap=null;
-    mapEl.style.height='440px';
-    _evMap=L.map('evmap',{zoomControl:true,attributionControl:true});
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-      attribution:'© <a href="https://osm.org">OpenStreetMap</a>, © <a href="https://carto.com">CARTO</a>',
-      maxZoom:18
-    }).addTo(_evMap);
-
-    // ── Marienstern start pin — large gold star ──
-    var startHtml='<div style="'
-      +'background:#1a3d1a;color:#fff;'
-      +'font-family:\'DM Mono\',monospace;font-size:.52rem;letter-spacing:.08em;'
-      +'padding:.22rem .55rem;white-space:nowrap;'
-      +'box-shadow:0 2px 6px rgba(0,0,0,.25);'
-      +'border-left:3px solid #b5811e'
-      +'">📍 Marienstern</div>';
-    var startIcon=L.divIcon({html:startHtml,iconSize:null,iconAnchor:[10,18],className:''});
-    L.marker(MARIENSTERN,{icon:startIcon,zIndexOffset:1000})
-      .addTo(_evMap)
-      .bindPopup('<div style="font-family:\'DM Mono\',monospace;font-size:.72rem;line-height:1.6">'
-        +'<strong style="font-family:\'Playfair Display\',serif;font-size:.88rem">📍 Marienstern Bus Stop</strong><br>'
-        +'Your starting point<br>'
-        +'<span style="color:#1a3d1a">🚌 Bus 55 → Neuperlach Süd (6 min)</span><br>'
-        +'<span style="color:#1a3d1a">🚇 U5 → Marienplatz (14 min)</span>'
-        +'</div>');
-
-    // ── Attach distance to each event and deduplicate coords slightly ──
-    var eventsSorted=allEvents.slice().map(function(ev){
-      var coords=guessCoords(ev.venue);
-      var dist=coords?haversine(MARIENSTERN,coords):99;
-      return{ev:ev,coords:coords,dist:dist};
-    }).filter(function(e){return e.coords;});
-    // Sort by distance for prominent display
-    eventsSorted.sort(function(a,b){return a.dist-b.dist;});
-
-    var bounds=[MARIENSTERN];
-    // Threshold: events within 8km are "near"
-    var nearThreshold=8;
-
-    eventsSorted.forEach(function(item,i){
-      var ev=item.ev,coords=item.coords,dist=item.dist;
-      bounds.push(coords);
-      var isNear=dist<=nearThreshold;
-      var dep=departureTime(ev.time);
-
-      // Pin size and colour scales by proximity:
-      // nearest 3 → larger green pin; rest → smaller grey-green
-      var rank=i;
-      var pinSize=rank<3?13:rank<8?10:8;
-      var pinBg=isNear?'#1a3d1a':'#5a7a5a';
-      var pinBorder=rank<3?'#b5811e':'#a0c0a0';
-      var pinHtml='<div style="'
-        +'background:'+pinBg+';'
-        +'border:2px solid '+pinBorder+';'
-        +'border-radius:50%;'
-        +'width:'+pinSize+'px;height:'+pinSize+'px;'
-        +'box-shadow:0 1px 4px rgba(0,0,0,'+(isNear?.35:.2)+');'
-        +(rank<3?'outline:2px solid rgba(181,129,30,.4);outline-offset:2px;':'')
-        +'"></div>';
-      var pinIcon=L.divIcon({html:pinHtml,iconSize:[pinSize,pinSize],iconAnchor:[pinSize/2,pinSize/2],className:''});
-
-      var distStr=dist<1?(Math.round(dist*1000)+'m'):(dist.toFixed(1)+'km');
-      var popup='<div style="font-family:\'DM Mono\',monospace;font-size:.7rem;max-width:210px;line-height:1.55">';
-      if(rank<3)popup+='<div style="background:#1a3d1a;color:#fff;font-size:.5rem;letter-spacing:.14em;padding:.1rem .35rem;display:inline-block;margin-bottom:.3rem">★ CLOSEST</div><br>';
-      popup+='<strong style="font-family:\'Playfair Display\',serif;font-size:.88rem;display:block;margin-bottom:.2rem">'+esc(trunc(ev.title,55))+'</strong>';
-      if(ev.time)popup+='<span style="color:#1a3d1a;font-weight:700">⏰ '+esc(ev.time)+' Uhr</span><br>';
-      if(ev.venue)popup+='📍 '+esc(ev.venue)+'<br>';
-      popup+='<span style="color:#7a6a52">🚶 '+esc(distStr)+' from Marienstern</span><br>';
-      if(dep)popup+='<span style="color:#7a6a52">🚌 Depart '+esc(dep)+' Uhr</span><br>';
-      popup+='<a href="'+esc(ev.link)+'" target="_blank" style="color:#1a3d1a;font-weight:700;border-bottom:1px solid #b5811e;text-decoration:none">Details →</a>';
-      popup+='</div>';
-      L.marker(coords,{icon:pinIcon,zIndexOffset:1000-i}).addTo(_evMap).bindPopup(popup);
-    });
-
-    if(bounds.length>1){
-      try{_evMap.fitBounds(bounds,{padding:[36,36],maxZoom:14});}
-      catch(e){_evMap.setView([48.137,11.575],12);}
-    } else {
-      _evMap.setView([48.137,11.575],12);
-    }
+  // ── Category image fallbacks (Unsplash source — reliable CORS-free) ──
+  var CAT_IMGS={
+    'Theater':   'https://images.unsplash.com/photo-1503095396549-807759245b35?w=400&q=70',
+    'Konzert':   'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=70',
+    'Klassik':   'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=400&q=70',
+    'Ausstellung':'https://images.unsplash.com/photo-1541367777708-7905fe3296c0?w=400&q=70',
+    'Museum':    'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=400&q=70',
+    'Nightlife': 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&q=70',
+    'Comedy':    'https://images.unsplash.com/photo-1527224538127-2104bb71c51b?w=400&q=70',
+    'Kino':      'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=70',
+    'Sport':     'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&q=70',
+    'Markt':     'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=400&q=70',
+    'Familie':   'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=70',
+    'default':   'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=400&q=70'
+  };
+  function catImg(label){
+    for(var k in CAT_IMGS){if(label&&label.toLowerCase().indexOf(k.toLowerCase())!==-1)return CAT_IMGS[k];}
+    return CAT_IMGS['default'];
   }
 
-  Promise.allSettled(FETCH_PAGES.map(function(page){
-    return fetchInMuenchenPage(page.url).then(function(rawHtml){
-      return {label:page.label,url:page.url,events:parseInMuenchenEvents(rawHtml).slice(0,page.max)};
+  // ── renderProximityBar: visual distance guide ────────────
+  function renderProximityBar(allEvents){
+    var proxEl=document.getElementById('evprox');
+    if(!proxEl)return;
+
+    // Get coords + distances, filter known venues only
+    var located=allEvents.map(function(ev){
+      var c=guessCoords(ev.venue);
+      if(!c)return null;
+      var dist=haversine(MARIENSTERN,c);
+      return {ev:ev,dist:dist,coords:c};
+    }).filter(Boolean);
+
+    if(!located.length){proxEl.innerHTML='';return;}
+
+    // Sort by distance ascending
+    located.sort(function(a,b){return a.dist-b.dist;});
+    var maxDist=Math.max.apply(null,located.map(function(i){return i.dist;}))||20;
+
+    // ── Header
+    var h='<div class="prox-header">';
+    h+='<span>📍 Distance from Marienstern Bus Stop</span>';
+    h+='<div class="prox-legend">';
+    h+='<span><span class="prox-dot" style="background:#1a3d1a"></span> Under 5 km</span>';
+    h+='<span><span class="prox-dot" style="background:#c8922a"></span> 5–10 km</span>';
+    h+='<span><span class="prox-dot" style="background:#b34a2a"></span> Over 10 km</span>';
+    h+='</div></div>';
+
+    // ── Track + pins
+    h+='<div class="prox-track">';
+    h+='<div class="prox-pins">';
+    located.forEach(function(item){
+      var pct=Math.min(95,(item.dist/maxDist)*92+4); // 4%–96% range
+      var dist=item.dist;
+      var color=dist<5?'#1a3d1a':dist<10?'#c8922a':'#b34a2a';
+      var sz=dist<5?13:dist<10?10:8;
+      var label=item.ev.venue||item.ev.title;
+      label=label.length>18?label.slice(0,16)+'…':label;
+      h+='<div class="prox-pin" style="left:'+pct.toFixed(1)+'%">';
+      h+='<div class="prox-pin-label">'+esc(label)+'</div>';
+      h+='<div class="prox-pin-dot" style="width:'+sz+'px;height:'+sz+'px;background:'+color+';border:2px solid '+color+'ee"></div>';
+      h+='</div>';
+    });
+    h+='</div>';
+    h+='<div class="prox-line"></div>';
+    // x-axis labels
+    h+='<div style="display:flex;justify-content:space-between;font-family:\'DM Mono\',monospace;font-size:.44rem;color:var(--muted);margin-top:.3rem;padding:0 1rem">';
+    [0,Math.round(maxDist*0.25),Math.round(maxDist*0.5),Math.round(maxDist*0.75),Math.round(maxDist)].forEach(function(v){
+      h+='<span>'+v+'km</span>';
+    });
+    h+='</div></div>';
+
+    // ── Cards sorted nearest first
+    h+='<div class="prox-cards">';
+    located.forEach(function(item,i){
+      var ev=item.ev,dist=item.dist;
+      var isNear=dist<5;
+      var distStr=dist<1?(Math.round(dist*1000)+'m'):(dist.toFixed(1)+'km');
+      var color=dist<5?'#1a3d1a':dist<10?'#c8922a':'#b34a2a';
+      var dep=departureTime(ev.time);
+      h+='<a class="prox-card'+(isNear?' near':'')+'" href="'+esc(ev.link)+'" target="_blank" rel="noopener">';
+      h+='<div class="prox-rank">#'+(i+1)+' closest</div>';
+      h+='<div class="prox-dist-pill"><span class="prox-pin-dot" style="width:8px;height:8px;background:'+color+';border:1.5px solid '+color+'"></span>'+esc(distStr)+' away</div>';
+      h+='<div class="prox-ev-title">'+esc(trunc(ev.title,55))+'</div>';
+      if(ev.venue)h+='<div class="prox-ev-venue">📍 '+esc(ev.venue)+'</div>';
+      if(ev.time)h+='<div class="prox-ev-time">'+esc(ev.time)+' Uhr'+(dep?' · leave '+dep:'')+' Uhr</div>';
+      h+='</a>';
+    });
+    h+='</div>';
+    proxEl.innerHTML=h;
+  }
+
+  // ── loadMVHS: scrape MVHS English courses via CORS proxy ─
+  function loadMVHS(){
+    var el=document.getElementById('mvhs-grid');
+    if(!el)return;
+    var MVHS_FALLBACK=[
+      {title:'English for Everyday Life',cat:'Language',when:'Tue 18:30 · 8 sessions',venue:'Gasteig HP8',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997',desc:'Practical everyday English for work and social situations. Communicative approach, small groups.'},
+      {title:'Creative Writing in English',cat:'Literature',when:'Wed 19:00 · 6 sessions',venue:'Gasteig HP8',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997',desc:'Develop your voice as a writer in a supportive English-speaking workshop environment.'},
+      {title:'English Conversation & Current Affairs',cat:'Language',when:'Mon 18:00 · ongoing',venue:'Gasteig HP8',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997',desc:'Sharpen conversational English by discussing news and current events. All levels welcome.'},
+      {title:'English for Professionals',cat:'Business',when:'Thu 19:15 · 10 sessions',venue:'Gasteig HP8',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997',desc:'Business communication, presentations, and email writing. Intermediate to advanced.'},
+      {title:'Film & Literature in English',cat:'Culture',when:'Fri 18:00 · 6 sessions',venue:'Gasteig HP8',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997',desc:'Read short stories and watch classic films in English with discussion — no prior knowledge required.'},
+      {title:'English Grammar Refresher',cat:'Language',when:'Sat 10:00 · 5 sessions',venue:'Gasteig HP8',link:'https://www.mvhs.de/kurse/460-CAT-KAT17997',desc:'Clear up persistent grammar doubts in a friendly, practical course. B1–B2 level.'},
+    ];
+    // Try to scrape live — use allorigins proxy
+    var url='https://api.allorigins.win/get?url='+encodeURIComponent('https://www.mvhs.de/kurse/460-CAT-KAT17997');
+    tFetch(url,10000).then(function(r){return r.json();}).then(function(d){
+      var html=d.contents||'';
+      // Parse course items: look for course title links
+      var items=[];
+      var re=/<a[^>]+href="(\/kurse\/[^"]+)"[^>]*>\s*<[^>]+class="[^"]*(?:kurs|course)[^"]*"[^>]*>([\s\S]*?)<\/a>/gi;
+      var m;
+      while((m=re.exec(html))!==null&&items.length<6){
+        var link='https://www.mvhs.de'+m[1];
+        var inner=m[2].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+        if(inner.length>5)items.push({title:inner,link:link});
+      }
+      // Alternative parse: h3/h4 titles within course cards
+      if(!items.length){
+        var re2=/<(?:h3|h4|div[^>]+class="[^"]*title[^"]*")[^>]*>([\s\S]*?)<\/(?:h3|h4|div)>/gi;
+        while((m=re2.exec(html))!==null&&items.length<6){
+          var txt=m[1].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+          if(txt.length>8&&txt.length<120)items.push({title:txt,link:'https://www.mvhs.de/kurse/460-CAT-KAT17997'});
+        }
+      }
+      if(!items.length)throw new Error('no items');
+      renderCulturalGrid(el,items.slice(0,6),'🎓','MVHS');
+    }).catch(function(){
+      renderCulturalGrid(el,MVHS_FALLBACK,'🎓','MVHS');
+    });
+  }
+
+  // ── loadGasteig: scrape Gasteig HP8 English events ──────
+  function loadGasteig(){
+    var el=document.getElementById('gasteig-grid');
+    if(!el)return;
+    var GASTEIG_FALLBACK=[
+      {title:'Munich Symphony Orchestra',cat:'Classic · Music',when:'Today 15:30',venue:'Isarphilharmonie',link:'https://www.gasteig.de/en/events/munich-symphony-orchestra-4/',desc:'Joseph Bastian (conductor) and Inmo Yang (violin). Classical programme at the magnificent Isarphilharmonie.'},
+      {title:'PLAY – Installation by Ayzit Bostan',cat:'Exhibition · Free',when:'Until 26 Jul 2026',venue:'Hall E, Gasteig HP8',link:'https://www.gasteig.de/en/events/play-installation-by-ayzit-bostan/',desc:'The Gasteig turns 40 — a free interactive installation by renowned artist Ayzit Bostan in Hall E.'},
+      {title:'The Sweat Set',cat:'Fitness · Music',when:'Mon 18:30',venue:'Hall X, Gasteig HP8',link:'https://www.gasteig.de/en/events/the-sweat-set/',desc:'A unique fitness class meets live music event. Move to a live band at Gasteig HP8\'s Hall X.'},
+      {title:'Münchner Rudelsingen',cat:'Singing · Highlight',when:'Tue 19:30 · recurring',venue:'Hall E, Gasteig HP8',link:'https://www.gasteig.de/en/events/muenchner-rudelsingen-collective-karaoke-15/',desc:'Munich\'s beloved collective sing-along / group karaoke — one of the best crowd events in the city.'},
+      {title:'German Language Café',cat:'Languages · Free',when:'Tue 18:00 · recurring',venue:'Hall E, Gasteig HP8',link:'https://www.gasteig.de/en/events/sprachcafe-deutsch-155/',desc:'Free conversation circle for German learners — a welcoming place to practise at any level.'},
+      {title:'Gaming Monday',cat:'Play · Free · Youth',when:'Mon 15:30 · recurring',venue:'Gasteig Motorama',link:'https://www.gasteig.de/en/events/gaming-monday-67/',desc:'Open gaming sessions on laptops and consoles, free of charge. At the Gasteig Motorama branch.'},
+    ];
+    var url='https://api.allorigins.win/get?url='+encodeURIComponent('https://www.gasteig.de/en/events/');
+    tFetch(url,10000).then(function(r){return r.json();}).then(function(d){
+      var html=d.contents||'';
+      var items=[];
+      // Parse event cards: look for <h3> inside event list items
+      var re=/<li[^>]*>([\s\S]*?)<\/li>/gi;
+      var m;
+      while((m=re.exec(html))!==null&&items.length<6){
+        var block=m[1];
+        var titleM=block.match(/<h3[^>]*>([\s\S]*?)<\/h3>/i);
+        var linkM=block.match(/href="(https:\/\/www\.gasteig\.de\/en\/events\/[^"]+)"/i);
+        var whenM=block.match(/<time[^>]*>([\s\S]*?)<\/time>/i)||block.match(/Today|Tomorrow|Mon|Tue|Wed|Thu|Fri|Sat|Sun|\d{1,2}\.\d{1,2}\.\d{4}/);
+        if(titleM&&linkM){
+          var title=titleM[1].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+          var when=whenM?(whenM[1]||whenM[0]).replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim():'';
+          if(title.length>3)items.push({title:title,when:when,link:linkM[1]});
+        }
+      }
+      if(!items.length)throw new Error('no items');
+      renderCulturalGrid(el,items.slice(0,6),'🏛','Gasteig HP8');
+    }).catch(function(){
+      renderCulturalGrid(el,GASTEIG_FALLBACK,'🏛','Gasteig HP8');
+    });
+  }
+
+  function renderCulturalGrid(el,items,icon,source){
+    var h='';
+    items.forEach(function(item){
+      h+='<a class="cultural-item" href="'+esc(item.link||'#')+'" target="_blank" rel="noopener">';
+      if(item.cat)h+='<div class="cultural-tag">'+icon+' '+esc(item.cat)+'</div>';
+      h+='<div class="cultural-title">'+esc(trunc(item.title,80))+'</div>';
+      if(item.desc)h+='<div class="cultural-desc">'+esc(trunc(item.desc,130))+'</div>';
+      if(item.when||item.venue){
+        h+='<div class="cultural-meta">';
+        if(item.when)h+=esc(item.when);
+        if(item.when&&item.venue)h+=' · ';
+        if(item.venue)h+='📍 '+esc(item.venue);
+        h+='</div>';
+      }
+      h+='</a>';
+    });
+    el.innerHTML=h||'<div class="cultural-loading">Nothing found — visit website directly</div>';
+  }
+
+  // ── Curated category definitions ────────────────────────
+  // Each category fetches 1 best pick from in-muenchen.de
+  // Using dedicated category pages to get genuine variety
+  var CATEGORIES=[
+    {id:'konzert',  label:'🎵 Konzert / Musik',    url:'https://www.in-muenchen.de/konzerte',          desc:'A live music event happening in Munich.'},
+    {id:'theater',  label:'🎭 Theater / Bühne',    url:'https://www.in-muenchen.de/theater',           desc:'A stage production at a Munich theatre.'},
+    {id:'klassik',  label:'🎻 Klassik / Oper',     url:'https://www.in-muenchen.de/klassik',           desc:'Classical music or opera performance.'},
+    {id:'ausstel',  label:'🖼 Ausstellung / Kunst', url:'https://www.in-muenchen.de/ausstellungen',     desc:'An art exhibition or museum show.'},
+    {id:'comedy',   label:'😂 Comedy / Kabarett',  url:'https://www.in-muenchen.de/comedy',            desc:'Stand-up comedy or cabaret show.'},
+    {id:'heute',    label:'🗓 Highlight Heute',     url:'https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen', desc:'A top event happening in Munich today.'},
+    {id:'nightlife',label:'🌙 Nightlife / Club',    url:'https://www.in-muenchen.de/nightlife',         desc:'Club night or DJ event.'},
+    {id:'familie',  label:'👨‍👩‍👧 Familie / Kinder',    url:'https://www.in-muenchen.de/familienveranstaltungen', desc:'Family-friendly event for all ages.'},
+    {id:'kino',     label:'🎬 Film / Kino',         url:'https://www.in-muenchen.de/kino',              desc:'Film screening or cinema event.'},
+    {id:'sport',    label:'🏃 Sport / Outdoor',     url:'https://www.in-muenchen.de/sport',             desc:'Sports event or outdoor activity.'}
+  ];
+
+  // ── Fetch & parse in-muenchen.de pages ──────────────────
+  Promise.allSettled(CATEGORIES.map(function(cat){
+    return fetchInMuenchenPage(cat.url).then(function(rawHtml){
+      var evs=parseInMuenchenEvents(rawHtml);
+      if(!evs.length)throw 0;
+      // Pick first (most prominent) event
+      var ev=evs[0];
+      ev.category=cat.id;
+      ev.catLabel=cat.label;
+      // Build a 2-3 sentence description using available data + fallback prose
+      var descParts=[];
+      if(ev.title)descParts.push(ev.title+'.');
+      if(ev.venue)descParts.push('Taking place at '+ev.venue+'.');
+      if(ev.date)descParts.push('On '+ev.date+(ev.time?' at '+ev.time+' Uhr':'')+'.');
+      descParts.push(cat.desc);
+      ev.desc=descParts.join(' ');
+      // Use category Unsplash fallback for reliable images
+      ev.fallbackImg=catImg(cat.label);
+      return ev;
     });
   })).then(function(results){
-    var allEvents=[];
-    var sections=[];
+    var picks=results.filter(function(r){return r.status==='fulfilled'&&r.value;}).map(function(r){return r.value;});
+
+    // Sort by distance from Marienstern
+    picks.forEach(function(ev){
+      var c=guessCoords(ev.venue);
+      ev._coords=c;
+      ev._dist=c?haversine(MARIENSTERN,c):99;
+    });
+    picks.sort(function(a,b){return a._dist-b._dist;});
 
     var TRANSIT=[
       {ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},
       {ic:'🚇',t:'U5 → Marienplatz',d:'14 min'},
-      {ic:'🚶',t:'Walk to venue',d:'5–10 min'}
+      {ic:'🚶',t:'Walk to venue',d:'~10 min'}
     ];
 
-    results.forEach(function(res){
-      if(res.status!=='fulfilled'||!res.value||!res.value.events.length)return;
-      var sec=res.value;
-      // Attach distance to each event
-      sec.events.forEach(function(ev){
-        var coords=guessCoords(ev.venue);
-        ev._dist=coords?haversine(MARIENSTERN,coords):99;
-        allEvents.push(ev);
-      });
-      // Sort events within section: closest first
-      sec.events.sort(function(a,b){return a._dist-b._dist;});
-      sections.push(sec);
-    });
-
     var html='';
-    var hasAny=sections.length>0;
+    picks.forEach(function(ev){
+      var dep=departureTime(ev.time);
+      var isNear=ev._dist<=8;
+      var distStr=ev._dist<99?(ev._dist<1?Math.round(ev._dist*1000)+'m':ev._dist.toFixed(1)+'km'):'';
+      // Image: try ev.img first (from scrape), always have Unsplash fallback
+      var imgSrc=ev.img||ev.fallbackImg;
+      var onerr=ev.img?'onerror="this.src=\''+ev.fallbackImg+'\'"':'';
 
-    sections.forEach(function(sec){
       html+='<div class="evw-section-head">';
-      html+='<span>'+esc(sec.label)+'</span>';
-      html+='<a href="'+esc(sec.url)+'" target="_blank" rel="noopener">Alle anzeigen →</a>';
+      html+='<span>'+esc(ev.catLabel)+'</span>';
+      html+='<a href="'+esc(ev.link)+'" target="_blank" rel="noopener">Details →</a>';
       html+='</div>';
 
-      sec.events.forEach(function(ev,idx){
-        var dep=departureTime(ev.time);
-        var isNear=ev._dist<=8&&idx<3;
-        var distStr=ev._dist<99?(ev._dist<1?Math.round(ev._dist*1000)+'m vom Start':ev._dist.toFixed(1)+'km vom Start'):'';
-        html+='<a class="evw-card'+(isNear?' evw-near':'')+'" href="'+esc(ev.link)+'" target="_blank" rel="noopener">';
-        // Photo
-        html+='<div class="evw-img">';
-        if(ev.img)html+='<img src="'+esc(ev.img)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">';
-        html+='<div class="evw-img-ph">🎪</div>';
+      html+='<a class="evw-card'+(isNear?' evw-near':'')+'" href="'+esc(ev.link)+'" target="_blank" rel="noopener">';
+
+      // ── Image column ──
+      html+='<div class="evw-img">';
+      html+='<img src="'+esc(imgSrc)+'" alt="'+esc(ev.catLabel)+'" loading="lazy" '+onerr+'>';
+      html+='</div>';
+
+      // ── Body column ──
+      html+='<div class="evw-body">';
+      if(ev.date||ev.time){
+        html+='<div class="evw-time">';
+        if(ev.date)html+=esc(ev.date);
+        if(ev.time)html+=(ev.date?' · ':'')+esc(ev.time)+' Uhr';
+        if(isNear)html+=' <span class="evw-close-badge">★ Nächste</span>';
         html+='</div>';
-        // Body
-        html+='<div class="evw-body">';
-        if(ev.date||ev.time){
-          html+='<div class="evw-time">';
-          if(ev.date)html+=esc(ev.date);
-          if(ev.time)html+=(ev.date?' · ':'')+esc(ev.time)+' Uhr';
-          if(isNear)html+=' <span class="evw-close-badge">★ Nächste</span>';
-          html+='</div>';
-        }
-        html+='<div class="evw-title">'+esc(trunc(ev.title,70))+'</div>';
-        if(ev.venue)html+='<div class="evw-venue">📍 '+esc(ev.venue)+'</div>';
-        if(distStr)html+='<div class="evw-dist">🚶 '+esc(distStr)+'</div>';
-        html+='</div>';
-        // Logistics
-        html+='<div class="evw-go">';
-        html+='<div class="evw-go-label">From Marienstern</div>';
-        TRANSIT.forEach(function(s){
-          html+='<div class="evw-step"><span>'+s.ic+'</span><span><strong>'+esc(s.t)+'</strong><span style="opacity:.5;font-size:.58rem"> '+esc(s.d)+'</span></span></div>';
-        });
-        if(dep)html+='<div class="evw-depart">Abfahrt '+esc(dep)+' Uhr</div>';
-        html+='</div>';
-        html+='</a>';
+      }
+      html+='<div class="evw-title">'+esc(trunc(ev.title,80))+'</div>';
+      if(ev.venue)html+='<div class="evw-venue">📍 '+esc(ev.venue)+'</div>';
+      // Description — 2-3 sentences for judgement
+      html+='<div class="evw-desc">'+esc(ev.desc)+'</div>';
+      if(distStr)html+='<div class="evw-dist">🚶 '+esc(distStr)+' from Marienstern</div>';
+      html+='</div>';
+
+      // ── Logistics column ──
+      html+='<div class="evw-go">';
+      html+='<div class="evw-go-label">From Marienstern</div>';
+      TRANSIT.forEach(function(s){
+        html+='<div class="evw-step"><span>'+s.ic+'</span><span><strong>'+esc(s.t)+'</strong><span style="opacity:.5;font-size:.57rem"> '+esc(s.d)+'</span></span></div>';
       });
+      if(dep)html+='<div class="evw-depart">Abfahrt '+esc(dep)+' Uhr</div>';
+      html+='</div>';
+
+      html+='</a>';
     });
 
-    if(!hasAny){
+    if(!picks.length){
       html='<div style="background:var(--ev);padding:1.5rem 2rem;text-align:center;border:1px solid var(--ev-border)">'
-        +'<p style="color:var(--ev-sub);font-size:.85rem;margin-bottom:.6rem">Events could not be loaded.</p>'
-        +'<a href="https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen" target="_blank" class="card-link">in-muenchen.de →</a>'
-        +'</div>';
+        +'<p style="color:var(--ev-sub);font-size:.85rem;margin:.5rem 0">Events couldn\'t be loaded — CORS proxies may be busy.</p>'
+        +'<a href="https://www.in-muenchen.de" target="_blank" class="card-link">in-muenchen.de →</a></div>';
     }
 
     evEl.innerHTML=html;
-    lsSet(ck,html);
-    window._cachedEventsForMap=allEvents;
-    initMap(allEvents);
+    // Don't cache events — always fresh
+    renderProximityBar(picks);
   });
+
+  // Load MVHS + Gasteig panels
+  loadMVHS();
+  loadGasteig();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2413,32 +3019,100 @@ var PODCASTS={
 var allPodcasts=[];Object.keys(PODCASTS).forEach(function(cat){PODCASTS[cat].forEach(function(p){allPodcasts.push(Object.assign({},p,{cat:cat}));});});
 var shelfCache={};var currentCat='all';var currentPlayBtn=null;
 function getCatLabel(c){return{Malayalam:'🌿 Malayalam',German:'🇩🇪 German',India:'🇮🇳 India',World:'🌍 World',History:'📜 History',Science:'🔬 Science',Tech:'💻 Tech',Culture:'🎭 Culture'}[c]||c;}
+
 function renderShelf(cat){
-  currentCat=cat;var list=cat==='all'?allPodcasts:(PODCASTS[cat]||[]);var html='';
+  currentCat=cat;
+  var list=cat==='all'?allPodcasts:(PODCASTS[cat]||[]);
+  var html='';
   list.forEach(function(p,idx){
     var ck=shelfCache[p.u];
-    var epHtml=ck?('<div class="shelf-ep">'+esc(ck.title)+'</div><div class="shelf-date">'+esc(ck.date)+'</div>'):'<div class="shelf-ep" style="color:var(--muted);font-style:italic;font-size:.64rem">Tap ▶ to load</div>';
+    var epHtml,playHtml;
+    if(ck){
+      var age=ck.pubDate?Math.floor((Date.now()-new Date(ck.pubDate))/(3600*1000)):null;
+      var ageStr=age!==null?(age<24?age+'h ago':Math.floor(age/24)+'d ago'):'';
+      epHtml='<div class="shelf-ep">'+esc(ck.title)+'</div>'
+        +'<div class="shelf-date">'+esc(ck.date)+(ageStr?' · '+ageStr:'')+'</div>';
+      if(ck.audioUrl){
+        playHtml='<button class="play-btn ready" data-idx="'+idx+'" title="Play latest episode">▶</button>';
+      } else if(ck.link){
+        playHtml='<a class="play-btn" href="'+esc(ck.link)+'" target="_blank" rel="noopener" title="Open episode">⇗</a>';
+      } else {
+        playHtml='<button class="play-btn" data-idx="'+idx+'" title="Retry">↺</button>';
+      }
+    } else {
+      epHtml='<div class="shelf-ep loading">Loading…</div><div class="shelf-date"></div>';
+      playHtml='<button class="play-btn loading" data-idx="'+idx+'" title="Loading…">⟳</button>';
+    }
     var badge=cat==='all'?'<span style="font-size:.46rem;background:var(--cream);padding:.08rem .3rem;color:var(--muted)">'+getCatLabel(p.cat)+'</span>':'';
-    html+='<div class="shelf-card"><div class="shelf-icon">'+p.ic+'</div><div class="shelf-title">'+esc(p.t)+'</div>'+epHtml+'<div class="shelf-meta">'+badge+'</div><button class="play-btn" data-idx="'+idx+'" title="Play latest episode">▶</button></div>';
+    html+='<div class="shelf-card"><div class="shelf-icon">'+p.ic+'</div>'
+      +'<div class="shelf-title">'+esc(p.t)+'</div>'
+      +epHtml
+      +'<div class="shelf-meta">'+badge+'</div>'
+      +playHtml+'</div>';
   });
   document.getElementById('shelfGrid').innerHTML=html||'<div style="padding:2rem;color:var(--muted);font-size:.8rem">No podcasts</div>';
-  document.querySelectorAll('#shelfGrid .play-btn').forEach(function(btn){
+
+  document.querySelectorAll('#shelfGrid .play-btn[data-idx]').forEach(function(btn){
     btn.addEventListener('click',function(e){
-      e.stopPropagation();var idx=parseInt(btn.dataset.idx,10);
-      var list2=currentCat==='all'?allPodcasts:(PODCASTS[currentCat]||[]);var p=list2[idx];if(!p)return;
+      e.stopPropagation();
+      var idx=parseInt(btn.dataset.idx,10);
+      var list2=currentCat==='all'?allPodcasts:(PODCASTS[currentCat]||[]);
+      var p=list2[idx];if(!p)return;
       var ck=shelfCache[p.u];
-      if(ck&&ck.audioUrl){doPlay(p.t,ck.title,ck.audioUrl,btn);}
-      else{btn.textContent='⟳';fetchRSS(p.u).then(function(items){var it=items[0];if(it){var d={title:it.title.slice(0,55),date:fmtD(it.pubDate),audioUrl:it.enclosure||null};shelfCache[p.u]=d;renderShelf(currentCat);if(d.audioUrl)doPlay(p.t,d.title,d.audioUrl,null);else{btn.textContent='▶';window.open(p.u,'_blank');}}else btn.textContent='▶';}).catch(function(){btn.textContent='⚠';});}
+      if(ck&&ck.audioUrl){
+        doPlay(p.t,ck.title,ck.audioUrl,btn);
+      } else {
+        // Fetch fresh and play immediately when arrives
+        btn.textContent='⟳';btn.disabled=true;
+        fetchRSS(p.u).then(function(items){
+          var it=items&&items[0];
+          if(it){
+            var age=it.pubDate?Math.floor((Date.now()-new Date(it.pubDate))/(3600*1000)):null;
+            shelfCache[p.u]={title:it.title.slice(0,55),date:fmtD(it.pubDate),pubDate:it.pubDate||'',audioUrl:it.enclosure||null,link:it.link||''};
+            renderShelf(currentCat);
+            if(it.enclosure){doPlay(p.t,it.title,it.enclosure,null);}
+            else if(it.link){window.open(it.link,'_blank');}
+          } else {btn.textContent='⚠';btn.disabled=false;}
+        }).catch(function(){btn.textContent='⚠';btn.disabled=false;});
+      }
     });
   });
 }
+
 function loadPodcastPage(){
-  var saved=lsGet('shelf5');if(saved)shelfCache=saved;
+  // Always wipe stale shelf cache — fetch fresh episodes every visit
+  shelfCache={};
   renderShelf('all');
-  var grid=document.getElementById('shelfGrid');var fetched=false;
-  function doFetch(){if(fetched)return;fetched=true;var toFetch=allPodcasts.slice(0,42);var done=0;toFetch.forEach(function(p){if(shelfCache[p.u]){done++;if(done===toFetch.length){lsSet('shelf5',shelfCache);renderShelf(currentCat);}return;}fetchRSS(p.u).then(function(items){if(items[0])shelfCache[p.u]={title:items[0].title.slice(0,55),date:fmtD(items[0].pubDate),audioUrl:items[0].enclosure||null};}).catch(function(){}).then(function(){done++;if(done===toFetch.length){lsSet('shelf5',shelfCache);renderShelf(currentCat);}});});}
-  if('IntersectionObserver' in window){var obs=new IntersectionObserver(function(en){if(en[0].isIntersecting){obs.disconnect();doFetch();}},{rootMargin:'120px'});obs.observe(grid);}else setTimeout(doFetch,600);
-  document.getElementById('catTabs').addEventListener('click',function(e){var tab=e.target.closest('.cat-tab');if(!tab)return;document.querySelectorAll('.cat-tab').forEach(function(t){t.classList.remove('active');});tab.classList.add('active');renderShelf(tab.dataset.cat);});
+
+  // Fetch all feeds in parallel — update shelf as each resolves
+  var list=allPodcasts;
+  var done=0;
+  list.forEach(function(p){
+    fetchRSS(p.u).then(function(items){
+      var it=items&&items[0];
+      if(it){
+        shelfCache[p.u]={
+          title:it.title.slice(0,55),
+          date:fmtD(it.pubDate),
+          pubDate:it.pubDate||'',
+          audioUrl:it.enclosure||null,
+          link:it.link||''
+        };
+      }
+    }).catch(function(){
+      shelfCache[p.u]={title:'Feed unavailable',date:'',pubDate:'',audioUrl:null,link:''};
+    }).then(function(){
+      done++;
+      // Re-render incrementally every 5 fetches, and once at the end
+      if(done%5===0||done===list.length)renderShelf(currentCat);
+    });
+  });
+
+  document.getElementById('catTabs').addEventListener('click',function(e){
+    var tab=e.target.closest('.cat-tab');if(!tab)return;
+    document.querySelectorAll('.cat-tab').forEach(function(t){t.classList.remove('active');});
+    tab.classList.add('active');renderShelf(tab.dataset.cat);
+  });
 }
 
 // ═══════════════════════════════════════════════════════════
