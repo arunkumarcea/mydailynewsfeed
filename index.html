@@ -570,6 +570,12 @@ nav::-webkit-scrollbar{display:none}
 .shelf-ep{font-size:.66rem;color:#4a4035;line-height:1.3}
 .shelf-meta{font-family:'DM Mono',monospace;font-size:.48rem;color:var(--muted);text-transform:uppercase;margin-top:auto}
 .shelf-date{font-family:'DM Mono',monospace;font-size:.48rem;color:var(--muted)}
+.shelf-card.stale{opacity:.75}.shelf-card.dead{opacity:.55;background:var(--cream)}
+.freshness-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:.42rem;letter-spacing:.05em;padding:.06rem .28rem;border-radius:1px;font-weight:700;margin-top:.1rem}
+.fb-fresh{background:#1a6b40;color:#fff}.fb-recent{background:#2a6b9c;color:#fff}
+.fb-slow{background:#8a7055;color:#fff}.fb-old{background:#aaa;color:#fff}.fb-dead{background:#c44;color:#fff}
+.shelf-group-hd{grid-column:1/-1;background:var(--ink);color:var(--paper);font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;padding:.4rem 1rem;display:flex;align-items:center;gap:.5rem}
+.shelf-group-hd .ghd-count{opacity:.55;font-size:.42rem}
 .play-btn{position:absolute;bottom:.55rem;right:.55rem;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--paper);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.58rem;transition:background .15s,transform .1s;z-index:2}
 .play-btn:hover{background:var(--gold);color:var(--ink);transform:scale(1.08)}
 .play-btn.playing{background:var(--rust)}
@@ -1010,24 +1016,42 @@ function tFetch(url,ms){ms=ms||9000;var ctrl=new AbortController(),timer=setTime
 
 // ── RSS ENGINE ──────────────────────────────────────────────
 function fetchRSS(url){
-  var enc=encodeURIComponent(url);
+  // anchor.fm/s/HHHHH/podcast/rss → podcasters.spotify.com canonical form
+  var url2=url.replace(/^https?:\/\/anchor\.fm\/s\/([0-9a-f]+)\/podcast\/rss$/i,
+    'https://podcasters.spotify.com/pod/show/$1/feed');
   function parseXML(xml){
-    try{var doc=new DOMParser().parseFromString(xml,'text/xml'),arr=[];
+    try{
+      if(!xml||xml.length<80)return null;
+      var doc=new DOMParser().parseFromString(xml,'text/xml'),arr=[];
+      if(doc.querySelector('parsererror')&&!doc.querySelector('item'))return null;
       doc.querySelectorAll('item').forEach(function(item){
         var g=function(s){var el=item.querySelector(s);return el?(el.textContent||'').trim():'';};
-        var enc2=item.querySelector('enclosure');
+        var enc3=item.querySelector('enclosure');
         var media=item.querySelector('content')||item.querySelector('[url]');
         var imgUrl='';
         if(media){var mu=media.getAttribute('url')||'',mt=media.getAttribute('type')||'';if(mu&&/image|jpg|png|webp/i.test(mu+mt))imgUrl=mu;}
-        arr.push({title:g('title'),description:g('description'),link:g('link'),pubDate:g('pubDate'),enclosure:enc2?enc2.getAttribute('url')||'':'',thumbnail:imgUrl||g('thumbnail')||''});
-      });return arr;}catch(e){return[];}
+        arr.push({title:g('title'),description:g('description'),link:g('link'),pubDate:g('pubDate'),
+          enclosure:enc3?enc3.getAttribute('url')||'':'',thumbnail:imgUrl||g('thumbnail')||''});
+      });
+      return arr.length?arr:null;
+    }catch(e){return null;}
   }
-  function parseR2J(items){return items.map(function(it){return{title:strip(it.title||''),description:strip(it.description||it.content||''),link:it.link||'',pubDate:it.pubDate||'',enclosure:(it.enclosure&&it.enclosure.link)?it.enclosure.link:'',thumbnail:it.thumbnail||''};});}
-  var pA=tFetch('https://api.allorigins.win/get?url='+enc).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){var t=d&&d.contents;if(!t||t.length<60)throw 0;return parseXML(t);});
-  var pB=tFetch('https://corsproxy.io/?'+enc).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){if(!t||t.length<60)throw 0;return parseXML(t);});
-  var pC=tFetch('https://api.rss2json.com/v1/api.json?rss_url='+enc+'&count=10').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){if(!d||d.status!=='ok'||!d.items)throw 0;return parseR2J(d.items);});
-  var pD=tFetch('https://api.codetabs.com/v1/proxy?quest='+enc).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){if(!t||t.length<60||t.startsWith('{'))throw 0;return parseXML(t);});
-  return anyOf([pA,pB,pC,pD]);
+  function parseR2J(items){return items.map(function(it){return{title:strip(it.title||''),
+    description:strip(it.description||it.content||''),link:it.link||'',
+    pubDate:it.pubDate||it.isoDate||'',
+    enclosure:(it.enclosure&&(it.enclosure.link||it.enclosure.url))||(typeof it.enclosure==='string'?it.enclosure:'')||'',
+    thumbnail:it.thumbnail||''};});}
+  function tryProxy(u){
+    var e=encodeURIComponent(u);
+    var pA=tFetch('https://api.allorigins.win/get?url='+e,10000).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){var r=parseXML(d&&d.contents);if(!r)throw 0;return r;});
+    var pB=tFetch('https://corsproxy.io/?'+e,10000).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){var r=parseXML(t);if(!r)throw 0;return r;});
+    var pC=tFetch('https://api.rss2json.com/v1/api.json?rss_url='+e+'&count=12',10000).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){if(!d||d.status!=='ok'||!d.items||!d.items.length)throw 0;return parseR2J(d.items);});
+    var pD=tFetch('https://api.codetabs.com/v1/proxy?quest='+e,10000).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){var r=parseXML(t);if(!r)throw 0;return r;});
+    var pE=tFetch('https://thingproxy.freeboard.io/fetch/'+u,10000).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){var r=parseXML(t);if(!r)throw 0;return r;});
+    return anyOf([pA,pB,pC,pD,pE]);
+  }
+  if(url2!==url){return anyOf([tryProxy(url2),tryProxy(url)]);}
+  return tryProxy(url);
 }
 function anyOf(arr){if(typeof Promise.any==='function')return Promise.any(arr);return new Promise(function(res,rej){var n=0;arr.forEach(function(p){p.then(res).catch(function(){if(++n===arr.length)rej(new Error('all failed'));});});});}
 
@@ -2273,7 +2297,7 @@ var POD_PRIORITY=[
   {name:'In Focus · The Hindu',      feeds:['https://feeds.megaphone.fm/THGU4956605070']},
   {name:'NL Hafta · Newslaundry',    feeds:['https://feeds.acast.com/public/shows/5ec3d9497cef7479d2ef4798']},
   {name:'Up First · NPR',            feeds:['https://feeds.npr.org/510318/podcast.xml']},
-  {name:'After Hours Malayalis',     feeds:['https://anchor.fm/s/408591a8/podcast/rss']},
+  {name:'After Hours Malayalis',     feeds:['https://podcasters.spotify.com/pod/show/408591a8/feed']},
   {name:'Radiowissen · BR',          feeds:['https://feeds.br.de/radiowissen/feed.xml']},
   {name:'Seen & Unseen · Amit Varma',feeds:['https://seenunseen.libsyn.com/rss']}
 ];
@@ -3103,17 +3127,17 @@ function loadMorePage(){
 // ═══════════════════════════════════════════════════════════
 var PODCASTS={
   Malayalam:[
-    {t:'After Hours Malayalis',u:'https://anchor.fm/s/408591a8/podcast/rss',ic:'🎙️'},
+    {t:'After Hours Malayalis',u:'https://podcasters.spotify.com/pod/show/408591a8/feed',ic:'🎙️'},
     {t:'Crime Story Malayalam',u:'https://www.spreaker.com/show/5363741/episodes/feed',ic:'🔍'},
-    {t:'DoolNews',u:'https://anchor.fm/s/336c897c/podcast/rss',ic:'📰'},
+    {t:'DoolNews',u:'https://podcasters.spotify.com/pod/show/336c897c/feed',ic:'📰'},
     {t:'Journo\'s Diary',u:'https://www.spreaker.com/show/5700590/episodes/feed',ic:'✍️'},
-    {t:'Madhyamam Podcast',u:'https://anchor.fm/s/47e3da54/podcast/rss',ic:'🗞️'},
-    {t:'RADIO LUCA',u:'https://anchor.fm/s/31d35f00/podcast/rss',ic:'📡'},
-    {t:'Truecopy THINK',u:'https://anchor.fm/s/fd484df8/podcast/rss',ic:'💡'},
-    {t:'Vayanalokam Book Podcast',u:'https://anchor.fm/s/c024b114/podcast/rss',ic:'📕'},
+    {t:'Madhyamam Podcast',u:'https://podcasters.spotify.com/pod/show/47e3da54/feed',ic:'🗞️'},
+    {t:'RADIO LUCA',u:'https://podcasters.spotify.com/pod/show/31d35f00/feed',ic:'📡'},
+    {t:'Truecopy THINK',u:'https://podcasters.spotify.com/pod/show/fd484df8/feed',ic:'💡'},
+    {t:'Vayanalokam Book Podcast',u:'https://podcasters.spotify.com/pod/show/c024b114/feed',ic:'📕'},
     {t:'Inner Dialogues',u:'https://www.spreaker.com/show/6300771/episodes/feed',ic:'💬'},
     {t:'Novel Sahithyamaala',u:'https://feeds.hubhopper.com/2b2c60f8a7b3a46d74d93fed80f15e97.rss',ic:'📖'},
-    {t:'kaecawdo Malayalam',u:'https://anchor.fm/s/e15dc64/podcast/rss',ic:'🎵'},
+    {t:'kaecawdo Malayalam',u:'https://podcasters.spotify.com/pod/show/e15dc64/feed',ic:'🎵'},
     {t:'MBIFL 2025 · Mathrubhumi',u:'https://www.spreaker.com/show/6579051/episodes/feed',ic:'📚'},
     {t:'Service Stories',u:'https://www.spreaker.com/show/6220052/episodes/feed',ic:'🤝'}
   ],
@@ -3134,7 +3158,7 @@ var PODCASTS={
     {t:'3 Things · Indian Express',u:'https://www.spreaker.com/show/5008053/episodes/feed',ic:'3️⃣'},
     {t:'Mint Lite Morning Shot',u:'https://feeds.megaphone.fm/HTMEDIALTD5734807184',ic:'💹'},
     {t:'Interpreting India',u:'https://feeds.simplecast.com/PJlAlBwi',ic:'🗺️'},
-    {t:'DH Radio · Deccan Herald',u:'https://anchor.fm/s/1b98ea5c/podcast/rss',ic:'📻'},
+    {t:'DH Radio · Deccan Herald',u:'https://podcasters.spotify.com/pod/show/1b98ea5c/feed',ic:'📻'},
     {t:'Echoes of India',u:'https://www.omnycontent.com/d/playlist/e0dce4b3-2eb8-48cb-822c-af1d00e03e20/e832d5d5-f1ba-41e9-9f30-af4d00b05e65/fffb4b33-5385-4548-9abc-af4d00b05e86/podcast.rss',ic:'🪘'},
     {t:'Yuddha · Military History',u:'https://www.omnycontent.com/d/playlist/e0dce4b3-2eb8-48cb-822c-af1d00e03e20/2f56b963-1462-43ff-9b91-af4800b6e3dc/7be079d1-e355-4a2b-9148-af4800b6e40b/podcast.rss',ic:'⚔️'}
   ],
@@ -3151,7 +3175,7 @@ var PODCASTS={
   ],
   History:[
     {t:'Dan Carlin\'s Hardcore History',u:'https://feeds.feedburner.com/dancarlin/history?format=xml',ic:'🏛️'},
-    {t:'Fall of Civilizations',u:'https://anchor.fm/s/101adcf44/podcast/rss',ic:'🌅'},
+    {t:'Fall of Civilizations',u:'https://podcasters.spotify.com/pod/show/101adcf44/feed',ic:'🌅'},
     {t:'Revolutions',u:'https://revolutionspodcast.libsyn.com/rss',ic:'⚡'},
     {t:'The Rest Is History',u:'https://feeds.megaphone.fm/GLT4787413333',ic:'🗿'},
     {t:'The Memory Palace',u:'http://feeds.thememorypalace.us/thememorypalace',ic:'🏺'},
@@ -3191,36 +3215,109 @@ var allPodcasts=[];Object.keys(PODCASTS).forEach(function(cat){PODCASTS[cat].for
 var shelfCache={};var currentCat='all';var currentPlayBtn=null;
 function getCatLabel(c){return{Malayalam:'🌿 Malayalam',German:'🇩🇪 German',India:'🇮🇳 India',World:'🌍 World',History:'📜 History',Science:'🔬 Science',Tech:'💻 Tech',Culture:'🎭 Culture'}[c]||c;}
 
+// ── FRESHNESS helpers ─────────────────────────────────────
+function podFreshnessGroup(pubDate,unavailable){
+  if(unavailable)return 'dead';
+  if(!pubDate)return 'loading';
+  var ageDays=Math.floor((Date.now()-new Date(pubDate))/86400000);
+  if(ageDays<7)return 'fresh';
+  if(ageDays<30)return 'recent';
+  if(ageDays<180)return 'slow';
+  return 'old';
+}
+function podAgeStr(pubDate){
+  if(!pubDate)return '';
+  var ageDays=Math.floor((Date.now()-new Date(pubDate))/86400000);
+  if(ageDays===0)return 'today';
+  if(ageDays===1)return 'yesterday';
+  if(ageDays<7)return ageDays+'d ago';
+  if(ageDays<30)return Math.floor(ageDays/7)+'wk ago';
+  if(ageDays<365)return Math.floor(ageDays/30)+'mo ago';
+  return Math.floor(ageDays/365)+'yr ago';
+}
+var FRESH_BADGE={
+  fresh:'<span class="freshness-badge fb-fresh">● FRESH</span>',
+  recent:'<span class="freshness-badge fb-recent">● RECENT</span>',
+  slow:'<span class="freshness-badge fb-slow">◔ SLOW</span>',
+  old:'<span class="freshness-badge fb-old">○ ARCHIVED</span>',
+  dead:'<span class="freshness-badge fb-dead">✕ UNAVAILABLE</span>',
+  loading:''
+};
+var GROUP_LABELS={
+  fresh:'⚡ Fresh — within this week',
+  recent:'📅 Recent — within this month',
+  slow:'🐢 Slow — older than a month',
+  old:'📦 Archived — months / years old',
+  dead:'⚠ Feed unavailable',
+  loading:'⟳ Loading…'
+};
+
 function renderShelf(cat){
   currentCat=cat;
   var list=cat==='all'?allPodcasts:(PODCASTS[cat]||[]);
-  var html='';
-  list.forEach(function(p,idx){
+
+  // Bucket by freshness group; within each bucket sort by recency
+  var groups={fresh:[],recent:[],slow:[],old:[],dead:[],loading:[]};
+  list.forEach(function(p,origIdx){
     var ck=shelfCache[p.u];
-    var epHtml,playHtml;
-    if(ck){
-      var age=ck.pubDate?Math.floor((Date.now()-new Date(ck.pubDate))/(3600*1000)):null;
-      var ageStr=age!==null?(age<24?age+'h ago':Math.floor(age/24)+'d ago'):'';
-      epHtml='<div class="shelf-ep">'+esc(ck.title)+'</div>'
-        +'<div class="shelf-date">'+esc(ck.date)+(ageStr?' · '+ageStr:'')+'</div>';
-      if(ck.audioUrl){
-        playHtml='<button class="play-btn ready" data-idx="'+idx+'" title="Play latest episode">▶</button>';
-      } else if(ck.link){
-        playHtml='<a class="play-btn" href="'+esc(ck.link)+'" target="_blank" rel="noopener" title="Open episode">⇗</a>';
-      } else {
-        playHtml='<button class="play-btn" data-idx="'+idx+'" title="Retry">↺</button>';
-      }
-    } else {
-      epHtml='<div class="shelf-ep loading">Loading…</div><div class="shelf-date"></div>';
-      playHtml='<button class="play-btn loading" data-idx="'+idx+'" title="Loading…">⟳</button>';
-    }
-    var badge=cat==='all'?'<span style="font-size:.46rem;background:var(--cream);padding:.08rem .3rem;color:var(--muted)">'+getCatLabel(p.cat)+'</span>':'';
-    html+='<div class="shelf-card"><div class="shelf-icon">'+p.ic+'</div>'
-      +'<div class="shelf-title">'+esc(p.t)+'</div>'
-      +epHtml
-      +'<div class="shelf-meta">'+badge+'</div>'
-      +playHtml+'</div>';
+    var grp;
+    if(!ck){grp='loading';}
+    else if(ck.unavailable){grp='dead';}
+    else{grp=podFreshnessGroup(ck.pubDate,false);}
+    groups[grp].push({p:p,ck:ck,origIdx:origIdx});
   });
+  // Sort each bucket freshest first
+  ['fresh','recent','slow','old'].forEach(function(g){
+    groups[g].sort(function(a,b){
+      var da=a.ck&&a.ck.pubDate?new Date(a.ck.pubDate):new Date(0);
+      var db=b.ck&&b.ck.pubDate?new Date(b.ck.pubDate):new Date(0);
+      return db-da;
+    });
+  });
+
+  var ORDER=['loading','fresh','recent','slow','old','dead'];
+  var html='';
+  ORDER.forEach(function(grp){
+    var bucket=groups[grp];
+    if(!bucket.length)return;
+    // Group header
+    html+='<div class="shelf-group-hd">'+GROUP_LABELS[grp]
+      +'<span class="ghd-count">'+bucket.length+'</span></div>';
+    bucket.forEach(function(entry){
+      var p=entry.p,ck=entry.ck,idx=entry.origIdx;
+      var epHtml,playHtml,badge='';
+      if(!ck){
+        epHtml='<div class="shelf-ep loading">Loading…</div><div class="shelf-date"></div>';
+        playHtml='<button class="play-btn loading" data-idx="'+idx+'" title="Loading…">⟳</button>';
+      } else if(ck.unavailable){
+        epHtml='<div class="shelf-ep" style="color:#c44">Feed unavailable</div>'
+          +'<div class="shelf-date">Check the show\'s website</div>';
+        playHtml='<a class="play-btn" href="https://www.google.com/search?q='+encodeURIComponent(p.t+' podcast')+'" target="_blank" rel="noopener" title="Search online">🔍</a>';
+        badge=FRESH_BADGE.dead;
+      } else {
+        var ageStr=podAgeStr(ck.pubDate);
+        badge=FRESH_BADGE[podFreshnessGroup(ck.pubDate,false)]||'';
+        epHtml='<div class="shelf-ep">'+esc(ck.title)+'</div>'
+          +'<div class="shelf-date">'+esc(ck.date)+(ageStr?' · '+ageStr:'')+'</div>';
+        if(ck.audioUrl){
+          playHtml='<button class="play-btn ready" data-idx="'+idx+'" title="Play latest episode">▶</button>';
+        } else if(ck.link){
+          playHtml='<a class="play-btn" href="'+esc(ck.link)+'" target="_blank" rel="noopener" title="Open episode">⇗</a>';
+        } else {
+          playHtml='<button class="play-btn" data-idx="'+idx+'" title="Retry">↺</button>';
+        }
+      }
+      var catBadge=cat==='all'?'<span style="font-size:.42rem;background:var(--cream);padding:.05rem .25rem;color:var(--muted);display:inline-block">'+getCatLabel(p.cat)+'</span>':'';
+      var cardClass='shelf-card'+(grp==='dead'?' dead':grp==='slow'||grp==='old'?' stale':'');
+      html+='<div class="'+cardClass+'">'
+        +'<div class="shelf-icon">'+p.ic+'</div>'
+        +'<div class="shelf-title">'+esc(p.t)+'</div>'
+        +epHtml
+        +'<div class="shelf-meta">'+catBadge+badge+'</div>'
+        +playHtml+'</div>';
+    });
+  });
+
   document.getElementById('shelfGrid').innerHTML=html||'<div style="padding:2rem;color:var(--muted);font-size:.8rem">No podcasts</div>';
 
   document.querySelectorAll('#shelfGrid .play-btn[data-idx]').forEach(function(btn){
@@ -3233,12 +3330,10 @@ function renderShelf(cat){
       if(ck&&ck.audioUrl){
         doPlay(p.t,ck.title,ck.audioUrl,btn);
       } else {
-        // Fetch fresh and play immediately when arrives
         btn.textContent='⟳';btn.disabled=true;
         fetchRSS(p.u).then(function(items){
           var it=items&&items[0];
           if(it){
-            var age=it.pubDate?Math.floor((Date.now()-new Date(it.pubDate))/(3600*1000)):null;
             shelfCache[p.u]={title:it.title.slice(0,55),date:fmtD(it.pubDate),pubDate:it.pubDate||'',audioUrl:it.enclosure||null,link:it.link||''};
             renderShelf(currentCat);
             if(it.enclosure){doPlay(p.t,it.title,it.enclosure,null);}
@@ -3251,11 +3346,9 @@ function renderShelf(cat){
 }
 
 function loadPodcastPage(){
-  // Always wipe stale shelf cache — fetch fresh episodes every visit
   shelfCache={};
   renderShelf('all');
 
-  // Fetch all feeds in parallel — update shelf as each resolves
   var list=allPodcasts;
   var done=0;
   list.forEach(function(p){
@@ -3263,19 +3356,22 @@ function loadPodcastPage(){
       var it=items&&items[0];
       if(it){
         shelfCache[p.u]={
-          title:it.title.slice(0,55),
+          title:it.title.slice(0,58),
           date:fmtD(it.pubDate),
           pubDate:it.pubDate||'',
           audioUrl:it.enclosure||null,
-          link:it.link||''
+          link:it.link||'',
+          unavailable:false
         };
+      } else {
+        shelfCache[p.u]={title:'No episodes found',date:'',pubDate:'',audioUrl:null,link:'',unavailable:false};
       }
     }).catch(function(){
-      shelfCache[p.u]={title:'Feed unavailable',date:'',pubDate:'',audioUrl:null,link:''};
+      shelfCache[p.u]={title:'',date:'',pubDate:'',audioUrl:null,link:'',unavailable:true};
     }).then(function(){
       done++;
-      // Re-render incrementally every 5 fetches, and once at the end
-      if(done%5===0||done===list.length)renderShelf(currentCat);
+      // Re-render every 4 completions so grouping updates smoothly
+      if(done%4===0||done===list.length)renderShelf(currentCat);
     });
   });
 
