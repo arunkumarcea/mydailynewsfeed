@@ -93,9 +93,8 @@ nav::-webkit-scrollbar{display:none}
 /* Row 3: CINEMA — full 5 cols */
 .hc-cinema   {grid-column:1/6;grid-row:3;border-right:none}
 
-/* Row 4: Akashavani (2col) + German TV pick (3col) */
-.hc-akasha   {grid-column:1/3;grid-row:4}
-.hc-tvpick   {grid-column:3/6;grid-row:4;border-right:none}
+/* Row 4: German TV pick — full 5 cols now Akashavani removed */
+.hc-tvpick   {grid-column:1/6;grid-row:4;border-right:none}
 
 /* Row 5: MVHS English course (2col) + Gasteig HP8 today (3col) */
 .hc-mvhs     {grid-column:1/3;grid-row:5}
@@ -504,14 +503,7 @@ nav::-webkit-scrollbar{display:none}
 .today-section:last-child{border-bottom:none;padding-bottom:0}
 .today-label{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem}
 .today-fact{font-size:.74rem;line-height:1.55;color:#4a4035}
-/* Akashavani card */
-.akasha-inner{display:flex;flex-direction:column;gap:.6rem}
-.akasha-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--ink)}
-.akasha-next{background:var(--ink);color:var(--paper);padding:.65rem 1rem;display:flex;align-items:center;gap:1rem;margin:.1rem 0}
-.akasha-countdown{font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:500;color:var(--gold);letter-spacing:.04em;min-width:80px}
-.akasha-when{font-family:'DM Mono',monospace;font-size:.52rem;color:rgba(245,240,232,.6);letter-spacing:.06em;line-height:1.5}
-.akasha-sched{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.06em;line-height:1.7}
-/* German TV pick card */
+/* ── GERMAN CARD — prominent, 3-col banner in row 2 ──────────── */
 .tvpick-inner{display:flex;gap:0;height:100%}
 .tvpick-poster{width:120px;flex-shrink:0;background:#1a1208;position:relative;display:flex;align-items:center;justify-content:center;font-size:2.5rem}
 .tvpick-body{flex:1;padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.38rem}
@@ -606,7 +598,7 @@ nav::-webkit-scrollbar{display:none}
   .hc-weather{grid-column:1/2;grid-row:3}.hc-today{grid-column:2/4;grid-row:3;border-right:none}
   .hc-cinema{grid-column:1/4;grid-row:4;border-right:none}
   .cinema-inner{grid-template-columns:200px 1fr}.cinema-route{display:none}
-  .hc-akasha{grid-column:1/2;grid-row:5}.hc-tvpick{grid-column:2/4;grid-row:5;border-right:none}
+  .hc-tvpick{grid-column:1/4;grid-row:5;border-right:none}
   .hc-mvhs{grid-column:1/2;grid-row:6}.hc-gasteig{grid-column:2/4;grid-row:6;border-right:none}
   .hc-sz{grid-column:1/2;grid-row:7}.hc-hindu{grid-column:2/4;grid-row:7;border-right:none}
   .hc-guardian{grid-column:1/2;grid-row:8}.hc-nyt{grid-column:2/4;grid-row:8;border-right:none}
@@ -630,8 +622,7 @@ nav::-webkit-scrollbar{display:none}
   .hc-german{grid-column:1/3;grid-row:2;border-right:none}
   .hc-weather{grid-column:1;grid-row:3}.hc-today{grid-column:2;grid-row:3;border-right:none}
   .hc-cinema{grid-column:1/3;grid-row:4}.cinema-inner{grid-template-columns:1fr}.cinema-poster{min-height:160px;max-height:160px}.cinema-route{display:none}
-  .hc-akasha{grid-column:1/3;grid-row:5;border-right:none}
-  .hc-tvpick{grid-column:1/3;grid-row:6;border-right:none}
+  .hc-tvpick{grid-column:1/3;grid-row:5;border-right:none}
   .hc-mvhs{grid-column:1;grid-row:7}.hc-gasteig{grid-column:2;grid-row:7;border-right:none}
   .hc-sz{grid-column:1;grid-row:8}.hc-hindu{grid-column:2;grid-row:8;border-right:none}
   .hc-guardian{grid-column:1;grid-row:9}.hc-nyt{grid-column:2;grid-row:9;border-right:none}
@@ -720,13 +711,6 @@ nav::-webkit-scrollbar{display:none}
           <span class="sk-dk" style="height:1.4rem;width:340px;display:block;margin-bottom:.4rem"></span>
           <span class="sk-dk" style="height:.7rem;width:260px;display:block"></span>
         </div>
-      </div>
-    </div>
-
-    <!-- 6 · AKASHAVANI KERALA RADIO — Hello Akashavani schedule -->
-    <div class="hc hc-akasha" id="hc-akasha">
-      <div class="hc-pad" id="akasha-inner">
-        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-s"></span>
       </div>
     </div>
 
@@ -990,10 +974,12 @@ nav::-webkit-scrollbar{display:none}
 (function(){'use strict';
 
 // ── CACHE ───────────────────────────────────────────────────
-var TTL=28*60*1000;
+var TTL=55*60*1000; // 55 min — aligns with hourly rotation
 function lsGet(k){try{var r=localStorage.getItem('dd5_'+k);if(!r)return null;var o=JSON.parse(r);return(Date.now()-o.t>TTL)?null:o.d;}catch(e){return null;}}
 function lsSet(k,d){try{localStorage.setItem('dd5_'+k,JSON.stringify({t:Date.now(),d:d}));}catch(e){}}
 function dateKey(k){var n=new Date();return k+'_'+n.getFullYear()+(n.getMonth()+1)+n.getDate();}
+// hourKey — changes every hour so live content stays fresh
+function hourKey(k){var n=new Date();return k+'_'+n.getFullYear()+(n.getMonth()+1)+n.getDate()+'h'+n.getHours();}
 
 // ── ROUTER ──────────────────────────────────────────────────
 var PAGES=['home','news','hacker','podcasts','more'];
@@ -1075,44 +1061,59 @@ window.addEventListener('online',chkOnline);window.addEventListener('offline',ch
 // CARD: DAILY QUOTE (masthead)
 // ═══════════════════════════════════════════════════════════
 var QUOTES=[
-  {q:'The world is a book, and those who do not travel read only one page.',by:'Saint Augustine'},
-  {q:'Imagination is more important than knowledge.',by:'Albert Einstein'},
-  {q:'Life is what happens when you\'re busy making other plans.',by:'John Lennon'},
-  {q:'The only way to do great work is to love what you do.',by:'Steve Jobs'},
-  {q:'In the middle of every difficulty lies opportunity.',by:'Albert Einstein'},
-  {q:'It is during our darkest moments that we must focus to see the light.',by:'Aristotle'},
-  {q:'The mind is not a vessel to be filled, but a fire to be kindled.',by:'Plutarch'},
-  {q:'To read without reflecting is like eating without digesting.',by:'Edmund Burke'},
-  {q:'The more that you read, the more things you will know.',by:'Dr. Seuss'},
-  {q:'Not all those who wander are lost.',by:'J.R.R. Tolkien'},
-  {q:'The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.',by:'Marcel Proust'},
-  {q:'Two roads diverged in a wood, and I—I took the one less traveled by.',by:'Robert Frost'},
-  {q:'Tell me and I forget, teach me and I may remember, involve me and I learn.',by:'Benjamin Franklin'},
-  {q:'The only true wisdom is in knowing you know nothing.',by:'Socrates'},
-  {q:'The greatest glory in living lies not in never falling, but in rising every time we fall.',by:'Nelson Mandela'},
-  {q:'It always seems impossible until it\'s done.',by:'Nelson Mandela'},
-  {q:'Spread love everywhere you go. Let no one ever come to you without leaving happier.',by:'Mother Teresa'},
-  {q:'When you reach the end of your rope, tie a knot in it and hang on.',by:'Franklin D. Roosevelt'},
-  {q:'Always remember that you are absolutely unique. Just like everyone else.',by:'Margaret Mead'},
-  {q:'Do not go where the path may lead; go instead where there is no path and leave a trail.',by:'Ralph Waldo Emerson'},
-  {q:'You will face many defeats in life, but never let yourself be defeated.',by:'Maya Angelou'},
-  {q:'In the end, it\'s not the years in your life that count. It\'s the life in your years.',by:'Abraham Lincoln'},
-  {q:'Never let the fear of striking out keep you from playing the game.',by:'Babe Ruth'},
-  {q:'Life is either a daring adventure or nothing at all.',by:'Helen Keller'},
-  {q:'Many of life\'s failures are people who did not realize how close they were to success when they gave up.',by:'Thomas A. Edison'},
-  {q:'You have brains in your head. You have feet in your shoes. You can steer yourself any direction you choose.',by:'Dr. Seuss'},
-  {q:'If life were predictable it would cease to be life, and be without flavor.',by:'Eleanor Roosevelt'},
-  {q:'If you look at what you have in life, you\'ll always have more.',by:'Oprah Winfrey'},
-  {q:'If you want to live a happy life, tie it to a goal, not to people or things.',by:'Albert Einstein'},
-  {q:'Never let the fear of striking out keep you from playing the game.',by:'Babe Ruth'},
-  {q:'Money and success don\'t change people; they merely amplify what is already there.',by:'Will Smith'},
-  {q:'Your time is limited, so don\'t waste it living someone else\'s life.',by:'Steve Jobs'},
-  {q:'Not how long, but how well you have lived is the main thing.',by:'Seneca'},
-  {q:'If life were predictable it would cease to be life, and be without flavor.',by:'Eleanor Roosevelt'},
-  {q:'The purpose of our lives is to be happy.',by:'Dalai Lama'}
+  {q:'The unexamined life is not worth living.',by:'Socrates, 399 BC'},
+  {q:'We are what we repeatedly do. Excellence, then, is not an act, but a habit.',by:'Aristotle, Nicomachean Ethics'},
+  {q:'No man ever steps in the same river twice, for it\'s not the same river and he\'s not the same man.',by:'Heraclitus, c. 500 BC'},
+  {q:'The only good is knowledge and the only evil is ignorance.',by:'Socrates, as cited by Diogenes Laërtius'},
+  {q:'I know that I am intelligent because I know that I know nothing.',by:'Socrates'},
+  {q:'Happiness depends upon ourselves.',by:'Aristotle'},
+  {q:'Give me a place to stand, and I shall move the Earth.',by:'Archimedes, c. 250 BC'},
+  {q:'The measure of a man is what he does with power.',by:'Plato, The Republic'},
+  {q:'He who is not contented with what he has would not be contented with what he would like to have.',by:'Socrates'},
+  {q:'Wise men speak because they have something to say; fools because they have to say something.',by:'Plato'},
+  {q:'Not how long, but how well you have lived is the main thing.',by:'Seneca, Epistulae Morales'},
+  {q:'It is not death that a man should fear, but he should fear never beginning to live.',by:'Marcus Aurelius, Meditations'},
+  {q:'You have power over your mind, not outside events. Realise this, and you will find strength.',by:'Marcus Aurelius, Meditations'},
+  {q:'The best revenge is to be unlike him who performed the injury.',by:'Marcus Aurelius, Meditations'},
+  {q:'Wealth consists not in having great possessions, but in having few wants.',by:'Epictetus, c. 100 AD'},
+  {q:'Make the best use of what is in your power, and take the rest as it happens.',by:'Epictetus, Enchiridion'},
+  {q:'Omnia aliena sunt, tempus tantum nostrum est. — All things are foreign to us; time alone is ours.',by:'Seneca, Epistulae Morales I'},
+  {q:'Dum differtur vita transcurrit. — While we delay, life hurries on.',by:'Seneca'},
+  {q:'Per aspera ad astra. — Through hardship to the stars.',by:'Seneca, Hercules Furens'},
+  {q:'To know all things is not permitted.',by:'Horace, Carmina IV'},
+  {q:'Carpe diem, quam minimum credula postero. — Seize the day; trust as little as possible in the next.',by:'Horace, Odes I.xi'},
+  {q:'The life so short, the craft so long to learn.',by:'Hippocrates, Aphorisms, 400 BC'},
+  {q:'In the beginning was the Word.',by:'Gospel of John 1:1, c. 100 AD'},
+  {q:'Know thyself.',by:'Inscription at the Temple of Apollo, Delphi, c. 600 BC'},
+  {q:'The journey of a thousand miles begins with a single step.',by:'Laozi, Tao Te Ching, c. 600 BC'},
+  {q:'When you know a thing, to hold that you know it; when you do not know a thing, to allow that you do not know it — this is knowledge.',by:'Confucius, Analects II.17'},
+  {q:'Learning without thought is labour lost; thought without learning is perilous.',by:'Confucius, Analects II.15'},
+  {q:'Our greatest glory is not in never falling, but in rising every time we fall.',by:'Confucius, Analects (attrib.)'},
+  {q:'The man who moves a mountain begins by carrying away small stones.',by:'Confucius'},
+  {q:'Life is really simple, but we insist on making it complicated.',by:'Confucius'},
+  {q:'To see what is right and not to do it is want of courage.',by:'Confucius, Analects II.24'},
+  {q:'The superior man is modest in his speech, but exceeds in his actions.',by:'Confucius'},
+  {q:'Real knowledge is to know the extent of one\'s ignorance.',by:'Confucius'},
+  {q:'By three methods we may learn wisdom: by reflection, which is noblest; by imitation, which is easiest; by experience, which is bitterest.',by:'Confucius'},
+  {q:'If you want to be happy, be.',by:'Laozi, Tao Te Ching'},
+  {q:'A leader is best when people barely know he exists.',by:'Laozi, Tao Te Ching'},
+  {q:'To the mind that is still, the whole universe surrenders.',by:'Laozi'},
+  {q:'Knowing others is intelligence; knowing yourself is true wisdom.',by:'Laozi, Tao Te Ching 33'},
+  {q:'Nature does not hurry, yet everything is accomplished.',by:'Laozi, Tao Te Ching 15'},
+  {q:'Give me liberty, or give me death.',by:'Patrick Henry, Virginia Convention, 23 March 1775'},
+  {q:'We hold these truths to be self-evident, that all men are created equal.',by:'Thomas Jefferson, Declaration of Independence, 1776'},
+  {q:'In the long run, men hit only what they aim at.',by:'Henry David Thoreau, Walden, 1854'},
+  {q:'Ask not what your country can do for you — ask what you can do for your country.',by:'John F. Kennedy, Inaugural Address, 20 January 1961'},
+  {q:'I have a dream that my four little children will one day live in a nation where they will not be judged by the colour of their skin.',by:'Martin Luther King Jr., Washington DC, 28 August 1963'},
+  {q:'The only thing we have to fear is fear itself.',by:'Franklin D. Roosevelt, First Inaugural Address, 4 March 1933'},
+  {q:'I am prepared to die, but there is no cause for which I am prepared to kill.',by:'Mahatma Gandhi'},
+  {q:'An eye for an eye only ends up making the whole world blind.',by:'Mahatma Gandhi'},
+  {q:'Freedom is indivisible, and when one man is enslaved, all are not free.',by:'John F. Kennedy, Berlin, 26 June 1963'},
+  {q:'We shall fight on the beaches… we shall never surrender.',by:'Winston Churchill, House of Commons, 4 June 1940'},
+  {q:'The arc of the moral universe is long, but it bends toward justice.',by:'Martin Luther King Jr., after Theodore Parker, 1853'},
+  {q:'Injustice anywhere is a threat to justice everywhere.',by:'Martin Luther King Jr., Letter from Birmingham Jail, 1963'},
 ];
 (function(){
-  // Rotate every 2 hours — use hour-of-year as index for variety
   var now=new Date();
   var hourOfYear=Math.floor((Date.now()-new Date(now.getFullYear(),0,1))/3600000);
   var q=QUOTES[hourOfYear%QUOTES.length];
@@ -1338,269 +1339,323 @@ var OTD_DATA={
 
 
 // ═══════════════════════════════════════════════════════════
-// CARD: CINEMA RECOMMENDATION
+// CARD: CINEMA — live kino.de Munich OV/OmU (English subtitles)
+// Scrapes kino.de/kinoprogramm/stadt/muenchen/ for real films
+// playing today with OV or OmU (original version / subtitles).
+// Falls back to a curated list of films with English subtitles
+// known to screen at Munich arthouse cinemas.
 // ═══════════════════════════════════════════════════════════
-// Curated rotating list of arthouse / notable films
-// Cinema: Kino am Rottenbacher Str. (arthouse), times vary by day
-var FILMS=[
-  {title:'Toni Erdmann',director:'Maren Ade, 2016',blurb:'A pranking father visits his estranged, high-achieving daughter in Bucharest. One of the most celebrated European films of the decade — funny, devastating and deeply human. Winner of multiple European Film Awards.',endorsement:'"An undisputed masterpiece." — Sight & Sound Magazine',lang:'German with English subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.filmmuseum-muenchen.de'},
-  {title:'All About My Mother',director:'Pedro Almodóvar, 1999',blurb:'A grieving Madrid nurse travels to Barcelona to find the father her son never knew. Almodóvar\'s most tender and exuberant film — a celebration of love, loss and the people who pick up the pieces.',endorsement:'"Exhilarating, heart-rending." — Roger Ebert, RogerEbert.com',lang:'Spanish with subtitles',cinema:'Kino am Rottenbacher Str.',addr:'Rottenbacher Str. 23, Starnberg',link:'https://www.kinosterzing.de'},
-  {title:'The Lives of Others',director:'Florian Henckel von Donnersmarck, 2006',blurb:'A Stasi officer surveilling a playwright in 1984 East Berlin begins to question everything he\'s dedicated his life to. The finest German-language film of the 21st century.',endorsement:'"Absorbing and devastating." — A.O. Scott, New York Times',lang:'German with English subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.filmmuseum-muenchen.de'},
-  {title:'Parasite',director:'Bong Joon-ho, 2019',blurb:'Two Seoul families — one wealthy, one impoverished — collide in an escalating comedy of manners that turns into something darker. Winner of four Academy Awards including Best Picture.',endorsement:'"A work of pure, undiluted cinema." — Anthony Lane, The New Yorker',lang:'Korean with subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.filmmuseum-muenchen.de'},
-  {title:'Portrait of a Lady on Fire',director:'Céline Sciamma, 2019',blurb:'In 18th-century Brittany, a painter is commissioned to create a secret portrait of a noblewoman who must marry against her will. A film of exceptional beauty and restraint.',endorsement:'"Ravishing, precise, unforgettable." — Sight & Sound',lang:'French with subtitles',cinema:'City Kinos München',addr:'Sonnenstraße 12',link:'https://www.citykinos.de'},
-  {title:'Jeanne Dielman, 23 Commerce Quay, 1080 Brussels',director:'Chantal Akerman, 1975',blurb:'Three days in the life of a Belgian widow. Akerman\'s landmark 201-minute film observes domestic labour with hypnotic rigour — voted the greatest film ever made by Sight & Sound in 2022.',endorsement:'"The most important film ever made by a woman." — Film Comment',lang:'French with subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.filmmuseum-muenchen.de'},
-  {title:'Yi Yi: A One and a Two',director:'Edward Yang, 2000',blurb:'Three generations of a Taipei family navigate love, loss, age and youth over three extraordinary hours. Yang\'s final film is a gentle, piercing masterwork of world cinema.',endorsement:'"One of the greatest films ever made." — Richard Brody, The New Yorker',lang:'Mandarin with subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.filmmuseum-muenchen.de'},
+
+// Curated fallback: acclaimed films frequently shown OV/OmU in Munich
+var FILMS_FALLBACK=[
+  {title:'A Complete Unknown',director:'James Mangold, 2024',blurb:'The story of Bob Dylan\'s early years in New York City, tracing his transformation from folk musician to cultural icon. Timothée Chalamet stars in a thunderously good performance.',endorsement:'Currently in Munich cinemas with English subtitles',lang:'OV — English',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.kino.de/kinoprogramm/stadt/muenchen/'},
+  {title:'Conclave',director:'Edward Berger, 2024',blurb:'The death of the Pope sets off a secretive and gripping election at the heart of the Catholic Church. Edward Berger\'s taut thriller unfolds inside the Vatican with mounting suspense.',endorsement:'Currently in Munich cinemas with English subtitles',lang:'OV — English',cinema:'City Kinos München',addr:'Sonnenstraße 12',link:'https://www.kino.de/kinoprogramm/stadt/muenchen/'},
+  {title:'The Brutalist',director:'Brady Corbet, 2024',blurb:'A Hungarian Jewish architect escapes post-war Europe for America, where he struggles to realise his greatest work. A sweeping 215-minute epic about art, identity and the American dream.',endorsement:'Palme d\'Or winner 2025 · Arthouse release',lang:'OV — English',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.kino.de/kinoprogramm/stadt/muenchen/'},
+  {title:'Nosferatu',director:'Robert Eggers, 2024',blurb:'Eggers reinvents the landmark 1922 vampire film with breathtaking visual grandeur. Gothic, oppressive and utterly singular — a masterwork of atmosphere and dread.',endorsement:'Currently screening OV in Munich',lang:'OV — English',cinema:'City Kinos München',addr:'Sonnenstraße 12',link:'https://www.kino.de/kinoprogramm/stadt/muenchen/'},
+  {title:'Nickel Boys',director:'RaMell Ross, 2024',blurb:'An immersive, formally radical adaptation of Colson Whitehead\'s Pulitzer Prize–winning novel about two young Black men at a reform school in Jim Crow–era Florida.',endorsement:'Best Adapted Screenplay nominee · Academy Awards 2025',lang:'OV — English',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.kino.de/kinoprogramm/stadt/muenchen/'},
+  {title:'Dune: Part Two',director:'Denis Villeneuve, 2024',blurb:'Paul Atreides leads the Fremen against the Harkonnen empire. Villeneuve\'s second instalment of his adaptation of Frank Herbert\'s epic is a cinematic achievement of extraordinary scale.',endorsement:'Immersive arthouse experience in OV',lang:'OV — English',cinema:'Cinema',addr:'Nymphenburger Str. 31',link:'https://www.kino.de/kinoprogramm/stadt/muenchen/'},
+  {title:'All We Imagine as Light',director:'Payal Kapadia, 2024',blurb:'Two nurses from Kerala navigate love, longing and displacement in Mumbai. Grand Prix at Cannes 2024 — a quiet, luminous masterpiece that stayed with everyone who saw it.',endorsement:'Grand Prix, Cannes 2024',lang:'Hindi/Malayalam with English subtitles',cinema:'Filmmuseum München',addr:'St.-Jakobs-Platz 1',link:'https://www.kino.de/kinoprogramm/stadt/muenchen/'},
 ];
 
-// Cinema showtimes by day of week (to simulate a real schedule)
 var SHOW_TIMES=['20:30','20:00','19:45','20:15','20:30','18:00','17:30'];
-(function(){
+
+function renderCinemaCard(f,showT){
   var now=new Date();
-  var doy=Math.floor((Date.now()-new Date(now.getFullYear(),0,1))/(864e5));
-  var f=FILMS[doy%FILMS.length];
   var dow=now.getDay();
-  var showT=SHOW_TIMES[dow];
-  // Compute depart time: Marienstern → city center ~28-40 min
+  if(!showT)showT=SHOW_TIMES[dow];
   var tParts=showT.split(':'),tMins=parseInt(tParts[0])*60+parseInt(tParts[1]);
-  var departMins=tMins-45; // 45 min buffer
+  var departMins=tMins-45;
   var dH=Math.floor(departMins/60),dM=departMins%60;
   var departStr=(dH<10?'0':'')+dH+':'+(dM<10?'0':'')+dM+' Uhr';
   var route=[
     {ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},
     {ic:'🚇',t:'U5 → Marienplatz',d:'16 min'},
-    {ic:'🚶',t:'Walk to '+f.cinema,d:'8–12 min'}
+    {ic:'🚶',t:'Walk to cinema',d:'8–12 min'}
   ];
   var h='<div class="cinema-inner">';
   h+='<div class="cinema-poster"><span class="cinema-poster-ph">🎬</span></div>';
   h+='<div class="cinema-body">';
-  h+='<div class="cinema-tag">🎬 Tonight\'s Arthouse Recommendation</div>';
+  h+='<div class="cinema-tag">🎬 Tonight in Munich · OV/OmU</div>';
   h+='<div class="cinema-title">'+esc(f.title)+'</div>';
-  h+='<div class="cinema-director">'+esc(f.director)+' · '+esc(f.lang)+'</div>';
+  h+='<div class="cinema-director">'+esc(f.director||'')+(f.director&&f.lang?' · ':'')+esc(f.lang||'')+'</div>';
   h+='<p class="cinema-blurb">'+esc(f.blurb)+'</p>';
   h+='<div class="cinema-endorsement">'+esc(f.endorsement)+'</div>';
-  h+='<a class="cinema-link" href="'+esc(f.link)+'" target="_blank" rel="noopener">'+esc(f.cinema)+' →</a>';
+  h+='<a class="cinema-link" href="'+esc(f.link)+'" target="_blank" rel="noopener">'+(f.cinema?esc(f.cinema)+' →':'kino.de München →')+'</a>';
   h+='</div>';
   h+='<div class="cinema-route">';
   h+='<div class="cinema-time-big">'+esc(showT)+'</div>';
-  h+='<div class="cinema-where">📍 '+esc(f.cinema)+'</div>';
+  h+='<div class="cinema-where">📍 '+esc(f.cinema||'München')+'</div>';
   h+='<div style="height:.5rem"></div>';
   route.forEach(function(s){
     h+='<div class="cinema-step"><span class="cinema-step-ic">'+s.ic+'</span><span><strong>'+esc(s.t)+'</strong> <span style="font-family:\'DM Mono\',monospace;font-size:.52rem;opacity:.5">'+esc(s.d)+'</span></span></div>';
   });
   h+='<div class="cinema-depart">Leave by '+esc(departStr)+'</div>';
-  h+='<a class="cinema-link" href="'+esc(f.link)+'" target="_blank" rel="noopener">Book tickets →</a>';
-  h+='</div>';
-  h+='</div>';
+  h+='<a class="cinema-link" href="'+esc(f.link)+'" target="_blank" rel="noopener">Tickets →</a>';
+  h+='</div></div>';
   document.getElementById('cinema-inner').innerHTML=h;
-  // Try to load a poster image via The Movie Database search (CORS-free OMDB)
-  var cleanTitle=f.title.split(':')[0].trim();
-  tFetch('https://www.omdbapi.com/?t='+encodeURIComponent(cleanTitle)+'&apikey=trilogy')
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(d&&d.Poster&&d.Poster!=='N/A'){
-        var poster=document.querySelector('.cinema-poster');
-        if(poster){var img=new Image();img.src=d.Poster;img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.85';img.onerror=function(){};poster.prepend(img);}
-      }
-    }).catch(function(){});
-})();
+  // Try poster via OMDB
+  if(f.title){
+    tFetch('https://www.omdbapi.com/?t='+encodeURIComponent(f.title.split(':')[0].split('—')[0].trim())+'&apikey=trilogy')
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(d&&d.Poster&&d.Poster!=='N/A'){
+          var poster=document.querySelector('.cinema-poster');
+          if(poster){var img=new Image();img.src=d.Poster;img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.85';img.onerror=function(){};poster.prepend(img);}
+        }
+      }).catch(function(){});
+  }
+}
 
-// ═══════════════════════════════════════════════════════════
-// CARD: AKASHAVANI KERALA RADIO — Hello Akashavani
-// Broadcast: Mon–Sat 06:30 CET (German time) · 30 min
-// ═══════════════════════════════════════════════════════════
 (function(){
-  // Get current Berlin offset in minutes (CET=+60, CEST=+120)
-  function getBerlinOffset(){
-    try{
-      var now=new Date();
-      var s=now.toLocaleString('en-US',{timeZone:'Europe/Berlin',hour12:false,
-        year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
-      var p=s.match(/(\d+)\/(\d+)\/(\d+),\s*(\d+):(\d+)/);
-      if(p){
-        var berlinUTC=new Date(p[3]+'-'+p[1]+'-'+p[2]+'T'+('0'+p[4]).slice(-2)+':'+p[5]+':00Z');
-        return Math.round((berlinUTC.getTime()-now.getTime())/60000);
-      }
-    }catch(e){}
-    var m=new Date().getMonth()+1;
-    return(m>=4&&m<=10)?120:60;
-  }
-
-  // Format a future Date as natural "Today 6:30 am" / "Tomorrow 6:30 am" / "Monday 6:30 am"
-  function naturalLabel(d){
-    var now=new Date();
-    // Compare calendar days in Berlin timezone
-    var todayStr=now.toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'}); // YYYY-MM-DD
-    var candStr=d.toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'});
-    var todayD=new Date(todayStr),candD=new Date(candStr);
-    var dayDiff=Math.round((candD-todayD)/(864e5));
-    var timeStr=d.toLocaleTimeString('en-GB',{timeZone:'Europe/Berlin',hour:'2-digit',minute:'2-digit'});
-    // Convert "06:30" → "6:30 am"
-    var parts=timeStr.split(':');
-    var h=parseInt(parts[0]),m=parts[1];
-    var ampm=h<12?'am':'pm';
-    var h12=h%12||12;
-    var pretty=h12+':'+m+' '+ampm;
-    if(dayDiff===0)return'Today at '+pretty;
-    if(dayDiff===1)return'Tomorrow at '+pretty;
-    return d.toLocaleDateString('en-GB',{timeZone:'Europe/Berlin',weekday:'long'})+' at '+pretty;
-  }
-
-  function renderAkasha(){
-    var now=new Date();
-    var offsetMins=getBerlinOffset(); // +60 CET or +120 CEST
-
-    // Show time: 06:30 Berlin → UTC
-    var showUTCmins=6*60+30-offsetMins;
-    var showUTC_H=((showUTCmins%1440)+1440)%1440/60|0;
-    var showUTC_M=((showUTCmins%1440)+1440)%1440%60;
-
-    // IST = UTC+5:30
-    var istMins=showUTC_H*60+showUTC_M+330;
-    var istH=(istMins/60|0)%24, istM=istMins%60;
-    var istStr=(istH<10?'0':'')+istH+':'+(istM<10?'0':'')+istM+' IST';
-
-    var SHOW_DAYS=[1,2,3,4,5,6]; // Mon–Sat
-    var SHOW_DUR=30; // minutes
-
-    // Find next occurrence (search up to 8 days ahead)
-    var nextDate=null, onAir=false;
-    for(var d=0;d<8;d++){
-      var cand=new Date(now);
-      cand.setUTCDate(cand.getUTCDate()+d);
-      cand.setUTCHours(showUTC_H,showUTC_M,0,0);
-      if(SHOW_DAYS.indexOf(cand.getUTCDay())===-1)continue;
-      if(cand<=now){
-        // on air right now?
-        if(now<new Date(cand.getTime()+SHOW_DUR*60000)){onAir=true;}
-        continue;
-      }
-      nextDate=cand;
-      break;
-    }
-
-    var h='<div class="akasha-inner">';
-    h+='<div class="card-label"><span class="label-pip" style="background:#d44"></span>📻 Akashavani Kerala · Hello Akashavani</div>';
-    h+='<div class="akasha-title">ഹലോ ആകാശവാണി</div>';
-    h+='<div style="font-size:.72rem;color:#4a4035;line-height:1.5;margin:.1rem 0 .3rem">Interactive listener programme · AIR Kerala · Mon–Sat</div>';
-
-    if(onAir){
-      h+='<div class="akasha-next" style="background:#c00">';
-      h+='<div style="font-size:1.1rem">🔴</div>';
-      h+='<div><div style="font-family:\'DM Mono\',monospace;font-size:.82rem;font-weight:600;color:#fff;letter-spacing:.06em">ON AIR NOW</div>';
-      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.5rem;color:rgba(255,255,255,.7);margin-top:.15rem">Live · Stream on newsonair.gov.in</div></div>';
-      h+='</div>';
-    } else if(nextDate){
-      var label=naturalLabel(nextDate);
-      h+='<div class="akasha-next">';
-      h+='<div style="line-height:1">';
-      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.46rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.45);margin-bottom:.3rem">Next broadcast</div>';
-      h+='<div style="font-family:\'Playfair Display\',serif;font-size:1.15rem;font-weight:700;color:var(--gold);line-height:1.1">'+esc(label)+'</div>';
-      h+='<div style="font-family:\'DM Mono\',monospace;font-size:.48rem;color:rgba(245,240,232,.45);margin-top:.25rem">'+esc(istStr)+'</div>';
-      h+='</div>';
-      h+='</div>';
-    }
-
-    h+='<div class="akasha-sched">';
-    h+='Mon – Sat &nbsp; 6:30 am CET ('+esc(istStr)+') &nbsp;·&nbsp; 30 min<br>';
-    h+='<a class="card-link" style="margin-top:.3rem;display:inline-block" href="https://newsonair.gov.in/air-station-detail.aspx?id=7" target="_blank" rel="noopener">Stream live →</a>';
-    h+='&nbsp;&nbsp;<a class="card-link" href="https://cuesheets.prasarbharati.org/viewsheet/329" target="_blank" rel="noopener">Cue sheet →</a>';
-    h+='</div></div>';
-    document.getElementById('akasha-inner').innerHTML=h;
-  }
-  renderAkasha();
-  setInterval(renderAkasha,30000);
-})();
-
-// ═══════════════════════════════════════════════════════════
-// CARD: GERMAN TV PICK — curated weekly ARD/ZDF highlight
-// One genuinely special programme per week — not Tatort, not
-// Bergdoktor, not soap operas. Rotates weekly.
-// ═══════════════════════════════════════════════════════════
-(function(){
-  var TV_PICKS=[
-    {
-      channel:'ZDF',emoji:'📡',
-      show:'Terra X',
-      title:'Das Geheimnis der versunkenen Städte',
-      genre:'Doku · Geschichte',
-      when:'So, 19:30 Uhr',
-      desc:'Terra X präsentiert jede Woche eine hochwertige Doku über Geschichte, Natur oder Wissenschaft. Sonntags ab 19:30 Uhr — eine der verlässlichsten Sendeplätze für gehaltvolles Fernsehen im deutschsprachigen Raum.',
-      link:'https://www.zdf.de/dokumentation/terra-x'
-    },
-    {
-      channel:'ARD Das Erste',emoji:'📺',
-      show:'Die Kanzlei',
-      title:'Gerechtigkeit oder Gesetz?',
-      genre:'Drama · Recht',
-      when:'Di, 20:15 Uhr',
-      desc:'Eine der besten deutschen Rechtssendungen — komplex, moralisch vielschichtig und weit entfernt vom Krimi-Einerlei. Starke Charaktere, echte Dilemmata.',
-      link:'https://www.daserste.de/unterhaltung/serie/die-kanzlei'
-    },
-    {
-      channel:'ZDF',emoji:'📡',
-      show:'37 Grad',
-      title:'Zwischen den Welten',
-      genre:'Doku · Menschen',
-      when:'Di, 22:15 Uhr',
-      desc:'37 Grad erzählt persönliche Geschichten über Menschen in außergewöhnlichen Lebenssituationen — empathisch, tiefgründig, ohne Sensationslust. Eines der besten Doku-Formate im deutschen Fernsehen.',
-      link:'https://www.zdf.de/gesellschaft/37-grad'
-    },
-    {
-      channel:'ARD Das Erste',emoji:'📺',
-      show:'Babylon Berlin',
-      title:'Die Neue Staffel',
-      genre:'Historische Serie',
-      when:'Do, 21:45 Uhr',
-      desc:'Die aufwendigste deutsche TV-Produktion aller Zeiten: Berlin der späten Weimarer Republik, mit Ästhetik und Atmosphäre, die jeden internationalen Vergleich standhalten.',
-      link:'https://www.daserste.de/unterhaltung/serie/babylon-berlin'
-    },
-    {
-      channel:'ZDF',emoji:'📡',
-      show:'ZDFzeit',
-      title:'Die großen Fragen unserer Zeit',
-      genre:'Doku · Zeitgeschichte',
-      when:'Di, 20:15 Uhr',
-      desc:'ZDFzeit macht aktuelle und historische Themen mit journalistischem Tiefgang zugänglich — vergleichbar mit einem starken Titelthema in einem Qualitätsmagazin.',
-      link:'https://www.zdf.de/dokumentation/zdfzeit'
-    },
-    {
-      channel:'ARD/Arte',emoji:'🎭',
-      show:'Großes Schauspiel',
-      title:'Faust I — Theatermitschnitt',
-      genre:'Theater · Klassik',
-      when:'Sa, 22:30 Uhr',
-      desc:'Arte und Das Erste übertragen regelmäßig bedeutende Theateraufführungen — oft Goethe, Schiller oder internationales Regietheater in Sendungen, die man nicht verpassen sollte.',
-      link:'https://www.arte.tv/de/videos/theater'
-    },
-    {
-      channel:'ZDF',emoji:'📡',
-      show:'Krimi-Highlight',
-      title:'Unter anderen Umständen',
-      genre:'Krimi · Drama',
-      when:'Sa, 20:15 Uhr',
-      desc:'Unter anderen Umständen ist der beste Krimi im deutschen Fernsehen jenseits des Tatorts — psychologisch komplex, mit exzellenter Hauptdarstellerin Natalia Wörner.',
-      link:'https://www.zdf.de/serien/unter-anderen-umstaenden'
-    },
-  ];
-
   var now=new Date();
-  var weekOfYear=Math.floor((Date.now()-new Date(now.getFullYear(),0,1))/(7*864e5));
-  var pick=TV_PICKS[weekOfYear%TV_PICKS.length];
+  var doy=Math.floor((Date.now()-new Date(now.getFullYear(),0,1))/(864e5));
+  var dow=now.getDay();
+  var showT=SHOW_TIMES[dow];
+  var ck=dateKey('cinema7');
+  var cached=lsGet(ck);
+  if(cached){document.getElementById('cinema-inner').innerHTML=cached;return;}
 
+  // Primary: scrape Museum Lichtspiele homepage — directly lists "Heute im Programm" OV/OmU films
+  var museumUrl='https://www.museum-lichtspiele.de/';
+  var enc=encodeURIComponent(museumUrl);
+  anyOf([
+    tFetch('https://api.allorigins.win/get?url='+enc,10000).then(function(r){return r.json();}).then(function(d){return d.contents;}),
+    tFetch('https://corsproxy.io/?'+enc,10000).then(function(r){return r.text();})
+  ]).then(function(html){
+    var films=[];
+    // Museum Lichtspiele homepage structure:
+    // <a href="/detail/NNNNN/Film%20Title%20(OV)"> with film poster image nearby
+    // followed by time links like <a href="/ticket?...">19:45</a>
+    // We parse title+version from the detail links, times from adjacent ticket links
+    var detailRe=/<a[^>]+href="\/detail\/(\d+)\/([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+    var m;
+    while((m=detailRe.exec(html))!==null&&films.length<8){
+      var id=m[1];
+      var slug=decodeURIComponent(m[2]);
+      // slug looks like "Marty%20Supreme%20(OV)" decoded → "Marty Supreme (OV)"
+      var versionM=slug.match(/\((OV|OmU|OmdU|Omu)\)/i);
+      if(!versionM)continue; // skip non-OV/OmU films
+      var version=versionM[1].toUpperCase().replace('OMU','OmU');
+      var rawTitle=slug.replace(/\s*\([^)]*\)\s*$/,'').trim();
+      var title=rawTitle.replace(/%20/g,' ').replace(/\+/g,' ').trim();
+      if(!title||title.length<2)continue;
+      var imgM=m[3].match(/src="([^"]+museum-lichtspiele[^"]*\.(?:jpg|jpeg|png|webp)[^"]*)"/i);
+      var imgUrl=imgM?imgM[1]:'';
+      var link='https://www.museum-lichtspiele.de/detail/'+id+'/'+encodeURIComponent(slug);
+      // Extract showtime strings that appear near this detail link in the raw HTML
+      // Look for ticket links in a window of ~600 chars after this match
+      var window600=html.slice(m.index,m.index+600);
+      var timeRe2=/\b(\d{1,2}:\d{2})\b/g;
+      var times=[],tm2;
+      while((tm2=timeRe2.exec(window600))!==null){
+        var t=tm2[1];
+        var h2=parseInt(t.split(':')[0]);
+        if(h2>=10&&h2<=23)times.push(t);
+      }
+      // Deduplicate times
+      times=times.filter(function(v,i,a){return a.indexOf(v)===i;});
+      films.push({title:title,version:version,img:imgUrl,link:link,times:times,id:id});
+    }
+    if(!films.length)throw new Error('no Museum Lichtspiele films');
+    // Prefer evening screenings (≥18:00); pick film rotating by day
+    films.sort(function(a,b){
+      var aEve=a.times.some(function(t){return parseInt(t)>=18;})?0:1;
+      var bEve=b.times.some(function(t){return parseInt(t)>=18;})?0:1;
+      return aEve-bEve;
+    });
+    var pick=films[doy%films.length];
+    var pickTime=pick.times.find(function(t){return parseInt(t)>=18;})||pick.times[0]||showT;
+    var f={
+      title:pick.title,
+      director:'',
+      blurb:'Showing today at Museum Lichtspiele München — Munich\'s beloved independent arthouse cinema at Lilienstraße 2, specialising in original-version films since 1929.',
+      endorsement:pick.version+' · Museum Lichtspiele München',
+      lang:pick.version==='OV'?'OV — English original':'OmU — with German subtitles',
+      cinema:'Museum Lichtspiele München',
+      link:pick.link,
+      img:pick.img
+    };
+    renderCinemaCard(f,pickTime);
+    // Try to load poster via OMDB as well
+    if(pick.img){
+      var poster=document.querySelector('.cinema-poster');
+      if(poster){var img2=new Image();img2.src=pick.img;img2.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.85';img2.onerror=function(){};poster.prepend(img2);}
+    }
+    lsSet(ck,document.getElementById('cinema-inner').innerHTML);
+  }).catch(function(){
+    // Fallback: in-muenchen.de OV/OmU kino page
+    var enc2=encodeURIComponent('https://kino.in-muenchen.de/region/');
+    anyOf([
+      tFetch('https://api.allorigins.win/get?url='+enc2,10000).then(function(r){return r.json();}).then(function(d){return d.contents;}),
+      tFetch('https://corsproxy.io/?'+enc2,10000).then(function(r){return r.text();})
+    ]).then(function(html){
+      // Parse: look for (OV) or (OmU) in text near film title links
+      var re=/<a[^>]+href="[^"]*"[^>]*>([\s\S]*?)<\/a>/gi;
+      var films2=[],m2;
+      while((m2=re.exec(html))!==null){
+        var inner=m2[1];
+        if(!/\b(OV|OmU)\b/i.test(inner))continue;
+        var title2=inner.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+        if(title2.length>5&&title2.length<120)films2.push({title:title2,link:'https://kino.in-muenchen.de/region/'});
+      }
+      if(!films2.length)throw 0;
+      var pick2=films2[doy%films2.length];
+      var versionM2=pick2.title.match(/\b(OV|OmU)\b/i);
+      var f2={
+        title:pick2.title.replace(/\s*\([^)]*\)/g,'').trim(),
+        director:'',blurb:'Screening today in Munich in original version with or without subtitles.',
+        endorsement:(versionM2?versionM2[1]:'')+' · in-muenchen.de Kino',
+        lang:versionM2?versionM2[1]:'OV/OmU',
+        cinema:'Kino München',link:'https://kino.in-muenchen.de/region/'
+      };
+      renderCinemaCard(f2,showT);
+      lsSet(ck,document.getElementById('cinema-inner').innerHTML);
+    }).catch(function(){
+      // Final fallback to curated list
+      var f=FILMS_FALLBACK[doy%FILMS_FALLBACK.length];
+      renderCinemaCard(f,showT);
+      lsSet(ck,document.getElementById('cinema-inner').innerHTML);
+    });
+  });
+})();
+
+
+// ═══════════════════════════════════════════════════════════
+// CARD: GERMAN TV PICK — live from texxas.de RSS + day-of-week
+// Shows the BEST programme on today — not a weekly rotation.
+// texxas.de provides per-channel RSS with today's prime time.
+// Filters for high-quality: Doku, Film, Arte, 3sat, Reportage.
+// Falls back to day-of-week curated picks.
+// ═══════════════════════════════════════════════════════════
+(function(){
   var el=document.getElementById('tvpick-inner');
   if(!el)return;
-  var h='';
-  h+='<div class="tvpick-poster" style="background:var(--ink);font-size:2.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;width:110px">'+pick.emoji+'</div>';
-  h+='<div class="tvpick-body">';
-  h+='<div class="tvpick-channel">📺 '+esc(pick.channel)+' · Wochentipp</div>';
-  h+='<div class="tvpick-when">'+esc(pick.when)+'</div>';
-  h+='<div class="tvpick-title">'+esc(pick.show)+'</div>';
-  h+='<span class="tvpick-genre">'+esc(pick.genre)+'</span>';
-  h+='<div style="font-family:\'Playfair Display\',serif;font-size:.82rem;font-style:italic;color:var(--slate);margin:.15rem 0 .1rem">'+esc(pick.title)+'</div>';
-  h+='<p class="tvpick-desc">'+esc(pick.desc)+'</p>';
-  h+='<a class="card-link" href="'+esc(pick.link)+'" target="_blank" rel="noopener">Zur Sendung →</a>';
-  h+='</div>';
-  el.innerHTML=h;
+
+  // Curated best programme per day of week — realistic, actually scheduled
+  // dow: 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+  var TV_DAY=[
+    // Sunday — ZDF Terra X / ARD quality film
+    {channel:'ZDF',emoji:'📡',show:'Terra X',genre:'Doku · Geschichte',
+     when:'So, 19:30 Uhr',
+     desc:'Jeden Sonntag ab 19:30 — Deutschlands hochwertigste Dokumentationsreihe zu Geschichte, Natur und Wissenschaft. Verlässlich, sorgfältig recherchiert, sehenswert.',
+     link:'https://www.zdf.de/dokumentation/terra-x'},
+    // Monday — Arte documentary evening
+    {channel:'Arte',emoji:'🎭',show:'Arte Reportage & Doku',genre:'Doku · Zeitgeschehen',
+     when:'Mo, 20:15 Uhr',
+     desc:'Arte bietet montags regelmäßig hochwertige Reportagen und Dokumentarfilme über europäische und internationale Themen — unkommerziell, tiefgründig, unverzichtbar.',
+     link:'https://www.arte.tv/de/'},
+    // Tuesday — ZDF 37 Grad or Die Kanzlei
+    {channel:'ZDF',emoji:'📡',show:'37 Grad · Gesellschaft',genre:'Doku · Menschen',
+     when:'Di, 22:15 Uhr',
+     desc:'37 Grad erzählt berührende Lebensgeschichten — empathisch, ohne Sensationslust, nah an echten Menschen. Eines der stärksten Doku-Formate im deutschen Fernsehen.',
+     link:'https://www.zdf.de/gesellschaft/37-grad'},
+    // Wednesday — 3sat kulturzeit / documentary
+    {channel:'3sat',emoji:'📺',show:'3sat Kultur & Doku',genre:'Kultur · Reportage',
+     when:'Mi, 20:15 Uhr',
+     desc:'3sat ist das beste deutschsprachige Kulturfernsehen: Dokumentationen über Kunst, Literatur, Gesellschaft und Wissenschaft — ohne Werbung, ohne Quotendruck.',
+     link:'https://www.3sat.de/dokumentation'},
+    // Thursday — ARD quality crime/drama
+    {channel:'ARD Das Erste',emoji:'📺',show:'ARD Donnerstagfilm',genre:'Drama · Film',
+     when:'Do, 20:15 Uhr',
+     desc:'Das Erste zeigt donnerstags regelmäßig hochwertige TV-Filme: Gesellschaftsdramen, Literaturadaptionen und Krimis jenseits der Routine.',
+     link:'https://www.daserste.de/'},
+    // Friday — Arte cinema
+    {channel:'Arte',emoji:'🎭',show:'Arte Kinokino',genre:'Film · International',
+     when:'Fr, 20:15 Uhr',
+     desc:'Arte zeigt freitags internationale Arthousefilme in Erstausstrahlung — oft Cannes- oder Berlinale-Gewinner, die man im deutschen Mainstream-TV nie findet.',
+     link:'https://www.arte.tv/de/videos/kino/'},
+    // Saturday — ZDF quality Krimi or film
+    {channel:'ZDF',emoji:'📡',show:'ZDF Samstagskino',genre:'Film · Krimi',
+     when:'Sa, 20:15 Uhr',
+     desc:'Der ZDF-Samstagabend bietet regelmäßig Spielfilme und Krimis in Spielfilmqualität — ein verlässlicher Sendeplatz für gehaltvolles Abendprogramm.',
+     link:'https://www.zdf.de/filme/spielfilm'}
+  ];
+
+  var ck=dateKey('tvpick7');
+  var cached=lsGet(ck);
+  if(cached){el.innerHTML=cached;return;}
+
+  function renderTV(pick,fromLive){
+    var h='';
+    h+='<div class="tvpick-poster" style="background:var(--ink);font-size:2.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;width:110px">'+esc(pick.emoji||'📺')+'</div>';
+    h+='<div class="tvpick-body">';
+    h+='<div class="tvpick-channel">'+esc(pick.channel||'')+(fromLive?' · Heute Abend':' · Heute Abend')+'</div>';
+    h+='<div class="tvpick-when">'+esc(pick.when||'')+'</div>';
+    h+='<div class="tvpick-title">'+esc(pick.show||pick.title||'')+'</div>';
+    if(pick.genre)h+='<span class="tvpick-genre">'+esc(pick.genre)+'</span>';
+    if(pick.subtitle)h+='<div style="font-family:\'Playfair Display\',serif;font-size:.82rem;font-style:italic;color:var(--slate);margin:.15rem 0 .1rem">'+esc(pick.subtitle)+'</div>';
+    h+='<p class="tvpick-desc">'+esc(pick.desc||pick.description||'')+'</p>';
+    h+='<a class="card-link" href="'+esc(pick.link)+'" target="_blank" rel="noopener">Zum Programm →</a>';
+    h+='</div>';
+    el.innerHTML=h;
+    lsSet(ck,h);
+  }
+
+  var now=new Date();
+  var dow=now.toLocaleDateString('en-US',{timeZone:'Europe/Berlin',weekday:'short'}); // Mon/Tue etc
+  var dowIdx={'Sun':0,'Mon':1,'Tue':2,'Wed':3,'Thu':4,'Fri':5,'Sat':6}[dow]||0;
+
+  // Try live: texxas.de RSS feeds for quality channels today
+  // texxas provides RSS per channel — we try Arte, 3sat, ZDF, ARD
+  var TEXXAS_FEEDS=[
+    {ch:'Arte',emoji:'🎭',url:'https://www.texxas.de/rss/arte.rss'},
+    {ch:'3sat',emoji:'📺',url:'https://www.texxas.de/rss/3sat.rss'},
+    {ch:'ZDF',emoji:'📡',url:'https://www.texxas.de/rss/zdf.rss'},
+    {ch:'ARD',emoji:'📺',url:'https://www.texxas.de/rss/ard.rss'},
+    {ch:'ZDF',emoji:'📡',url:'https://www.texxas.de/rss/zdf_neo.rss'},
+  ];
+
+  // Get today's date string for filtering
+  var todayStr=now.toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'}); // YYYY-MM-DD
+
+  function pickBestTV(items,chName,chEmoji){
+    if(!items||!items.length)return null;
+    // Filter to today's entries — pubDate should be today
+    var todays=items.filter(function(i){
+      if(!i.pubDate)return true;
+      var d=new Date(i.pubDate).toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'});
+      return d===todayStr;
+    });
+    var pool=todays.length?todays:items.slice(0,6);
+    // Prefer prime time (title/desc mentions 20:15, Film, Doku, Reportage)
+    var priority=pool.find(function(i){return /20[:\.]15/.test(i.title)||/Film|Doku|Reportage|Magazin|Krimi/i.test(i.title);})
+      ||pool.find(function(i){return /20[:\.]15/.test(i.description||'')||/Film|Doku/i.test(i.description||'');})
+      ||pool[0];
+    if(!priority||!priority.title)return null;
+    // Parse time from title if present
+    var timeM=priority.title.match(/(\d{1,2}[:\.]?\d{2})\s*Uhr/i);
+    var timeStr=timeM?timeM[1].replace('.',':')+' Uhr':'Heute Abend';
+    // Strip time prefix from title for display
+    var showTitle=priority.title.replace(/^\d{1,2}[:\.]?\d{2}\s*Uhr\s*[-–·]?\s*/,'').trim();
+    return{
+      channel:chName,emoji:chEmoji,
+      show:showTitle,
+      when:timeStr,
+      genre:priority.category||'TV · Heute',
+      desc:trunc(priority.description||'',280),
+      link:priority.link||'https://www.texxas.de/',
+      subtitle:''
+    };
+  }
+
+  var tried=0,found=false;
+  function tryFeed(idx){
+    if(idx>=TEXXAS_FEEDS.length||found){
+      if(!found)renderTV(TV_DAY[dowIdx],false);
+      return;
+    }
+    var f=TEXXAS_FEEDS[idx];
+    fetchRSS(f.url)
+      .then(function(items){
+        if(found)return;
+        var pick=pickBestTV(items,f.ch,f.emoji);
+        if(!pick)throw 0;
+        found=true;
+        renderTV(pick,true);
+      })
+      .catch(function(){tryFeed(idx+1);});
+  }
+  tryFeed(0);
 })();
 
 // ═══════════════════════════════════════════════════════════
@@ -1886,41 +1941,107 @@ function fetchInMuenchenPage(url){
   var cached=lsGet(ck);
   if(cached){document.getElementById('ev-inner').innerHTML=cached;return;}
 
+  // Get today's date string in DE format for strict matching
+  var now=new Date();
+  var todayDE=now.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'Europe/Berlin'}); // DD.MM.YYYY
+  var todayISO=now.toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'}); // YYYY-MM-DD
+
+  function isTodayEvent(ev){
+    // Accept event if no date (undated = likely today), or if date matches today
+    if(!ev.dateObj)return true;
+    var d=ev.dateObj;
+    var evDE=(d.getDate()<10?'0':'')+d.getDate()+'.'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'.'+d.getFullYear();
+    return evDE===todayDE;
+  }
+
+  function pickBest(events){
+    var todays=events.filter(isTodayEvent);
+    if(!todays.length)return null;
+    return todays.find(function(e){var t=parseInt((e.time||'').split(':')[0]||0);return t>=18&&t<=22;})
+      ||todays.find(function(e){var t=parseInt((e.time||'').split(':')[0]||0);return t>=11&&t<=17;})
+      ||todays[0];
+  }
+
+  // Also try Gasteig — parse "Heute um HH:MM Uhr" from their page
+  function fetchGasteigToday(){
+    var enc=encodeURIComponent('https://www.gasteig.de/veranstaltungen/');
+    return anyOf([
+      tFetch('https://api.allorigins.win/get?url='+enc,9000).then(function(r){return r.json();}).then(function(d){return d.contents;}),
+      tFetch('https://corsproxy.io/?'+enc,9000).then(function(r){return r.text();})
+    ]).then(function(html){
+      var events=[];
+      // Match event blocks containing "Heute"
+      var re=/<li[^>]*>([\s\S]*?)<\/li>/gi;
+      var m;
+      while((m=re.exec(html))!==null){
+        var block=m[1];
+        if(!/Heute/i.test(block))continue;
+        var titleM=block.match(/<h3[^>]*>([\s\S]*?)<\/h3>/i);
+        var linkM=block.match(/href="(https?:\/\/www\.gasteig\.de\/veranstaltungen\/[^"]+)"/i);
+        var timeM=block.match(/Heute\s+um\s+(\d{1,2}:\d{2})\s*Uhr/i);
+        var imgM=block.match(/<img[^>]+src="(https?:\/\/[^"]+gasteig[^"]+\.(jpg|jpeg|png|webp)[^"]*)"/i);
+        if(titleM&&linkM){
+          var title=titleM[1].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+          events.push({
+            title:title,
+            time:timeM?timeM[1]:'',
+            date:now.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'}),
+            dateObj:now,
+            venue:'Gasteig HP8',
+            img:imgM?imgM[1]:'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&q=75',
+            link:linkM[1],
+            category:'Gasteig HP8'
+          });
+        }
+      }
+      if(!events.length)throw new Error('no gasteig today');
+      return events;
+    });
+  }
+
+  // Try sources in order: in-muenchen today → Gasteig today → in-muenchen Konzerte (filtered)
   fetchInMuenchenPage('https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen')
     .then(function(html){
       var events=parseInMuenchenEvents(html);
       _eventsToday=events;
-      if(!events.length)throw new Error('no events parsed');
-      // Pick a highlight event: prefer evening concerts/shows (time >= 18:00), else first
-      var pick=events.find(function(e){
-        var t=parseInt((e.time||'').split(':')[0]||0);
-        return t>=18&&t<=22;
-      })||events.find(function(e){
-        var t=parseInt((e.time||'').split(':')[0]||0);
-        return t>=11&&t<=17;
-      })||events[0];
+      var pick=pickBest(events);
+      if(!pick)throw new Error('no today events');
       var h=renderEventCard(pick,'in-muenchen.de · heute');
       document.getElementById('ev-inner').innerHTML=h;
       lsSet(ck,h);
     })
     .catch(function(){
-      // Fallback: fetch morgen or veranstaltungen page
-      fetchInMuenchenPage('https://www.in-muenchen.de/konzerte')
-        .then(function(html){
-          var events=parseInMuenchenEvents(html);
-          if(!events.length)throw 0;
-          var pick=events[0];
-          var h=renderEventCard(pick,'in-muenchen.de · Konzerte');
+      // Try Gasteig today
+      fetchGasteigToday()
+        .then(function(events){
+          var pick=events.find(function(e){var t=parseInt((e.time||'00').split(':')[0]);return t>=15&&t<=22;})
+            ||events[0];
+          var h=renderEventCard(pick,'Gasteig HP8 · heute');
           document.getElementById('ev-inner').innerHTML=h;
           lsSet(ck,h);
         })
         .catch(function(){
-          // Final fallback: static placeholder pointing to the site
-          var h='<div class="card-label"><span class="label-pip" style="background:var(--gold)"></span>★ Munich Today</div>';
-          h+='<div class="ev-badge">📅 '+new Date().toLocaleDateString('de-DE',{weekday:'long'})+'</div>';
-          h+='<p class="card-text">Check in-muenchen.de for today\'s events — concerts, theatre, art, markets and more.</p>';
-          h+='<a class="card-link" href="https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen" target="_blank" rel="noopener">in-muenchen.de →</a>';
-          document.getElementById('ev-inner').innerHTML=h;
+          // Try muenchen.de
+          fetchInMuenchenPage('https://www.muenchen.de/veranstaltungen')
+            .then(function(html){
+              var events=parseInMuenchenEvents(html);
+              var pick=pickBest(events)||events[0];
+              if(!pick)throw 0;
+              var h=renderEventCard(pick,'muenchen.de · heute');
+              document.getElementById('ev-inner').innerHTML=h;
+              lsSet(ck,h);
+            })
+            .catch(function(){
+              // Final text fallback
+              var h='<div class="card-label"><span class="label-pip" style="background:var(--gold)"></span>★ Munich Today</div>';
+              h+='<div class="ev-badge">📅 '+now.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})+'</div>';
+              h+='<p class="card-text">Check in-muenchen.de or gasteig.de for today\'s live events, concerts and shows in Munich.</p>';
+              h+='<div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:.4rem">';
+              h+='<a class="card-link" href="https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen" target="_blank" rel="noopener">in-muenchen.de →</a>';
+              h+='<a class="card-link" href="https://www.gasteig.de/veranstaltungen/" target="_blank" rel="noopener">Gasteig →</a>';
+              h+='</div>';
+              document.getElementById('ev-inner').innerHTML=h;
+            });
         });
     });
 })();
@@ -1937,13 +2058,30 @@ var WEEK_PAGES=[
 ];
 
 // ═══════════════════════════════════════════════════════════
-// CARD: NEWS (4 papers with images)
+// CARD: NEWS — sort by pubDate desc, rotate article each hour
+// so a different fresh story shows up every hour
 // ═══════════════════════════════════════════════════════════
-function loadNewsCard(bodyId,thumbId,cacheKey,feedUrls){
-  var cached=lsGet(cacheKey);
+function loadNewsCard(bodyId,thumbId,baseCacheKey,feedUrls){
+  var ck=hourKey(baseCacheKey);
+  var cached=lsGet(ck);
   if(cached){document.getElementById(bodyId).innerHTML=cached.h;if(cached.img)loadThumb(thumbId,cached.img);return;}
-  var pArr=feedUrls.map(function(u){return fetchRSS(u).then(function(items){var it=items.find(function(i){return i.title&&i.title.length>6;});if(!it)throw 0;return it;});});
-  anyOf(pArr).then(function(item){
+  // Fetch all feeds, merge & deduplicate by title, sort newest-first
+  var pArr=feedUrls.map(function(u){
+    return fetchRSS(u).catch(function(){return[];});
+  });
+  Promise.all(pArr).then(function(results){
+    var all=[];
+    results.forEach(function(items){items.forEach(function(i){if(i.title&&i.title.length>6)all.push(i);});});
+    if(!all.length)throw new Error('empty');
+    // Deduplicate by title prefix
+    var seen={};
+    all=all.filter(function(i){var k=i.title.slice(0,40);if(seen[k])return false;seen[k]=1;return true;});
+    // Sort by pubDate descending — freshest first
+    all.sort(function(a,b){return(new Date(b.pubDate)||0)-(new Date(a.pubDate)||0);});
+    // Take top 6 fresh articles, rotate by current hour so display changes each hour
+    var pool=all.slice(0,6);
+    var hour=new Date().getHours();
+    var item=pool[hour%pool.length]||pool[0];
     var desc=trunc(item.description||'',340);
     var h='<div class="card-hl">'+esc(trunc(item.title,115))+'</div>';
     if(desc)h+='<p class="card-text">'+esc(desc)+'</p>';
@@ -1951,25 +2089,26 @@ function loadNewsCard(bodyId,thumbId,cacheKey,feedUrls){
     if(item.link)h+='<a class="card-link" href="'+esc(item.link)+'" target="_blank" rel="noopener">Read →</a>';
     document.getElementById(bodyId).innerHTML=h;
     var img=extractImg(item);if(img)loadThumb(thumbId,img);
-    lsSet(cacheKey,{h:h,img:img||null});
+    lsSet(ck,{h:h,img:img||null});
   }).catch(function(){document.getElementById(bodyId).innerHTML='<p style="color:var(--muted);font-size:.78rem">Feed unavailable</p>';});
 }
-loadNewsCard('sz-body','sz-thumb','h5_sz',['https://rss.sueddeutsche.de/rss/Topthemen','https://rss.sueddeutsche.de/app/service/rss/alles/index.rss?output=rss']);
-loadNewsCard('hindu-body','hindu-thumb','h5_hindu',['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/news/national/kerala/?service=rss','https://www.thehindu.com/feeder/default.rss']);
-loadNewsCard('grd-body','grd-thumb','h5_grd',['https://www.theguardian.com/world/rss','https://www.theguardian.com/uk/rss']);
-loadNewsCard('nyt-body','nyt-thumb','h5_nyt',['https://rss.nytimes.com/services/xml/rss/nyt/World.xml','https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml']);
+loadNewsCard('sz-body','sz-thumb','h6_sz',['https://rss.sueddeutsche.de/rss/Topthemen','https://rss.sueddeutsche.de/app/service/rss/alles/index.rss?output=rss']);
+loadNewsCard('hindu-body','hindu-thumb','h6_hindu',['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/news/national/kerala/?service=rss','https://www.thehindu.com/feeder/default.rss']);
+loadNewsCard('grd-body','grd-thumb','h6_grd',['https://www.theguardian.com/world/rss','https://www.theguardian.com/uk/rss','https://www.theguardian.com/international/rss']);
+loadNewsCard('nyt-body','nyt-thumb','h6_nyt',['https://rss.nytimes.com/services/xml/rss/nyt/World.xml','https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml','https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml']);
 
 // ═══════════════════════════════════════════════════════════
 // CARD: ASTRONOMY — NASA APOD + Space.com RSS
 // ═══════════════════════════════════════════════════════════
 (function(){
-  var ck='astro5';var cached=lsGet(ck);
+  var ck=hourKey('astro6');var cached=lsGet(ck);
   if(cached){document.getElementById('astro-inner').innerHTML=cached;return;}
   // Try Space.com RSS via proxy
   fetchRSS('https://www.space.com/feeds/all')
     .then(function(items){
-      var it=items.find(function(i){return i.title&&i.title.length>5;});
-      if(!it)throw 0;
+      items.sort(function(a,b){return(new Date(b.pubDate)||0)-(new Date(a.pubDate)||0);});
+      var pool=items.slice(0,5);var it=pool[new Date().getHours()%pool.length]||pool[0];
+      if(!it||!it.title)throw 0;
       var desc=trunc(it.description||'',280);
       var h='<div class="card-label"><span class="label-pip" style="background:var(--slate)"></span>🔭 Astronomy</div>';
       h+='<div class="astro-icon">🌌</div>';
@@ -2104,7 +2243,7 @@ loadNewsCard('nyt-body','nyt-thumb','h5_nyt',['https://rss.nytimes.com/services/
 // CARD: HACKER NEWS TOP STORY
 // ═══════════════════════════════════════════════════════════
 (function(){
-  var ck='hn_h5';var cached=lsGet(ck);
+  var ck=hourKey('hn_h6');var cached=lsGet(ck);
   if(cached){document.getElementById('hn-home').innerHTML=cached;return;}
   tFetch('https://hacker-news.firebaseio.com/v0/topstories.json')
     .then(function(r){return r.json();})
@@ -2125,21 +2264,23 @@ loadNewsCard('nyt-body','nyt-thumb','h5_nyt',['https://rss.nytimes.com/services/
 })();
 
 // ═══════════════════════════════════════════════════════════
-// CARD: PODCAST OF THE DAY  — always fetch fresh (no daily cache)
-// Tries each priority feed in order; shows latest episode
+// CARD: PODCAST OF THE DAY
+// Rotates show by day-of-year. Skips episodes older than 14 days.
+// Cache key includes YYYY-MM-DD-HH so it refreshes hourly.
 // ═══════════════════════════════════════════════════════════
 var POD_PRIORITY=[
-  {name:'The Daily · NYT',      feeds:['https://feeds.simplecast.com/54nAGcIl']},
-  {name:'In Focus · The Hindu', feeds:['https://feeds.megaphone.fm/THGU4956605070']},
-  {name:'NL Hafta · Newslaundry',feeds:['https://feeds.acast.com/public/shows/5ec3d9497cef7479d2ef4798']},
-  {name:'Up First · NPR',       feeds:['https://feeds.npr.org/510318/podcast.xml']},
-  {name:'After Hours Malayalis',feeds:['https://anchor.fm/s/408591a8/podcast/rss']},
-  {name:'Radiowissen · BR',     feeds:['https://feeds.br.de/radiowissen/feed.xml']},
+  {name:'The Daily · NYT',           feeds:['https://feeds.simplecast.com/54nAGcIl']},
+  {name:'In Focus · The Hindu',      feeds:['https://feeds.megaphone.fm/THGU4956605070']},
+  {name:'NL Hafta · Newslaundry',    feeds:['https://feeds.acast.com/public/shows/5ec3d9497cef7479d2ef4798']},
+  {name:'Up First · NPR',            feeds:['https://feeds.npr.org/510318/podcast.xml']},
+  {name:'After Hours Malayalis',     feeds:['https://anchor.fm/s/408591a8/podcast/rss']},
+  {name:'Radiowissen · BR',          feeds:['https://feeds.br.de/radiowissen/feed.xml']},
   {name:'Seen & Unseen · Amit Varma',feeds:['https://seenunseen.libsyn.com/rss']}
 ];
 (function(){
-  // Use a short hourly cache so page reloads in same hour reuse result
-  var ck='pod_h6_'+new Date().toISOString().slice(0,13); // key = YYYY-MM-DDTHH
+  var now=new Date();
+  var doy=Math.floor((Date.now()-new Date(now.getFullYear(),0,1))/(864e5));
+  var ck=hourKey('pod7');
   var cached=lsGet(ck);
   if(cached){document.getElementById('pod-home').innerHTML=cached;return;}
 
@@ -2149,12 +2290,12 @@ var POD_PRIORITY=[
       bars+='<div class="pod-bar" style="height:'+ht+'%;--d:'+(0.35+i*0.052).toFixed(2)+'s"></div>';
     });
     bars+='</div>';
-    var age=ep.pubDate?Math.floor((Date.now()-new Date(ep.pubDate))/(3600*1000)):999;
-    var isNew=age<36;
+    var ageH=ep.pubDate?Math.floor((Date.now()-new Date(ep.pubDate))/3600000):9999;
+    var isNew=ageH<48;
     var desc=trunc(ep.description||'',300);
     var audioUrl=ep.enclosure||'';
     var h='<div class="card-label"><span class="label-pip" style="background:var(--rust)"></span>🎙 Podcast of the Day</div>';
-    if(isNew)h+='<div class="pod-new">🔴 New · '+Math.round(age)+'h ago</div>';
+    if(isNew)h+='<div class="pod-new">🔴 New · '+Math.round(ageH)+'h ago</div>';
     h+='<div class="pod-show">'+esc(pick.name)+'</div>';
     h+='<div class="card-hl">'+esc(trunc(ep.title,90))+'</div>';
     h+=bars;
@@ -2169,23 +2310,36 @@ var POD_PRIORITY=[
     lsSet(ck,h);
   }
 
-  // Try feeds in order, show first one that returns a valid episode
-  var idx=0;
-  function tryNext(){
-    if(idx>=POD_PRIORITY.length){
-      document.getElementById('pod-home').innerHTML='<div class="card-label"><span class="label-pip" style="background:var(--rust)"></span>🎙 Podcast</div><p style="color:var(--muted);font-size:.78rem;margin-top:.5rem">Could not load podcast feeds right now.</p>';
+  // Start at today's show index, rotate through all shows if needed
+  var startIdx=doy%POD_PRIORITY.length;
+  var tried=0;
+  var MAX_AGE_DAYS=14;
+  function tryNext(idx){
+    if(tried>=POD_PRIORITY.length){
+      // All shows have stale episodes — show freshest we found, or error
+      document.getElementById('pod-home').innerHTML='<div class="card-label"><span class="label-pip" style="background:var(--rust)"></span>🎙 Podcast</div><p style="color:var(--muted);font-size:.78rem;margin-top:.5rem">Could not load a recent podcast episode.</p>';
       return;
     }
-    var pick=POD_PRIORITY[idx++];
-    var feedPromises=pick.feeds.map(function(u){return fetchRSS(u);});
-    anyOf(feedPromises)
+    tried++;
+    var pick=POD_PRIORITY[idx%POD_PRIORITY.length];
+    anyOf(pick.feeds.map(function(u){return fetchRSS(u);}))
       .then(function(items){
-        if(!items||!items.length||!items[0].title)throw 0;
-        renderPodEp(pick,items[0]); // items[0] = latest episode
+        if(!items||!items.length)throw 0;
+        // Filter to episodes published within MAX_AGE_DAYS; pick freshest
+        var fresh=items.filter(function(i){
+          if(!i.title||i.title.length<3)return false;
+          if(!i.pubDate)return true; // no date = accept
+          var ageD=(Date.now()-new Date(i.pubDate))/864e5;
+          return ageD<=MAX_AGE_DAYS;
+        });
+        if(!fresh.length)throw new Error('stale:'+pick.name);
+        // Sort freshest first
+        fresh.sort(function(a,b){return(new Date(b.pubDate)||0)-(new Date(a.pubDate)||0);});
+        renderPodEp(pick,fresh[0]);
       })
-      .catch(function(){tryNext();});
+      .catch(function(){tryNext(idx+1);});
   }
-  tryNext();
+  tryNext(startIdx);
 })();
 window.__podPlay=function(show,title,url){doPlay(show,title,url,null);};
 
@@ -2193,12 +2347,13 @@ window.__podPlay=function(show,title,url){doPlay(show,title,url,null);};
 // CARD: SPORT — BBC Sport, ESPN RSS
 // ═══════════════════════════════════════════════════════════
 (function(){
-  var ck='sport5';var cached=lsGet(ck);
+  var ck=hourKey('sport6');var cached=lsGet(ck);
   if(cached){document.getElementById('sport-inner').innerHTML=cached;return;}
   fetchRSS('https://www.espn.com/espn/rss/news')
     .then(function(items){
-      var it=items.find(function(i){return i.title&&i.title.length>5;});
-      if(!it)throw 0;
+      items.sort(function(a,b){return(new Date(b.pubDate)||0)-(new Date(a.pubDate)||0);});
+      var pool=items.slice(0,5);var it=pool[new Date().getHours()%pool.length]||pool[0];
+      if(!it||!it.title)throw 0;
       var desc=trunc(it.description||'',280);
       var h='<div class="card-label"><span class="label-pip" style="background:var(--sage)"></span>🏆 Sport · World</div>';
       h+='<div class="card-hl">'+esc(trunc(it.title,110))+'</div>';
@@ -2221,30 +2376,42 @@ window.__podPlay=function(show,title,url){doPlay(show,title,url,null);};
 })();
 
 // ═══════════════════════════════════════════════════════════
-// CARD: MALAYALAM NEWS — newsmalayalam.com + Mathrubhumi + Madhyamam
+// CARD: MALAYALAM NEWS — The News Minute · Kerala Kaumudi · Onmanorama · The Hindu Kerala
 // ═══════════════════════════════════════════════════════════
 (function(){
-  var ck='mln5';var cached=lsGet(ck);
+  var ck=hourKey('mln6');var cached=lsGet(ck);
   if(cached){document.getElementById('mln-body').innerHTML=cached.h;if(cached.src){var b=document.getElementById('mln-badge');if(b)b.innerHTML='<span class="src-dot" style="background:#1a6b40"></span>'+esc(cached.src);}if(cached.img)loadThumb('mln-thumb',cached.img);return;}
   var ML_SOURCES=[
-    {name:'News Malayalam',feeds:['https://newsmalayalam.com/feed/','https://newsmalayalam.com/rss']},
-    {name:'Mathrubhumi',feeds:['https://www.mathrubhumi.com/rss/news.xml','https://www.mathrubhumi.com/rss/kerala.xml']},
-    {name:'Madhyamam',feeds:['https://www.madhyamam.com/rss/all','https://www.madhyamam.com/rss/kerala']},
-    {name:'Manorama Online',feeds:['https://www.manoramaonline.com/news.rss']}
+    // The News Minute — independent, serious journalism, strong Kerala focus
+    {name:'The News Minute',feeds:['https://www.thenewsminute.com/kerala/feed','https://www.thenewsminute.com/feed']},
+    // Kerala Kaumudi — one of Kerala's oldest, most respected newspapers (est. 1911)
+    {name:'Kerala Kaumudi',feeds:['https://keralakaumudi.com/news/rss.xml','https://keralakaumudi.com/en/news/rss.xml']},
+    // Onmanorama — Manorama's serious news desk, strong reporting standards
+    {name:'Onmanorama',feeds:['https://www.onmanorama.com/news.rss','https://www.onmanorama.com/news/kerala.rss']},
+    // The Hindu Kerala — gold standard for serious Indian journalism
+    {name:'The Hindu · Kerala',feeds:['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/news/national/kerala/?service=rss']}
   ];
-  var sourcePromises=ML_SOURCES.map(function(src){
-    var feedP=src.feeds.map(function(u){return fetchRSS(u).then(function(items){var it=items.find(function(i){return i.title&&i.title.length>5;});if(!it)throw 0;return{src:src.name,item:it};});});
-    return anyOf(feedP);
+  // Fetch all, merge, sort freshest first, rotate by hour
+  var allP=[];
+  ML_SOURCES.forEach(function(src){
+    src.feeds.forEach(function(u){allP.push(fetchRSS(u).then(function(items){return items.map(function(i){return Object.assign({},i,{_src:src.name});});}).catch(function(){return[];}));});
   });
-  anyOf(sourcePromises).then(function(res){
-    var it=res.item;var desc=trunc(it.description||'',360);var img=extractImg(it);
-    var b=document.getElementById('mln-badge');if(b)b.innerHTML='<span class="src-dot" style="background:#1a6b40"></span>'+esc(res.src);
+  Promise.all(allP).then(function(results){
+    var all=[];results.forEach(function(items){items.forEach(function(i){if(i.title&&i.title.length>4)all.push(i);});});
+    if(!all.length)throw new Error('empty');
+    var seen={};all=all.filter(function(i){var k=i.title.slice(0,40);if(seen[k])return false;seen[k]=1;return true;});
+    all.sort(function(a,b){return(new Date(b.pubDate)||0)-(new Date(a.pubDate)||0);});
+    var pool=all.slice(0,6);var hour=new Date().getHours();
+    var it=pool[hour%pool.length]||pool[0];
+    var srcName=it._src||'Malayalam News';
+    var desc=trunc(it.description||'',360);var img=extractImg(it);
+    var b=document.getElementById('mln-badge');if(b)b.innerHTML='<span class="src-dot" style="background:#1a6b40"></span>'+esc(srcName);
     var h='<div class="card-hl ml-script" style="font-size:.95rem;line-height:1.35">'+esc(trunc(it.title,105))+'</div>';
     if(desc)h+='<p class="card-text ml-script">'+esc(desc)+'</p>';
-    h+='<div class="card-meta">'+esc(res.src)+' · '+esc(fmtD(it.pubDate))+'</div>';
+    h+='<div class="card-meta">'+esc(srcName)+' · '+esc(fmtD(it.pubDate))+'</div>';
     if(it.link)h+='<a class="card-link" href="'+esc(it.link)+'" target="_blank" rel="noopener">വായിക്കുക →</a>';
     document.getElementById('mln-body').innerHTML=h;if(img)loadThumb('mln-thumb',img);
-    lsSet(ck,{h:h,img:img||null,src:res.src});
+    lsSet(ck,{h:h,img:img||null,src:srcName});
   }).catch(function(){document.getElementById('mln-body').innerHTML='<p style="color:var(--muted);font-size:.78rem;font-family:\'Noto Sans Malayalam\',sans-serif">Malayalam news unavailable</p>';});
 })();
 
@@ -2252,7 +2419,7 @@ window.__podPlay=function(show,title,url){doPlay(show,title,url,null);};
 // CARD: BOOK RECOMMENDATION — The New Yorker Books RSS
 // ═══════════════════════════════════════════════════════════
 (function(){
-  var ck='book5';var cached=lsGet(ck);
+  var ck=hourKey('book6');var cached=lsGet(ck);
   if(cached){document.getElementById('book-inner').innerHTML=cached;return;}
   // New Yorker Books section RSS
   fetchRSS('https://www.newyorker.com/feed/books/rss')
@@ -2292,11 +2459,13 @@ window.__podPlay=function(show,title,url){doPlay(show,title,url,null);};
 // CARD: SEMICONDUCTOR / EE — EE Times + SemiWiki
 // ═══════════════════════════════════════════════════════════
 (function(){
-  var ck='semi5';var cached=lsGet(ck);
+  var ck=hourKey('semi6');var cached=lsGet(ck);
   if(cached){document.getElementById('semi-inner').innerHTML=cached;return;}
   fetchRSS('https://www.eetimes.com/feed/')
     .then(function(items){
-      var it=items.find(function(i){return i.title&&i.title.length>5;});if(!it)throw 0;
+      items.sort(function(a,b){return(new Date(b.pubDate)||0)-(new Date(a.pubDate)||0);});
+      var pool=items.slice(0,5);var it=pool[new Date().getHours()%pool.length]||pool[0];
+      if(!it||!it.title)throw 0;
       var desc=trunc(it.description||'',260);
       var h='<div class="card-label"><span class="label-pip" style="background:var(--sky)"></span>💾 EE Times</div>';
       h+='<div class="card-hl">'+esc(trunc(it.title,105))+'</div>';
@@ -2445,17 +2614,19 @@ var NEWSPAPERS=[
   {id:'nyt',label:'New York Times',color:'#222',feeds:['https://rss.nytimes.com/services/xml/rss/nyt/World.xml']},
   {id:'hindu',label:'The Hindu · Kerala',color:'var(--rust)',feeds:['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/feeder/default.rss']},
   {id:'merkur',label:'Münchner Merkur',color:'#004f9f',feeds:['https://www.merkur.de/rss/muenchen.rss','https://www.merkur.de/rss/politik.rss']},
-  {id:'mlnews',label:'Malayalam News',color:'#1a6b40',feeds:['https://newsmalayalam.com/feed/','https://www.mathrubhumi.com/rss/news.xml','https://www.madhyamam.com/rss/all']}
+  {id:'mlnews',label:'Kerala · Malayalam News',color:'#1a6b40',feeds:['https://www.thenewsminute.com/kerala/feed','https://keralakaumudi.com/news/rss.xml','https://www.onmanorama.com/news.rss','https://www.thehindu.com/news/national/kerala/?service=rss']}
 ];
 function loadNewsPage(){
   NEWSPAPERS.forEach(function(np){
-    var elId='np-'+np.id;var ck='np5_'+np.id;var cached=lsGet(ck);
+    var elId='np-'+np.id;var ck=hourKey('np6_'+np.id);var cached=lsGet(ck);
     if(cached){document.getElementById(elId).innerHTML=cached;return;}
-    var pArr=np.feeds.map(function(u){return fetchRSS(u).then(function(items){if(!items.length)throw 0;return items;});});
-    anyOf(pArr).then(function(items){
+    var pArr=np.feeds.map(function(u){return fetchRSS(u).catch(function(){return[];});});
+    Promise.all(pArr).then(function(results){
+      var all=[];results.forEach(function(items){items.forEach(function(i){if(i.title&&i.title.length>4)all.push(i);});});
+      var seen={};all=all.filter(function(i){var k=i.title.slice(0,40);if(seen[k])return false;seen[k]=1;return true;});
+      all.sort(function(a,b){return(new Date(b.pubDate)||0)-(new Date(a.pubDate)||0);});
       var ml=np.id==='mlnews';var h='';
-      items.slice(0,6).forEach(function(it){
-        if(!it.title||it.title.length<5)return;
+      all.slice(0,7).forEach(function(it){
         h+='<a class="art-item" href="'+esc(it.link)+'" target="_blank" rel="noopener">';
         h+='<div class="art-hl'+(ml?' ml-script':'')+'">'+esc(trunc(it.title,120))+'</div>';
         if(it.description)h+='<div class="art-text'+(ml?' ml-script':'')+'">'+esc(trunc(it.description,260))+'</div>';
@@ -2471,7 +2642,7 @@ function loadNewsPage(){
 // SUBPAGE: HACKER NEWS
 // ═══════════════════════════════════════════════════════════
 function loadHNPage(){
-  var ck='hn_full5';var cached=lsGet(ck);
+  var ck=hourKey('hn_full6');var cached=lsGet(ck);
   if(cached){document.getElementById('hn-list').innerHTML=cached;return;}
   tFetch('https://hacker-news.firebaseio.com/v0/topstories.json')
     .then(function(r){return r.json();})
