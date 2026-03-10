@@ -1,43 +1,28 @@
-// Daily Digest — Service Worker
-// Strategy: Cache-first for app shell & fonts, Stale-While-Revalidate for API calls
-// Feed cache TTL: 30 minutes. Fonts/shell: indefinite (versioned).
+// Daily Digest — Service Worker v5
+// Shell: network-first with 1-hour TTL → always picks up updates fast.
+// Fonts: cache-first with 7-day TTL.
+// Feeds/APIs: stale-while-revalidate, 30-min TTL.
 
-const VERSION = 'v3';
+const VERSION      = 'v5';
 const SHELL_CACHE  = 'dd-shell-' + VERSION;
 const FEED_CACHE   = 'dd-feeds-' + VERSION;
 const FONT_CACHE   = 'dd-fonts-' + VERSION;
-
-const FEED_TTL_MS  = 30 * 60 * 1000; // 30 minutes
-const FONT_TTL_MS  = 7  * 24 * 60 * 60 * 1000; // 7 days
-
-const SHELL_URLS = [
-  './',
-  './index.html',
-  './manifest.json'
-];
+const SHELL_TTL_MS = 60 * 60 * 1000;        // 1 hour — shell always fresh
+const FEED_TTL_MS  = 30 * 60 * 1000;        // 30 min
+const FONT_TTL_MS  = 7 * 24 * 60 * 60 * 1000;
 
 const FEED_HOSTS = [
-  'api.rss2json.com',
-  'hacker-news.firebaseio.com',
-  'api.open-meteo.com',
-  'en.wikipedia.org',
-  'ml.wikipedia.org',
-  'api.allorigins.win',
-  'corsproxy.io'
+  'api.rss2json.com','hacker-news.firebaseio.com','api.open-meteo.com',
+  'en.wikipedia.org','ml.wikipedia.org','api.allorigins.win','corsproxy.io',
+  'api.codetabs.com','thingproxy.freeboard.io'
 ];
 
-// ── INSTALL ───────────────────────────────────────────────────
+// ── INSTALL — skip waiting immediately ───────────────────────
 self.addEventListener('install', function(e) {
-  e.waitUntil(
-    caches.open(SHELL_CACHE).then(function(cache) {
-      return cache.addAll(SHELL_URLS);
-    }).then(function() {
-      return self.skipWaiting();
-    })
-  );
+  e.waitUntil(self.skipWaiting());
 });
 
-// ── ACTIVATE — clean old caches ───────────────────────────────
+// ── ACTIVATE — claim all clients, delete ALL old caches ──────
 self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(keys) {
@@ -54,39 +39,47 @@ self.addEventListener('activate', function(e) {
 self.addEventListener('fetch', function(e) {
   var url = new URL(e.request.url);
 
-  // 1. App shell — cache first, network fallback
+  // App shell (index.html, manifest) — network-first with TTL
+  // This ensures updates are picked up within 1 hour max
   if (url.pathname === '/' || url.pathname.endsWith('index.html') || url.pathname.endsWith('manifest.json')) {
-    e.respondWith(cacheFirst(e.request, SHELL_CACHE));
+    e.respondWith(networkFirstWithTTL(e.request, SHELL_CACHE, SHELL_TTL_MS));
     return;
   }
 
-  // 2. Google Fonts — cache first with long TTL
+  // Google Fonts — cache-first, long TTL
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
     e.respondWith(cacheFirstWithTTL(e.request, FONT_CACHE, FONT_TTL_MS));
     return;
   }
 
-  // 3. Feed/API calls — stale-while-revalidate with 30 min TTL
+  // Feed/API calls — stale-while-revalidate
   var isFeedHost = FEED_HOSTS.some(function(h) { return url.hostname === h; });
   if (isFeedHost) {
     e.respondWith(staleWhileRevalidate(e.request, FEED_CACHE, FEED_TTL_MS));
     return;
   }
 
-  // 4. Everything else — network with cache fallback
+  // Everything else — network, cache as offline fallback
   e.respondWith(networkWithCacheFallback(e.request, FEED_CACHE));
 });
 
 // ── STRATEGIES ────────────────────────────────────────────────
 
-function cacheFirst(request, cacheName) {
+// Network-first: try network; if fresh enough serve cached; on fail serve stale
+function networkFirstWithTTL(request, cacheName, ttl) {
   return caches.open(cacheName).then(function(cache) {
-    return cache.match(request).then(function(cached) {
-      if (cached) return cached;
-      return fetch(request).then(function(response) {
-        if (response.ok) cache.put(request, response.clone());
-        return response;
-      });
+    return fetch(request).then(function(response) {
+      if (response.ok) {
+        var headers = new Headers(response.headers);
+        headers.set('sw-cache-date', Date.now().toString());
+        var tagged = new Response(response.body, { status: response.status, statusText: response.statusText, headers: headers });
+        cache.put(request, tagged.clone());
+        return tagged;
+      }
+      return response;
+    }).catch(function() {
+      // Offline — serve from cache regardless of TTL
+      return cache.match(request);
     });
   });
 }
@@ -95,10 +88,8 @@ function cacheFirstWithTTL(request, cacheName, ttl) {
   return caches.open(cacheName).then(function(cache) {
     return cache.match(request).then(function(cached) {
       if (cached) {
-        var dateHeader = cached.headers.get('sw-cache-date');
-        if (dateHeader && (Date.now() - parseInt(dateHeader)) < ttl) {
-          return cached;
-        }
+        var d = cached.headers.get('sw-cache-date');
+        if (d && (Date.now() - parseInt(d)) < ttl) return cached;
       }
       return fetch(request).then(function(response) {
         if (response.ok) {
@@ -109,9 +100,7 @@ function cacheFirstWithTTL(request, cacheName, ttl) {
           return tagged;
         }
         return cached || response;
-      }).catch(function() {
-        return cached;
-      });
+      }).catch(function() { return cached; });
     });
   });
 }
@@ -121,10 +110,9 @@ function staleWhileRevalidate(request, cacheName, ttl) {
     return cache.match(request).then(function(cached) {
       var isStale = true;
       if (cached) {
-        var dateHeader = cached.headers.get('sw-cache-date');
-        isStale = !dateHeader || (Date.now() - parseInt(dateHeader)) >= ttl;
+        var d = cached.headers.get('sw-cache-date');
+        isStale = !d || (Date.now() - parseInt(d)) >= ttl;
       }
-
       var networkFetch = fetch(request).then(function(response) {
         if (response.ok) {
           var headers = new Headers(response.headers);
@@ -135,54 +123,17 @@ function staleWhileRevalidate(request, cacheName, ttl) {
         }
         return response;
       }).catch(function() { return null; });
-
-      // If we have a fresh cache hit, return it immediately and revalidate in background
-      if (cached && !isStale) {
-        networkFetch; // background revalidate
-        return cached;
-      }
-      // Stale or missing — wait for network, fall back to stale cache
-      return networkFetch.then(function(r) { return r || cached; }).then(function(r) {
-        if (!r) throw new Error('offline and no cache');
-        return r;
-      });
+      if (cached && !isStale) { networkFetch; return cached; }
+      return networkFetch.then(function(r) { return r || cached; });
     });
   });
 }
 
 function networkWithCacheFallback(request, cacheName) {
   return fetch(request).then(function(response) {
-    if (response.ok) {
-      caches.open(cacheName).then(function(cache) { cache.put(request, response.clone()); });
-    }
+    if (response.ok) caches.open(cacheName).then(function(c) { c.put(request, response.clone()); });
     return response;
   }).catch(function() {
-    return caches.open(cacheName).then(function(cache) { return cache.match(request); });
+    return caches.open(cacheName).then(function(c) { return c.match(request); });
   });
-}
-
-// ── BACKGROUND SYNC — pre-warm critical feeds ─────────────────
-// Fires when app is in background / device wakes up
-self.addEventListener('periodicsync', function(e) {
-  if (e.tag === 'prefetch-feeds') {
-    e.waitUntil(prefetchCriticalFeeds());
-  }
-});
-
-function prefetchCriticalFeeds() {
-  var criticalFeeds = [
-    'https://api.open-meteo.com/v1/forecast?latitude=48.1375&longitude=11.5755&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,apparent_temperature&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code&timezone=Europe%2FBerlin&forecast_days=3',
-    'https://hacker-news.firebaseio.com/v0/topstories.json'
-  ];
-  return Promise.allSettled(criticalFeeds.map(function(url) {
-    return fetch(url).then(function(r) {
-      if (r.ok) {
-        return caches.open(FEED_CACHE).then(function(cache) {
-          var headers = new Headers(r.headers);
-          headers.set('sw-cache-date', Date.now().toString());
-          return cache.put(url, new Response(r.body, { headers: headers }));
-        });
-      }
-    });
-  }));
 }

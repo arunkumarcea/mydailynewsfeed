@@ -101,28 +101,30 @@ nav::-webkit-scrollbar{display:none}
 .hc-gasteig  {grid-column:3/6;grid-row:5;border-right:none}
 
 /* Row 6: News — wider cards, 2-3 cols each */
-.hc-sz       {grid-column:1/3;grid-row:6}
-.hc-hindu    {grid-column:3/5;grid-row:6}
-.hc-astro    {grid-column:5;grid-row:6;border-right:none}
+.hc-sz       {grid-column:1/3;grid-row:7}
+.hc-hindu    {grid-column:3/5;grid-row:7}
+.hc-astro    {grid-column:5;grid-row:7;border-right:none}
 
 /* Row 7: Guardian (2col) + NYT (2col) + ML Wikipedia (1col) */
-.hc-guardian {grid-column:1/3;grid-row:7}
-.hc-nyt      {grid-column:3/5;grid-row:7}
-.hc-ml       {grid-column:5;grid-row:7;border-right:none}
+.hc-guardian {grid-column:1/3;grid-row:8}
+.hc-nyt      {grid-column:3/5;grid-row:8}
+.hc-ml       {grid-column:5;grid-row:8;border-right:none}
 
 /* Row 8: HN (2col), Podcast (2col), Sport (1col) */
-.hc-hn       {grid-column:1/3;grid-row:8}
-.hc-podcast  {grid-column:3/5;grid-row:8}
-.hc-sport    {grid-column:5;grid-row:8;border-right:none}
+.hc-hn       {grid-column:1/3;grid-row:9}
+.hc-podcast  {grid-column:3/5;grid-row:9}
+.hc-sport    {grid-column:5;grid-row:9;border-right:none}
 
 /* Row 9: Wiki (2col), ML News (1col), Book (2col) */
-.hc-wiki     {grid-column:1/3;grid-row:9}
-.hc-mlnews   {grid-column:3;grid-row:9}
-.hc-book     {grid-column:4/6;grid-row:9;border-right:none}
+.hc-wiki     {grid-column:1/3;grid-row:10}
+.hc-mlnews   {grid-column:3;grid-row:10}
+.hc-book     {grid-column:4/6;grid-row:10;border-right:none}
 
 /* Row 10: Semi/EE (2col), Cartoon (3col) */
-.hc-semi     {grid-column:1/3;grid-row:10}
-.hc-cartoon  {grid-column:3/6;grid-row:10;border-right:none;border-bottom:none}
+.hc-semi     {grid-column:1/3;grid-row:12}
+.hc-cartoon  {grid-column:3/6;grid-row:12;border-right:none;border-bottom:none}
+.hc-dealz    {grid-column:1/6;grid-row:6;border-right:none}
+.hc-dealz    .card-label{color:#e2611a}.hc-dealz .label-pip{background:#e2611a}
 
 /* CARD INTERIOR PADDING WRAPPER */
 .hc-pad{padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.45rem;flex:1}
@@ -728,6 +730,13 @@ nav::-webkit-scrollbar{display:none}
       </div>
     </div>
 
+    <!-- 20 · MYDEALZ DEAL OF THE DAY -->
+    <div class="hc hc-dealz" id="hc-dealz">
+      <div class="hc-pad" id="dealz-inner">
+        <span class="sk sk-h"></span><span class="sk sk-t"></span><span class="sk sk-t2"></span><span class="sk sk-s"></span>
+      </div>
+    </div>
+
     <!-- 8 · MVHS ENGLISH COURSE — non-language course pick -->
     <div class="hc hc-mvhs" id="hc-mvhs">
       <div class="hc-pad" id="mvhs-home-inner">
@@ -981,11 +990,29 @@ nav::-webkit-scrollbar{display:none}
 
 // ── CACHE ───────────────────────────────────────────────────
 var TTL=55*60*1000; // 55 min — aligns with hourly rotation
-function lsGet(k){try{var r=localStorage.getItem('dd5_'+k);if(!r)return null;var o=JSON.parse(r);return(Date.now()-o.t>TTL)?null:o.d;}catch(e){return null;}}
-function lsSet(k,d){try{localStorage.setItem('dd5_'+k,JSON.stringify({t:Date.now(),d:d}));}catch(e){}}
-function dateKey(k){var n=new Date();return k+'_'+n.getFullYear()+(n.getMonth()+1)+n.getDate();}
+function lsGet(k){try{var r=localStorage.getItem('dd6_'+k);if(!r)return null;var o=JSON.parse(r);return(Date.now()-o.t>TTL)?null:o.d;}catch(e){return null;}}
+function lsSet(k,d){try{localStorage.setItem('dd6_'+k,JSON.stringify({t:Date.now(),d:d}));}catch(e){}}
+// ── CACHE BUST on every load: wipes all old-prefix keys ─────
+(function(){
+  try{
+    var toDelete=[];
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(k&&/^dd[1-5]_/.test(k))toDelete.push(k);
+    }
+    toDelete.forEach(function(k){localStorage.removeItem(k);});
+    // Clear stale event card keys from previous implementations
+    ['dd6_ev_today10','dd6_ev_today11','dd6_ev_rg1','dd6_ev_rg2'].forEach(function(k){localStorage.removeItem(k);});
+  }catch(e){}
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      regs.forEach(function(reg){reg.update();});
+    }).catch(function(){});
+  }
+})();
+function dateKey(k){var n=new Date();return k+'_'+n.getFullYear()+'-'+(n.getMonth()+1)+'-'+n.getDate();}
 // hourKey — changes every hour so live content stays fresh
-function hourKey(k){var n=new Date();return k+'_'+n.getFullYear()+(n.getMonth()+1)+n.getDate()+'h'+n.getHours();}
+function hourKey(k){var n=new Date();return k+'_'+n.getFullYear()+'-'+(n.getMonth()+1)+'-'+n.getDate()+'h'+n.getHours();}
 
 // ── ROUTER ──────────────────────────────────────────────────
 var PAGES=['home','news','hacker','podcasts','more'];
@@ -1043,17 +1070,38 @@ function fetchRSS(url){
     thumbnail:it.thumbnail||''};});}
   function tryProxy(u){
     var e=encodeURIComponent(u);
-    var pA=tFetch('https://api.allorigins.win/get?url='+e,10000).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){var r=parseXML(d&&d.contents);if(!r)throw 0;return r;});
+    var pA=tFetch('https://api.allorigins.win/raw?url='+e,11000).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){var r=parseXML(t);if(!r)throw 0;return r;});
+    var pA2=tFetch('https://api.allorigins.win/get?url='+e,11000).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){var r=parseXML(d&&d.contents);if(!r)throw 0;return r;});
     var pB=tFetch('https://corsproxy.io/?'+e,10000).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){var r=parseXML(t);if(!r)throw 0;return r;});
     var pC=tFetch('https://api.rss2json.com/v1/api.json?rss_url='+e+'&count=12',10000).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){if(!d||d.status!=='ok'||!d.items||!d.items.length)throw 0;return parseR2J(d.items);});
     var pD=tFetch('https://api.codetabs.com/v1/proxy?quest='+e,10000).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){var r=parseXML(t);if(!r)throw 0;return r;});
     var pE=tFetch('https://thingproxy.freeboard.io/fetch/'+u,10000).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){var r=parseXML(t);if(!r)throw 0;return r;});
-    return anyOf([pA,pB,pC,pD,pE]);
+    return anyOf([pA,pA2,pB,pC,pD,pE]);
   }
   if(url2!==url){return anyOf([tryProxy(url2),tryProxy(url)]);}
   return tryProxy(url);
 }
 function anyOf(arr){if(typeof Promise.any==='function')return Promise.any(arr);return new Promise(function(res,rej){var n=0;arr.forEach(function(p){p.then(res).catch(function(){if(++n===arr.length)rej(new Error('all failed'));});});});}
+
+// ── PAGE FETCHER (HTML via proxy) ───────────────────────
+function fetchPage(url){
+  var proxies=[
+    'https://api.allorigins.win/get?url='+encodeURIComponent(url),
+    'https://corsproxy.io/?'+encodeURIComponent(url),
+    'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(url)
+  ];
+  function tryProxy(i){
+    if(i>=proxies.length)return Promise.resolve(null);
+    return fetch(proxies[i])
+      .then(function(r){
+        if(!r.ok)return null;
+        return r.json().then(function(j){return j.contents||null;}).catch(function(){return r.text();}).then(function(t){return t||null;});
+      })
+      .catch(function(){return null;})
+      .then(function(h){return h||tryProxy(i+1);});
+  }
+  return tryProxy(0);
+}
 
 // ── IMAGE EXTRACTION ────────────────────────────────────────
 function extractImg(item){
@@ -1213,6 +1261,7 @@ var OTD_DATA={
   '3-6':{y:'1475',e:'Birthday: Michelangelo, Renaissance sculptor, painter and architect.'},
   '3-8':{y:'1917',e:'The February Revolution begins in Russia, eventually toppling the Tsar.'},
   '3-9':{y:'1934',e:'Birthday: Yuri Gagarin, first human to travel into outer space.'},
+  '3-10':{y:'1876',e:'Alexander Graham Bell makes the first successful telephone call: \u201cMr. Watson \u2014 come here \u2014 I want to see you.\u201d'},
   '3-14':{y:'1879',e:'Birthday: Albert Einstein, theoretical physicist and Nobel laureate.'},
   '3-15':{y:'44',e:'Julius Caesar is assassinated on the Ides of March, 44 BC.'},
   '3-16':{y:'1789',e:'The first U.S. presidential election begins (George Washington wins).'},
@@ -1812,7 +1861,7 @@ var WX_EM={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',5
 var WX_DS={0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Rain showers',81:'Heavy showers',82:'Violent showers',95:'Thunderstorm',96:'Thunderstorm & hail'};
 (function(){
   // Purge legacy stale key from previous app versions
-  try{localStorage.removeItem('dd5_wx5');localStorage.removeItem('dd4_wx5');}catch(e){}
+  try{localStorage.removeItem('dd6_wx5');localStorage.removeItem('dd4_wx5');}catch(e){}
   var now=new Date();
   // Key includes year, month, day, hour — forces refresh every hour
   var ck='wx6_'+now.getFullYear()+'_'+(now.getMonth()+1)+'_'+now.getDate()+'_'+now.getHours();
@@ -1848,243 +1897,387 @@ var WX_DS={0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog
 })();
 
 // ═══════════════════════════════════════════════════════════
-// CARD: MUNICH TODAY — live scrape of in-muenchen.de
-// Fetches heute-in-muenchen page via allorigins, parses event
-// anchor tags: <a href="/events/..."> containing img, date, title, venue
-// Falls back to morgen-in-muenchen then /veranstaltungen if needed.
 // ═══════════════════════════════════════════════════════════
+// CARD: MUNICH TODAY
+// ══════════════════════════════════════════════════════════
+// CARD: MUNICH EVENT TODAY
+//
+// Architecture:
+// 1. TODAY_SEED: real event data fetched at build time – shown
+//    immediately for the current date, no network call needed.
+// 2. Ticketmaster Discovery API: CORS-enabled, free public API
+//    (Access-Control-Allow-Origin: *), fires for future dates.
+// 3. Graceful fallback: styled link to rausgegangen.de.
+//
+// renderEventCard uses the 3-col layout already in CSS:
+//   [photo column] | [body: title+desc] | [logistics: time/price/btn]
+// ══════════════════════════════════════════════════════════
 
-// Transit directions from Marienstern for any central Munich venue
-var TRANSIT_DEFAULT=[
-  {ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},
-  {ic:'🚇',t:'U5 → Marienplatz',d:'14 min'},
-  {ic:'🚶',t:'Walk to venue',d:'5–10 min'}
-];
+// ── Seed: today's real event from rausgegangen.de ────────
+// Fetched 2026-03-10. Auto-expires: JS only uses this when
+// today's dateKey matches '2026-03-10'.
+var EV_SEED_DATE = '2026-03-10';
+var EV_SEED = {
+  title:     'PAULINA Z\u00c4CK \u2013 Te Araroa: A Trail, a Dream, a World Record',
+  venue:     'Globetrotter M\u00fcnchen \u00b7 Isartorpl. 8\u201310, 80331 M\u00fcnchen',
+  time:      '20:00\u201322:00',
+  price:     '\u20ac14 (\u20ac10 with Club Card)',
+  category:  'Talk \u00b7 Adventure',
+  desc:      'Paulina Z\u00e4ck walked 3,000\u00a0km solo and self-supported through New Zealand\'s Te Araroa wilderness \u2014 setting a women\'s fastest-known-time record. Tonight she tells the full story live, with photos and film.',
+  img:       'https://imageflow.rausgegangen.de/url/https%3A//s3.eu-central-1.amazonaws.com/rausgegangen/gsYGNqlkSDWnBOApm4bL_emo.png?width=850&height=637&mode=crop',
+  link:      'https://rausgegangen.de/en/events/paulina-zack-te-araroa-ein-trail-ein-traum-ein-weltrekord-0/',
+  ticketUrl: 'https://www.globetrotter.de/veranstaltungen/muenchen/te-araroa-ein-trail-ein-traum-ein-weltrekord-von-paulina-zaeck-vortrag-in-muenchen/'
+};
 
-function parseInMuenchenEvents(html){
-  // Parse <a href="/events/..."> blocks from the page HTML
-  // Each link contains: <img src="...">, date text "So, DD.MM.YYYY, HH:MM Uhr", title, venue
-  var events=[];
-  // Match event anchor blocks
-  var linkRe=/<a[^>]+href="(https?:\/\/www\.in-muenchen\.de\/events\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
-  var m;
-  while((m=linkRe.exec(html))!==null&&events.length<20){
-    var href=m[1];var inner=m[2];
-    // Extract image
-    var imgM=inner.match(/<img[^>]+src="([^"]+)"/i);
-    var imgUrl=imgM?imgM[1]:'';
-    // Strip all tags to get text content
-    var text=inner.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
-    // Date pattern: "So, 08.03.2026, 19:00 Uhr" or "Mo, 09.03.2026, 20:00 Uhr"
-    var dateM=text.match(/([A-Za-zÄäÖöÜü]{2}),\s*(\d{2}\.\d{2}\.\d{4}),\s*(\d{2}:\d{2})\s*Uhr/);
-    var dateStr='',timeStr='',dateObj=null;
-    if(dateM){
-      dateStr=dateM[1]+', '+dateM[2];timeStr=dateM[3];
-      var dp=dateM[2].split('.');
-      dateObj=new Date(parseInt(dp[2]),parseInt(dp[1])-1,parseInt(dp[0]));
-      // Remove date portion from text
-      text=text.replace(dateM[0],'').trim();
-    }
-    // The remaining text after removing date: first sentence-ish = title, rest = venue
-    // Pattern: title text comes first, venue name comes last (often truncated with ...)
-    var lines=text.split(/\n|\s{2,}/).map(function(l){return l.trim();}).filter(Boolean);
-    var title=lines[0]||'';
-    var venue=lines[lines.length-1]||'';
-    if(venue===title)venue='';
-    // Filter out nav/menu items: skip if title matches known nav text
-    if(!title||title.length<3||/^(alle|mehr|kino|veranstaltungen|stadtleben|shopping|hotels)/i.test(title))continue;
-    if(!href.includes('/events/'))continue;
-    events.push({title:title,venue:venue.replace(/\.\.\./,'').trim(),time:timeStr,date:dateStr,dateObj:dateObj,img:imgUrl,link:href});
+// ── Render: 3-column layout matching existing CSS ─────────
+function renderEventCard(ev) {
+  var today = new Date().toLocaleDateString('en-DE',
+    {weekday:'long', day:'numeric', month:'long'});
+
+  // Photo column
+  var photo = '<div class="ev-photo"'
+    + (ev.img ? ' style="background-image:url(\'' + ev.img.replace(/'/g,'%27') + '\');background-size:cover;background-position:center"' : '')
+    + '>';
+  photo += '<div class="ev-cat-badge">' + (ev.category || 'Munich') + '</div>';
+  if (!ev.img) photo += '<div class="ev-photo-ph">🎭</div>';
+  photo += '</div>';
+
+  // Body column
+  var body = '<div class="ev-body">';
+  body += '<div class="ev-kicker">Pick of the Day \u00b7 ' + today + '</div>';
+  body += '<h2 class="ev-title">'
+        +   '<a href="' + (ev.link || '#') + '" target="_blank" rel="noopener" '
+        +     'style="color:inherit;text-decoration:none">'
+        +   ev.title
+        +   '</a>'
+        + '</h2>';
+  if (ev.venue) body += '<div class="ev-venue">&#128205; ' + ev.venue + '</div>';
+  if (ev.desc)  body += '<p class="ev-desc">' + ev.desc + '</p>';
+  body += '<div class="ev-source-line">via rausgegangen.de</div>';
+  body += '</div>';
+
+  // Logistics column
+  var btnUrl = ev.ticketUrl || ev.link || 'https://rausgegangen.de/en/muenchen/tipps-fuer-heute/';
+  var logi = '<div class="ev-logistics">';
+  if (ev.time) {
+    // Split HH:MM–HH:MM into start/end for large display
+    var parts = ev.time.split(/[\u2013\-]/);
+    logi += '<div class="ev-time-big">' + parts[0].trim() + '</div>';
+    if (parts[1]) logi += '<div class="ev-date-line">until ' + parts[1].trim() + '</div>';
+    logi += '<div class="ev-date-line" style="margin-top:.15rem">' + today + '</div>';
   }
-  return events;
+  if (ev.price) {
+    logi += '<div class="ev-transit-step" style="margin-top:.7rem">'
+          +   '<strong>&#127915;</strong>'
+          +   '<span>' + ev.price + '</span>'
+          + '</div>';
+  }
+  logi += '<a href="' + btnUrl + '" target="_blank" rel="noopener" '
+        +   'style="margin-top:auto;display:inline-block;'
+        +     'background:var(--ev-accent);color:#fff;'
+        +     'font-family:\'DM Mono\',monospace;font-size:.55rem;'
+        +     'letter-spacing:.15em;text-transform:uppercase;'
+        +     'text-decoration:none;padding:.5rem 1rem;font-weight:700">'
+        +   'Tickets &amp; Info \u2192'
+        + '</a>';
+  logi += '</div>';
+
+  return '<div class="ev-inner-wrap">' + photo + body + logi + '</div>';
 }
 
-function renderEventCard(ev,source){
-  // Compute depart time from Marienstern: ~28 min to Marienplatz
-  var departStr='';
-  if(ev.time&&ev.time.match(/^\d{2}:\d{2}$/)){
-    var p=ev.time.split(':'),tot=parseInt(p[0])*60+parseInt(p[1])-38;
-    if(tot<0)tot=0;
-    var dh=Math.floor(tot/60),dm=tot%60;
-    departStr=(dh<10?'0':'')+dh+':'+(dm<10?'0':'')+dm+' Uhr';
-  }
-  var route=[
-    {ic:'🚌',t:'Bus 55 → Neuperlach Süd',d:'6 min'},
-    {ic:'🚇',t:'U5 → Marienplatz',d:'14 min'},
-    {ic:'🚶',t:'Walk to venue',d:'5–10 min'}
-  ];
-  var h='<div class="ev-inner-wrap">';
-  // Left: photo
-  h+='<div class="ev-photo">';
-  h+='<span class="ev-photo-ph">🎪</span>';
-  if(ev.img)h+='<img src="'+esc(ev.img)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">';
-  if(ev.category)h+='<div class="ev-cat-badge">'+esc(ev.category)+'</div>';
-  h+='</div>';
-  // Centre: body
-  h+='<div class="ev-body">';
-  h+='<div class="ev-kicker">★ Munich Today</div>';
-  h+='<div class="ev-title">'+esc(trunc(ev.title,80))+'</div>';
-  if(ev.venue)h+='<div class="ev-venue">📍 '+esc(ev.venue)+'</div>';
-  h+='<div class="ev-desc">'+esc('Live event in Munich today. Find tickets, full description and all details on in-muenchen.de.')+'</div>';
-  h+='<div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:.25rem">';
-  h+='<a class="ev-detail-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">Full details on in-muenchen.de →</a>';
-  h+='</div>';
-  h+='<div class="ev-source-line">'+esc(source||'in-muenchen.de')+'</div>';
-  h+='</div>';
-  // Right: logistics
-  h+='<div class="ev-logistics">';
-  if(ev.time){h+='<div class="ev-time-big">'+esc(ev.time)+'</div><div class="ev-date-line">Uhr · '+esc(ev.date||'heute')+'</div>';}
-  else{h+='<div class="ev-time-big" style="font-size:1.2rem">Heute</div><div class="ev-date-line">'+esc(ev.date||'München')+'</div>';}
-  h+='<div style="height:.3rem"></div>';
-  route.forEach(function(s){
-    h+='<div class="ev-transit-step"><span class="ev-transit-ic">'+s.ic+'</span><span><strong>'+esc(s.t)+'</strong> <span style="opacity:.5;font-size:.62rem"> · '+esc(s.d)+'</span></span></div>';
-  });
-  if(departStr)h+='<div class="ev-depart-box">Abfahrt bis '+esc(departStr)+'</div>';
-  h+='<a class="ev-detail-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">Details →</a>';
-  h+='</div>';
-  h+='</div>';
-  return h;
-}
+// ── Ticketmaster Discovery API (future dates) ─────────────
+// Free public API, CORS-enabled (Access-Control-Allow-Origin: *).
+// 5 000 calls/day. Returns real one-time events with images + prices.
+// Key is the tutorial demo key from Ticketmaster's own documentation.
+function loadTMEvent(onResult) {
+  var KEY = 'pLOeuGq2JL05uEGrZG7DuGWu6sh2OnMz';
+  var now  = new Date();
+  // Build Berlin-tz start/end (CET = UTC+1, CEST = UTC+2)
+  var offsetMs = (now.getMonth() >= 2 && now.getMonth() <= 9) ? 2*3600000 : 3600000;
+  var local    = new Date(now.getTime() + offsetMs);
+  var todayISO = local.toISOString().slice(0,10);
+  var nextISO  = new Date(local.getTime() + 86400000).toISOString().slice(0,10);
 
-// Store fetched events for the More tab
-var _eventsToday=[];var _eventsWeek=[];
+  var url = 'https://app.ticketmaster.com/discovery/v2/events.json'
+    + '?apikey=' + KEY
+    + '&city=Munich&countryCode=DE'
+    + '&startDateTime=' + todayISO + 'T06%3A00%3A00Z'
+    + '&endDateTime='   + nextISO  + 'T03%3A00%3A00Z'
+    + '&size=20&sort=relevance%2Cdesc&locale=*';
 
-function fetchInMuenchenPage(url){
-  var enc=encodeURIComponent(url);
-  var p1=tFetch('https://api.allorigins.win/get?url='+enc,9000)
-    .then(function(r){if(!r.ok)throw 0;return r.json();})
-    .then(function(d){if(!d||!d.contents||d.contents.length<500)throw 0;return d.contents;});
-  var p2=tFetch('https://corsproxy.io/?'+enc,9000)
-    .then(function(r){if(!r.ok)throw 0;return r.text();})
-    .then(function(t){if(!t||t.length<500)throw 0;return t;});
-  return anyOf([p1,p2]);
-}
+  fetch(url)
+    .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(d) {
+      var evs = (d._embedded || {}).events || [];
+      if (!evs.length) return;
 
-(function(){
-  var ck=dateKey('ev_today6');
-  var cached=lsGet(ck);
-  if(cached){document.getElementById('ev-inner').innerHTML=cached;return;}
-
-  // Get today's date string in DE format for strict matching
-  var now=new Date();
-  var todayDE=now.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'Europe/Berlin'}); // DD.MM.YYYY
-  var todayISO=now.toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'}); // YYYY-MM-DD
-
-  function isTodayEvent(ev){
-    // Accept event if no date (undated = likely today), or if date matches today
-    if(!ev.dateObj)return true;
-    var d=ev.dateObj;
-    var evDE=(d.getDate()<10?'0':'')+d.getDate()+'.'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'.'+d.getFullYear();
-    return evDE===todayDE;
-  }
-
-  function pickBest(events){
-    var todays=events.filter(isTodayEvent);
-    if(!todays.length)return null;
-    return todays.find(function(e){var t=parseInt((e.time||'').split(':')[0]||0);return t>=18&&t<=22;})
-      ||todays.find(function(e){var t=parseInt((e.time||'').split(':')[0]||0);return t>=11&&t<=17;})
-      ||todays[0];
-  }
-
-  // Also try Gasteig — parse "Heute um HH:MM Uhr" from their page
-  function fetchGasteigToday(){
-    var enc=encodeURIComponent('https://www.gasteig.de/veranstaltungen/');
-    return anyOf([
-      tFetch('https://api.allorigins.win/get?url='+enc,9000).then(function(r){return r.json();}).then(function(d){return d.contents;}),
-      tFetch('https://corsproxy.io/?'+enc,9000).then(function(r){return r.text();})
-    ]).then(function(html){
-      var events=[];
-      // Match event blocks containing "Heute"
-      var re=/<li[^>]*>([\s\S]*?)<\/li>/gi;
-      var m;
-      while((m=re.exec(html))!==null){
-        var block=m[1];
-        if(!/Heute/i.test(block))continue;
-        var titleM=block.match(/<h3[^>]*>([\s\S]*?)<\/h3>/i);
-        var linkM=block.match(/href="(https?:\/\/www\.gasteig\.de\/veranstaltungen\/[^"]+)"/i);
-        var timeM=block.match(/Heute\s+um\s+(\d{1,2}:\d{2})\s*Uhr/i);
-        var imgM=block.match(/<img[^>]+src="(https?:\/\/[^"]+gasteig[^"]+\.(jpg|jpeg|png|webp)[^"]*)"/i);
-        if(titleM&&linkM){
-          var title=titleM[1].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
-          events.push({
-            title:title,
-            time:timeM?timeM[1]:'',
-            date:now.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'}),
-            dateObj:now,
-            venue:'Gasteig HP8',
-            img:imgM?imgM[1]:'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&q=75',
-            link:linkM[1],
-            category:'Gasteig HP8'
-          });
+      // Score: prefer cheap/free + has description + has image
+      evs.sort(function(a, b) {
+        function score(e) {
+          var s = 0;
+          var pr = e.priceRanges && e.priceRanges[0] ? e.priceRanges[0].min : 999;
+          if (pr === 0)   s += 5;
+          else if (pr <= 10) s += 4;
+          else if (pr <= 20) s += 3;
+          else if (pr <= 40) s += 1;
+          if ((e.info||'').length > 20) s += 3;
+          if (e.images && e.images.length) s += 2;
+          return s;
         }
-      }
-      if(!events.length)throw new Error('no gasteig today');
-      return events;
-    });
+        return score(b) - score(a);
+      });
+      var best = evs[0];
+
+      // Extract fields
+      var ve = ((best._embedded||{}).venues||[])[0] || {};
+      var venue = [ve.name, (ve.address||{}).line1, ((ve.city||{}).name)]
+                  .filter(Boolean).join(' · ');
+      var t  = (((best.dates||{}).start)||{}).localTime || '';
+      var pr = (best.priceRanges||[])[0];
+      var price = pr
+        ? (pr.min === 0 ? 'Free' : '\u20ac' + pr.min.toFixed(0) + (pr.max !== pr.min ? '\u2013' + pr.max.toFixed(0) : ''))
+        : '';
+      var desc = best.info || best.pleaseNote || '';
+      if (desc.length > 260) desc = desc.slice(0,260).replace(/\s\S*$/, '') + '\u2026';
+      var cl  = ((best.classifications||[])[0]) || {};
+      var cat = [cl.segment && cl.segment.name, cl.genre && cl.genre.name !== 'Undefined' && cl.genre.name]
+                .filter(Boolean).join(' \u00b7 ');
+      // Best image: prefer wide, non-fallback
+      var imgs = (best.images||[]).slice().sort(function(a,b){
+        return (a.ratio==='16_9'&&!a.fallback?0:1) - (b.ratio==='16_9'&&!b.fallback?0:1);
+      });
+
+      onResult({
+        title: best.name,
+        venue: venue,
+        time:  t.slice(0,5),
+        price: price,
+        desc:  desc,
+        img:   (imgs[0]||{}).url || '',
+        category: cat,
+        link: best.url || 'https://www.ticketmaster.de/',
+        ticketUrl: best.url || ''
+      });
+    })
+    .catch(function() { /* silent – fallback stays */ });
+}
+
+// ── Main loader ───────────────────────────────────────────
+(function loadMunichEvent() {
+  var ck  = dateKey('ev_v3');
+  var el  = document.getElementById('ev-inner');
+
+  // 1. Try localStorage cache
+  var cached = lsGet(ck);
+  if (cached) { el.innerHTML = cached; return; }
+
+  // 2. Seed today's real event (fetched at build time)
+  var nowDate = new Date().toISOString().slice(0,10);
+  if (nowDate === EV_SEED_DATE) {
+    var h = renderEventCard(EV_SEED);
+    el.innerHTML = h;
+    lsSet(ck, h);
+    return; // Done – no network call needed today
   }
 
-  // Try sources in order: in-muenchen today → Gasteig today → in-muenchen Konzerte (filtered)
-  fetchInMuenchenPage('https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen')
-    .then(function(html){
-      var events=parseInMuenchenEvents(html);
-      _eventsToday=events;
-      var pick=pickBest(events);
-      if(!pick)throw new Error('no today events');
-      var h=renderEventCard(pick,'in-muenchen.de · heute');
-      document.getElementById('ev-inner').innerHTML=h;
-      lsSet(ck,h);
-    })
-    .catch(function(){
-      // Try Gasteig today
-      fetchGasteigToday()
-        .then(function(events){
-          var pick=events.find(function(e){var t=parseInt((e.time||'00').split(':')[0]);return t>=15&&t<=22;})
-            ||events[0];
-          var h=renderEventCard(pick,'Gasteig HP8 · heute');
-          document.getElementById('ev-inner').innerHTML=h;
-          lsSet(ck,h);
-        })
-        .catch(function(){
-          // Try muenchen.de
-          fetchInMuenchenPage('https://www.muenchen.de/veranstaltungen')
-            .then(function(html){
-              var events=parseInMuenchenEvents(html);
-              var pick=pickBest(events)||events[0];
-              if(!pick)throw 0;
-              var h=renderEventCard(pick,'muenchen.de · heute');
-              document.getElementById('ev-inner').innerHTML=h;
-              lsSet(ck,h);
-            })
-            .catch(function(){
-              // Final text fallback
-              var h='<div class="card-label"><span class="label-pip" style="background:var(--gold)"></span>★ Munich Today</div>';
-              h+='<div class="ev-badge">📅 '+now.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})+'</div>';
-              h+='<p class="card-text">Check in-muenchen.de or gasteig.de for today\'s live events, concerts and shows in Munich.</p>';
-              h+='<div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:.4rem">';
-              h+='<a class="card-link" href="https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen" target="_blank" rel="noopener">in-muenchen.de →</a>';
-              h+='<a class="card-link" href="https://www.gasteig.de/veranstaltungen/" target="_blank" rel="noopener">Gasteig →</a>';
-              h+='</div>';
-              document.getElementById('ev-inner').innerHTML=h;
-            });
-        });
+  // 3. Future dates: show temporary card + fire Ticketmaster
+  var tempHtml = renderEventCard({
+    title:    'Finding today\'s Munich event\u2026',
+    venue:    '',
+    desc:     'Loading from Ticketmaster \u2014 one moment.',
+    category: 'Munich \u00b7 Today'
+  });
+  el.innerHTML = tempHtml;
+
+  var done = false;
+  loadTMEvent(function(ev) {
+    if (done) return;
+    done = true;
+    var h = renderEventCard(ev);
+    el.innerHTML = h;
+    lsSet(ck, h);
+  });
+
+  // 4. After 8 s: if Ticketmaster didn't answer, show graceful fallback
+  setTimeout(function() {
+    if (done) return;
+    done = true;
+    var h = renderEventCard({
+      title:    'Events in Munich Today',
+      venue:    'rausgegangen.de',
+      desc:     'Browse today\'s concerts, exhibitions, talks and markets.',
+      link:     'https://rausgegangen.de/en/muenchen/tipps-fuer-heute/',
+      ticketUrl:'https://rausgegangen.de/en/muenchen/tipps-fuer-heute/',
+      category: 'Munich \u00b7 Today'
     });
+    el.innerHTML = h;
+    // Don't cache fallback so it retries next time
+  }, 8000);
+})();
+// ══════════════════════════════════════════════════════════
+// CARD: MYDEALZ — Heißester Deal (highest temperature)
+// Fetches raw RSS XML via allorigins so we get the real
+// Pepper namespace fields: <pepper:hotness> (temperature)
+// and <slash:comments>. Picks deal with most comments,
+// falling back to hottest temp if comments not available.
+// ══════════════════════════════════════════════════════════
+(function loadDealzCard(){
+  var ck=hourKey('dealz3');
+  var cached=lsGet(ck);
+  if(cached){document.getElementById('dealz-inner').innerHTML=cached;return;}
+
+  var el=document.getElementById('dealz-inner');
+  // /rss/deals = sorted by temperature (heißester zuerst), not recency
+  var FEED='https://www.mydealz.de/rss/deals';
+
+  // Fetch raw XML (not via rss2json which strips namespace fields)
+  var proxies=[
+    'https://api.allorigins.win/get?url='+encodeURIComponent(FEED),
+    'https://api.allorigins.win/raw?url='+encodeURIComponent(FEED),
+    'https://corsproxy.io/?'+encodeURIComponent(FEED),
+    'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(FEED)
+  ];
+
+  function tryProxy(i){
+    if(i>=proxies.length)return Promise.resolve(null);
+    return fetch(proxies[i])
+      .then(function(r){
+        if(!r.ok)return null;
+        // allorigins /get returns JSON {contents:"..."}, /raw returns text directly
+        var ct=r.headers.get('content-type')||'';
+        if(ct.indexOf('json')>-1){
+          return r.json().then(function(j){return j.contents||null;});
+        }
+        return r.text().then(function(t){return t||null;});
+      })
+      .catch(function(){return null;})
+      .then(function(xml){return xml||tryProxy(i+1);});
+  }
+
+  // Parse raw RSS XML string — extract <item> blocks and all fields
+  function parseItems(xml){
+    var items=[];
+    // Split on <item> tags
+    var parts=xml.split(/<item[\s>]/i);
+    for(var i=1;i<parts.length;i++){
+      var block=parts[i].split(/<\/item>/i)[0];
+      function tag(name){
+        // Handles <name>value</name> and <ns:name>value</ns:name>
+        var re=new RegExp('<(?:[a-z]+:)?'+name+'[^>]*>([\\s\\S]*?)</(?:[a-z]+:)?'+name+'>','i');
+        var m=block.match(re);
+        return m?(m[1].replace(/<!\[CDATA\[/g,'').replace(/\]\]>/g,'').trim()):'';
+      }
+      function tagExact(fullName){
+        var re=new RegExp('<'+fullName+'[^>]*>([\\s\\S]*?)</'+fullName+'>','i');
+        var m=block.match(re);
+        return m?(m[1].replace(/<!\[CDATA\[/g,'').replace(/\]\]>/g,'').trim()):'';
+      }
+      var title=tag('title');
+      var link=tag('link')||tagExact('guid');
+      var desc=tag('description')||tagExact('content:encoded');
+      var pubDate=tag('pubDate');
+
+      // Temperature: Pepper uses <pepper:hotness> or <g:price> for temp-like field
+      // Also seen: plain numeric in <category> or title brackets [1234°]
+      var hotness=parseInt(tagExact('pepper:hotness')||tagExact('hotness')||'0')||0;
+      // If not in dedicated tag, try to find "1234°" pattern in description
+      if(!hotness){
+        var hm=desc.match(/>(\d{2,5})°</)||desc.match(/hotness["\s:>]+(\d+)/i)||title.match(/\[(\d+)°\]/);
+        if(hm)hotness=parseInt(hm[1])||0;
+      }
+
+      // Comments: <slash:comments>NN</slash:comments>
+      var comments=parseInt(tagExact('slash:comments')||'0')||0;
+
+      // Image: from <enclosure> or <media:content> or <description> img tag
+      var img='';
+      var encM=block.match(/<enclosure[^>]+url="([^"]+)"/i);
+      if(encM)img=encM[1];
+      if(!img){
+        var medM=block.match(/<media:(?:content|thumbnail)[^>]+url="([^"]+)"/i);
+        if(medM)img=medM[1];
+      }
+      if(!img){
+        var imgM=desc.match(/<img[^>]+src="(https?:\/\/[^"]+\.(?:jpe?g|png|webp|gif)[^"]*)"/i);
+        if(imgM)img=imgM[1];
+      }
+
+      // Price: look for € in title or description
+      var price='';
+      var priceM=title.match(/([\d,\.]+\s*€)|(€\s*[\d,\.]+)/)||desc.match(/([\d,\.]+\s*€)/);
+      if(priceM)price=(priceM[1]||priceM[2]||'').trim();
+
+      // Merchant: often in title after "bei " or in pepper:merchant tag
+      var merchant=tagExact('pepper:merchant')||tagExact('merchant')||'';
+      if(!merchant){
+        var bm=title.match(/\bbei\s+([\w\s\.\-]+?)(?:\s+für|\s+\(|\s*$)/i);
+        if(bm)merchant=bm[1].trim();
+      }
+
+      if(title&&link){
+        items.push({title:title,link:link,desc:desc,pubDate:pubDate,
+          hotness:hotness,comments:comments,img:img,price:price,merchant:merchant});
+      }
+    }
+    return items;
+  }
+
+  function renderDeal(best){
+    var title=best.title.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').trim();
+    // Show temperature prominently — this IS the "heißester Deal" indicator
+    var tempStr=best.hotness>0?('🌡 '+best.hotness+'°'):'';
+    var commStr=best.comments>0?('💬 '+best.comments):'' ;
+
+    var h='<div style="display:flex;gap:1rem;align-items:flex-start;height:100%">';
+    if(best.img){
+      h+='<a href="'+best.link+'" target="_blank" rel="noopener" style="flex-shrink:0">';
+      h+='<img src="'+best.img+'" alt="" style="width:88px;height:88px;object-fit:contain;border-radius:4px;background:#fff;padding:3px;border:1px solid #e0d8c8">';
+      h+='</a>';
+    }
+    h+='<div style="flex:1;min-width:0">';
+    h+='<div class="card-label"><span class="label-pip" style="background:#e2611a"></span>'
+      +'🔥 mydealz · Heißester Deal'
+      +(tempStr?' · '+tempStr:'')
+      +(commStr?' · '+commStr:'')
+      +'</div>';
+    h+='<div style="font-family:\'Playfair Display\',serif;font-size:.98rem;font-weight:700;line-height:1.35;margin:.35rem 0">';
+    h+='<a href="'+best.link+'" target="_blank" rel="noopener" style="color:var(--ink);text-decoration:none">'+title+'</a></div>';
+    if(best.price||best.merchant){
+      h+='<div style="font-size:.8rem;color:var(--ev-sub);margin:.15rem 0">';
+      if(best.price)h+='<strong style="color:#e2611a;font-size:.9rem">'+best.price+'</strong>';
+      if(best.merchant)h+=(best.price?' · ':'')+best.merchant;
+      h+='</div>';
+    }
+    if(best.pubDate){
+      var ago=Math.round((Date.now()-new Date(best.pubDate).getTime())/60000);
+      h+='<div style="font-size:.7rem;color:#aaa;margin-top:.25rem">'+(ago<60?ago+'min ago':Math.round(ago/60)+'h ago')+'</div>';
+    }
+    h+='<a class="card-link" href="'+best.link+'" target="_blank" rel="noopener" style="display:inline-block;margin-top:.4rem">Deal ansehen →</a>';
+    h+='</div></div>';
+    return h;
+  }
+
+  tryProxy(0).then(function(xml){
+    if(!xml)throw new Error('no xml');
+    var items=parseItems(xml);
+    if(!items.length)throw new Error('no items');
+
+    // Pick best deal:
+    // 1. Among deals with >30 comments, pick highest comment count
+    // 2. If none have >30 comments, pick highest hotness (temperature)
+    var popular=items.filter(function(it){return it.comments>30;});
+    popular.sort(function(a,b){return b.comments-a.comments;});
+    var hottest=items.slice().sort(function(a,b){return b.hotness-a.hotness;});
+    var best=popular.length?popular[0]:hottest[0];
+    var h=renderDeal(best);
+    el.innerHTML=h;
+    lsSet(ck,h);
+  }).catch(function(){
+    el.innerHTML='<div class="hc-pad"><div class="card-label"><span class="label-pip" style="background:#e2611a"></span>🔥 mydealz</div>'
+      +'<a class="card-link" href="https://www.mydealz.de/" target="_blank" rel="noopener">mydealz.de →</a></div>';
+  });
 })();
 
-// Also prefetch the week's events for the More tab (7 days)
-var WEEK_PAGES=[
-  {label:'Heute',url:'https://www.in-muenchen.de/veranstaltungen/heute-in-muenchen'},
-  {label:'Morgen',url:'https://www.in-muenchen.de/veranstaltungen/morgen-in-muenchen'},
-  {label:'Konzerte',url:'https://www.in-muenchen.de/konzerte'},
-  {label:'Theater',url:'https://www.in-muenchen.de/theater'},
-  {label:'Ausstellungen',url:'https://www.in-muenchen.de/ausstellungen'},
-  {label:'Klassik',url:'https://www.in-muenchen.de/klassik'},
-  {label:'Nightlife',url:'https://www.in-muenchen.de/nightlife'}
-];
-
-// ═══════════════════════════════════════════════════════════
-// CARD: NEWS — sort by pubDate desc, rotate article each hour
-// so a different fresh story shows up every hour
-// ═══════════════════════════════════════════════════════════
 function loadNewsCard(bodyId,thumbId,baseCacheKey,feedUrls){
   var ck=hourKey(baseCacheKey);
   var cached=lsGet(ck);
@@ -2117,7 +2310,17 @@ function loadNewsCard(bodyId,thumbId,baseCacheKey,feedUrls){
   }).catch(function(){document.getElementById(bodyId).innerHTML='<p style="color:var(--muted);font-size:.78rem">Feed unavailable</p>';});
 }
 loadNewsCard('sz-body','sz-thumb','h6_sz',['https://rss.sueddeutsche.de/rss/Topthemen','https://rss.sueddeutsche.de/app/service/rss/alles/index.rss?output=rss']);
-loadNewsCard('hindu-body','hindu-thumb','h6_hindu',['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/news/national/kerala/?service=rss','https://www.thehindu.com/feeder/default.rss']);
+(function(){
+  var _doyH=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,1))/(864e5));
+  var _useCaravan=(_doyH%2===0);
+  var badge=document.querySelector('.hc-hindu .src-badge');
+  if(badge)badge.innerHTML='<span class="src-dot" style="background:var(--rust)"></span>'+(_useCaravan?'The Caravan · India':'The Hindu · Kochi');
+  if(_useCaravan){
+    loadNewsCard('hindu-body','hindu-thumb','h6_caravan3',['https://caravanmagazine.in/feed']);
+  }else{
+    loadNewsCard('hindu-body','hindu-thumb','h6_hindu3',['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/news/national/kerala/?service=rss','https://www.thehindu.com/feeder/default.rss']);
+  }
+})();
 loadNewsCard('grd-body','grd-thumb','h6_grd',['https://www.theguardian.com/world/rss','https://www.theguardian.com/uk/rss','https://www.theguardian.com/international/rss']);
 loadNewsCard('nyt-body','nyt-thumb','h6_nyt',['https://rss.nytimes.com/services/xml/rss/nyt/World.xml','https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml','https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml']);
 
@@ -2331,13 +2534,14 @@ var POD_PRIORITY=[
       h+='<a class="card-link" style="margin-top:.35rem" href="'+esc(ep.link)+'" target="_blank" rel="noopener">Open episode →</a>';
     }
     document.getElementById('pod-home').innerHTML=h;
-    lsSet(ck,h);
+    var ageHep=ep.pubDate?Math.floor((Date.now()-new Date(ep.pubDate))/3600000):9999;
+    if(ageHep<30)lsSet(ck,h); // only cache if episode is <30h old; else re-fetch each load
   }
 
   // Start at today's show index, rotate through all shows if needed
   var startIdx=doy%POD_PRIORITY.length;
   var tried=0;
-  var MAX_AGE_DAYS=14;
+  var MAX_AGE_DAYS=1.5; // 36h — skip to next show if no fresh episode
   function tryNext(idx){
     if(tried>=POD_PRIORITY.length){
       // All shows have stale episodes — show freshest we found, or error
@@ -2406,15 +2610,20 @@ window.__podPlay=function(show,title,url){doPlay(show,title,url,null);};
   var ck=hourKey('mln6');var cached=lsGet(ck);
   if(cached){document.getElementById('mln-body').innerHTML=cached.h;if(cached.src){var b=document.getElementById('mln-badge');if(b)b.innerHTML='<span class="src-dot" style="background:#1a6b40"></span>'+esc(cached.src);}if(cached.img)loadThumb('mln-thumb',cached.img);return;}
   var ML_SOURCES=[
-    // The News Minute — independent, serious journalism, strong Kerala focus
-    {name:'The News Minute',feeds:['https://www.thenewsminute.com/kerala/feed','https://www.thenewsminute.com/feed']},
-    // Kerala Kaumudi — one of Kerala's oldest, most respected newspapers (est. 1911)
-    {name:'Kerala Kaumudi',feeds:['https://keralakaumudi.com/news/rss.xml','https://keralakaumudi.com/en/news/rss.xml']},
-    // Onmanorama — Manorama's serious news desk, strong reporting standards
+    // Google News Malayalam — aggregates Mathrubhumi, Manorama, Madhyamam etc. in Malayalam script
+    {name:'Google News · Malayalam',feeds:['https://news.google.com/rss/headlines/section/geo/Kerala?hl=ml-IN&gl=IN&ceid=IN:ml'],ml:true},
+    // Onmanorama — Manorama's serious news desk
     {name:'Onmanorama',feeds:['https://www.onmanorama.com/news.rss','https://www.onmanorama.com/news/kerala.rss']},
-    // The Hindu Kerala — gold standard for serious Indian journalism
+    // The News Minute — independent, strong Kerala focus
+    {name:'The News Minute',feeds:['https://www.thenewsminute.com/kerala/feed','https://www.thenewsminute.com/feed']},
+    // Kerala Kaumudi — est. 1911
+    {name:'Kerala Kaumudi',feeds:['https://keralakaumudi.com/news/rss.xml','https://keralakaumudi.com/en/news/rss.xml']},
+    // The Hindu Kerala
     {name:'The Hindu · Kerala',feeds:['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/news/national/kerala/?service=rss']}
   ];
+  // Separate fetch for Malayalam-script content: always try Google News Malayalam first
+  // Articles from it will have Malayalam script titles from authentic Kerala newspapers
+  var ML_SCRIPT_SOURCE = 'https://news.google.com/rss/headlines/section/geo/Kerala?hl=ml-IN&gl=IN&ceid=IN:ml';
   // Fetch all, merge, sort freshest first, rotate by hour
   var allP=[];
   ML_SOURCES.forEach(function(src){
@@ -2637,6 +2846,7 @@ var NEWSPAPERS=[
   {id:'guardian',label:'The Guardian',color:'#005689',feeds:['https://www.theguardian.com/world/rss']},
   {id:'nyt',label:'New York Times',color:'#222',feeds:['https://rss.nytimes.com/services/xml/rss/nyt/World.xml']},
   {id:'hindu',label:'The Hindu · Kerala',color:'var(--rust)',feeds:['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/feeder/default.rss']},
+  {id:'caravan',label:'The Caravan · India',color:'#7b3b2e',feeds:['https://caravanmagazine.in/feed']},
   {id:'merkur',label:'Münchner Merkur',color:'#004f9f',feeds:['https://www.merkur.de/rss/muenchen.rss','https://www.merkur.de/rss/politik.rss']},
   {id:'mlnews',label:'Kerala · Malayalam News',color:'#1a6b40',feeds:['https://www.thenewsminute.com/kerala/feed','https://keralakaumudi.com/news/rss.xml','https://www.onmanorama.com/news.rss','https://www.thehindu.com/news/national/kerala/?service=rss']}
 ];
