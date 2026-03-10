@@ -2316,7 +2316,7 @@ loadNewsCard('sz-body','sz-thumb','h6_sz',['https://rss.sueddeutsche.de/rss/Topt
   var badge=document.querySelector('.hc-hindu .src-badge');
   if(badge)badge.innerHTML='<span class="src-dot" style="background:var(--rust)"></span>'+(_useCaravan?'The Caravan · India':'The Hindu · Kochi');
   if(_useCaravan){
-    loadNewsCard('hindu-body','hindu-thumb','h6_caravan3',['https://caravanmagazine.in/feed']);
+    loadNewsCard('hindu-body','hindu-thumb','h6_caravan4',['https://news.google.com/rss/search?q=site%3Acaravanmagazine.in&hl=en-IN&gl=IN&ceid=IN%3Aen','https://caravanmagazine.in/feed','https://caravanmagazine.in/rss']);
   }else{
     loadNewsCard('hindu-body','hindu-thumb','h6_hindu3',['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/news/national/kerala/?service=rss','https://www.thehindu.com/feeder/default.rss']);
   }
@@ -2507,7 +2507,7 @@ var POD_PRIORITY=[
 (function(){
   var now=new Date();
   var doy=Math.floor((Date.now()-new Date(now.getFullYear(),0,1))/(864e5));
-  var ck=hourKey('pod7');
+  var ck=hourKey('pod8');
   var cached=lsGet(ck);
   if(cached){document.getElementById('pod-home').innerHTML=cached;return;}
 
@@ -2535,7 +2535,7 @@ var POD_PRIORITY=[
     }
     document.getElementById('pod-home').innerHTML=h;
     var ageHep=ep.pubDate?Math.floor((Date.now()-new Date(ep.pubDate))/3600000):9999;
-    if(ageHep<30)lsSet(ck,h); // only cache if episode is <30h old; else re-fetch each load
+    if(ageHep<20)lsSet(ck,h); // only cache if episode is <20h old (today's); else re-fetch
   }
 
   // Start at today's show index, rotate through all shows if needed
@@ -2553,12 +2553,12 @@ var POD_PRIORITY=[
     anyOf(pick.feeds.map(function(u){return fetchRSS(u);}))
       .then(function(items){
         if(!items||!items.length)throw 0;
-        // Filter to episodes published within MAX_AGE_DAYS; pick freshest
+        // Require episode from TODAY (within 20h) so yesterday's ep is skipped
         var fresh=items.filter(function(i){
           if(!i.title||i.title.length<3)return false;
           if(!i.pubDate)return true; // no date = accept
-          var ageD=(Date.now()-new Date(i.pubDate))/864e5;
-          return ageD<=MAX_AGE_DAYS;
+          var ageH=(Date.now()-new Date(i.pubDate))/3600000;
+          return ageH<=20;
         });
         if(!fresh.length)throw new Error('stale:'+pick.name);
         // Sort freshest first
@@ -2607,23 +2607,20 @@ window.__podPlay=function(show,title,url){doPlay(show,title,url,null);};
 // CARD: MALAYALAM NEWS — The News Minute · Kerala Kaumudi · Onmanorama · The Hindu Kerala
 // ═══════════════════════════════════════════════════════════
 (function(){
-  var ck=hourKey('mln6');var cached=lsGet(ck);
+  var ck=hourKey('mln7');var cached=lsGet(ck);
   if(cached){document.getElementById('mln-body').innerHTML=cached.h;if(cached.src){var b=document.getElementById('mln-badge');if(b)b.innerHTML='<span class="src-dot" style="background:#1a6b40"></span>'+esc(cached.src);}if(cached.img)loadThumb('mln-thumb',cached.img);return;}
   var ML_SOURCES=[
-    // Google News Malayalam — aggregates Mathrubhumi, Manorama, Madhyamam etc. in Malayalam script
-    {name:'Google News · Malayalam',feeds:['https://news.google.com/rss/headlines/section/geo/Kerala?hl=ml-IN&gl=IN&ceid=IN:ml'],ml:true},
-    // Onmanorama — Manorama's serious news desk
-    {name:'Onmanorama',feeds:['https://www.onmanorama.com/news.rss','https://www.onmanorama.com/news/kerala.rss']},
-    // The News Minute — independent, strong Kerala focus
-    {name:'The News Minute',feeds:['https://www.thenewsminute.com/kerala/feed','https://www.thenewsminute.com/feed']},
-    // Kerala Kaumudi — est. 1911
-    {name:'Kerala Kaumudi',feeds:['https://keralakaumudi.com/news/rss.xml','https://keralakaumudi.com/en/news/rss.xml']},
-    // The Hindu Kerala
-    {name:'The Hindu · Kerala',feeds:['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/news/national/kerala/?service=rss']}
+    // Mathrubhumi via Google News (ml-IN locale) — returns Malayalam-script Mathrubhumi headlines
+    {name:'Mathrubhumi',feeds:['https://news.google.com/rss/search?q=site%3Amathrubhumi.com&hl=ml-IN&gl=IN&ceid=IN%3Aml']},
+    // Google News Kerala in Malayalam — aggregates Mathrubhumi, Manorama, Madhyamam in ML script
+    {name:'Malayalam News',feeds:['https://news.google.com/rss/headlines/section/geo/Kerala?hl=ml-IN&gl=IN&ceid=IN:ml']},
+    // Kerala Kaumudi Malayalam
+    {name:'Kerala Kaumudi',feeds:['https://keralakaumudi.com/news/rss.xml']},
+    // Onmanorama
+    {name:'Onmanorama',feeds:['https://www.onmanorama.com/news.rss']},
+    // The Hindu Kerala (English fallback)
+    {name:'The Hindu · Kerala',feeds:['https://www.thehindu.com/news/national/kerala/?service=rss']}
   ];
-  // Separate fetch for Malayalam-script content: always try Google News Malayalam first
-  // Articles from it will have Malayalam script titles from authentic Kerala newspapers
-  var ML_SCRIPT_SOURCE = 'https://news.google.com/rss/headlines/section/geo/Kerala?hl=ml-IN&gl=IN&ceid=IN:ml';
   // Fetch all, merge, sort freshest first, rotate by hour
   var allP=[];
   ML_SOURCES.forEach(function(src){
@@ -2846,7 +2843,7 @@ var NEWSPAPERS=[
   {id:'guardian',label:'The Guardian',color:'#005689',feeds:['https://www.theguardian.com/world/rss']},
   {id:'nyt',label:'New York Times',color:'#222',feeds:['https://rss.nytimes.com/services/xml/rss/nyt/World.xml']},
   {id:'hindu',label:'The Hindu · Kerala',color:'var(--rust)',feeds:['https://www.thehindu.com/news/cities/kozhikode/feeder/default.rss','https://www.thehindu.com/feeder/default.rss']},
-  {id:'caravan',label:'The Caravan · India',color:'#7b3b2e',feeds:['https://caravanmagazine.in/feed']},
+  {id:'caravan',label:'The Caravan · India',color:'#7b3b2e',feeds:['https://news.google.com/rss/search?q=site%3Acaravanmagazine.in&hl=en-IN&gl=IN&ceid=IN%3Aen','https://caravanmagazine.in/feed']},
   {id:'merkur',label:'Münchner Merkur',color:'#004f9f',feeds:['https://www.merkur.de/rss/muenchen.rss','https://www.merkur.de/rss/politik.rss']},
   {id:'mlnews',label:'Kerala · Malayalam News',color:'#1a6b40',feeds:['https://www.thenewsminute.com/kerala/feed','https://keralakaumudi.com/news/rss.xml','https://www.onmanorama.com/news.rss','https://www.thehindu.com/news/national/kerala/?service=rss']}
 ];
